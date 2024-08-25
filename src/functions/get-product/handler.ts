@@ -1,13 +1,16 @@
 import { ProductService } from "@services/product.service";
 import { APIGatewayProxyEvent } from 'aws-lambda';
+import { ObjectId } from "mongodb";
 
 export const main = async (event: APIGatewayProxyEvent) => {
-    const id = event?.queryStringParameters?.id;
+    const id = event?.pathParameters?.id;
 
-    if (!id) {
+    if (!id || !ObjectId.isValid(id)) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ message: 'Missing id' }),
+            body: JSON.stringify({
+                message: `Product Id is ${!id ? "required" : "not valid"}`
+            }),
         };
     }
 

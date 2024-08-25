@@ -2439,7 +2439,7 @@ var require_bson = __commonJS({
     };
     var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
     var PROCESS_UNIQUE = null;
-    var ObjectId2 = class extends BSONValue {
+    var ObjectId3 = class extends BSONValue {
       get _bsontype() {
         return "ObjectId";
       }
@@ -2459,7 +2459,7 @@ var require_bson = __commonJS({
           workingId = inputId;
         }
         if (workingId == null || typeof workingId === "number") {
-          this.buffer = ObjectId2.generate(typeof workingId === "number" ? workingId : void 0);
+          this.buffer = ObjectId3.generate(typeof workingId === "number" ? workingId : void 0);
         } else if (ArrayBuffer.isView(workingId) && workingId.byteLength === 12) {
           this.buffer = ByteUtils.toLocalBufferType(workingId);
         } else if (typeof workingId === "string") {
@@ -2471,7 +2471,7 @@ var require_bson = __commonJS({
         } else {
           throw new BSONError("Argument passed in does not match the accepted types");
         }
-        if (ObjectId2.cacheHexString) {
+        if (ObjectId3.cacheHexString) {
           this.__id = ByteUtils.toHex(this.id);
         }
       }
@@ -2480,28 +2480,28 @@ var require_bson = __commonJS({
       }
       set id(value) {
         this.buffer = value;
-        if (ObjectId2.cacheHexString) {
+        if (ObjectId3.cacheHexString) {
           this.__id = ByteUtils.toHex(value);
         }
       }
       toHexString() {
-        if (ObjectId2.cacheHexString && this.__id) {
+        if (ObjectId3.cacheHexString && this.__id) {
           return this.__id;
         }
         const hexString = ByteUtils.toHex(this.id);
-        if (ObjectId2.cacheHexString && !this.__id) {
+        if (ObjectId3.cacheHexString && !this.__id) {
           this.__id = hexString;
         }
         return hexString;
       }
       static getInc() {
-        return ObjectId2.index = (ObjectId2.index + 1) % 16777215;
+        return ObjectId3.index = (ObjectId3.index + 1) % 16777215;
       }
       static generate(time) {
         if ("number" !== typeof time) {
           time = Math.floor(Date.now() / 1e3);
         }
-        const inc = ObjectId2.getInc();
+        const inc = ObjectId3.getInc();
         const buffer2 = ByteUtils.allocateUnsafe(12);
         NumberUtils.setInt32BE(buffer2, 0, time);
         if (PROCESS_UNIQUE === null) {
@@ -2534,7 +2534,7 @@ var require_bson = __commonJS({
         if (otherId === void 0 || otherId === null) {
           return false;
         }
-        if (ObjectId2.is(otherId)) {
+        if (ObjectId3.is(otherId)) {
           return this.buffer[11] === otherId.buffer[11] && ByteUtils.equals(this.buffer, otherId.buffer);
         }
         if (typeof otherId === "string") {
@@ -2554,7 +2554,7 @@ var require_bson = __commonJS({
         return timestamp;
       }
       static createPk() {
-        return new ObjectId2();
+        return new ObjectId3();
       }
       serializeInto(uint8array, index) {
         uint8array[index] = this.buffer[0];
@@ -2576,25 +2576,25 @@ var require_bson = __commonJS({
         for (let i = 11; i >= 4; i--)
           buffer2[i] = 0;
         NumberUtils.setInt32BE(buffer2, 0, time);
-        return new ObjectId2(buffer2);
+        return new ObjectId3(buffer2);
       }
       static createFromHexString(hexString) {
         if (hexString?.length !== 24) {
           throw new BSONError("hex string must be 24 characters");
         }
-        return new ObjectId2(ByteUtils.fromHex(hexString));
+        return new ObjectId3(ByteUtils.fromHex(hexString));
       }
       static createFromBase64(base64) {
         if (base64?.length !== 16) {
           throw new BSONError("base64 string must be 16 characters");
         }
-        return new ObjectId2(ByteUtils.fromBase64(base64));
+        return new ObjectId3(ByteUtils.fromBase64(base64));
       }
       static isValid(id) {
         if (id == null)
           return false;
         try {
-          new ObjectId2(id);
+          new ObjectId3(id);
           return true;
         } catch {
           return false;
@@ -2606,14 +2606,14 @@ var require_bson = __commonJS({
         return { $oid: this.toString("hex") };
       }
       static fromExtendedJSON(doc) {
-        return new ObjectId2(doc.$oid);
+        return new ObjectId3(doc.$oid);
       }
       inspect(depth, options, inspect) {
         inspect ??= defaultInspect;
         return `new ObjectId(${inspect(this.toHexString(), options)})`;
       }
     };
-    ObjectId2.index = Math.floor(Math.random() * 16777215);
+    ObjectId3.index = Math.floor(Math.random() * 16777215);
     function internalCalculateObjectSize(object, serializeFunctions, ignoreUndefined) {
       let totalLength = 4 + 1;
       if (Array.isArray(object)) {
@@ -2973,7 +2973,7 @@ var require_bson = __commonJS({
           const oid = ByteUtils.allocateUnsafe(12);
           for (let i2 = 0; i2 < 12; i2++)
             oid[i2] = buffer2[index + i2];
-          value = new ObjectId2(oid);
+          value = new ObjectId3(oid);
           index = index + 12;
         } else if (elementType === BSON_DATA_INT && promoteValues === false) {
           value = new Int32(NumberUtils.getInt32LE(buffer2, index));
@@ -3216,7 +3216,7 @@ var require_bson = __commonJS({
           const oidBuffer = ByteUtils.allocateUnsafe(12);
           for (let i2 = 0; i2 < 12; i2++)
             oidBuffer[i2] = buffer2[index + i2];
-          const oid = new ObjectId2(oidBuffer);
+          const oid = new ObjectId3(oidBuffer);
           index = index + 12;
           value = new DBRef(namespace, oid);
         } else {
@@ -3772,7 +3772,7 @@ var require_bson = __commonJS({
       return value != null && typeof value === "object" && "_bsontype" in value && typeof value._bsontype === "string";
     }
     var keysToCodecs = {
-      $oid: ObjectId2,
+      $oid: ObjectId3,
       $binary: Binary,
       $uuid: Binary,
       $symbol: BSONSymbol,
@@ -3958,7 +3958,7 @@ var require_bson = __commonJS({
       Long: (o) => Long.fromBits(o.low != null ? o.low : o.low_, o.low != null ? o.high : o.high_, o.low != null ? o.unsigned : o.unsigned_),
       MaxKey: () => new MaxKey(),
       MinKey: () => new MinKey(),
-      ObjectId: (o) => new ObjectId2(o),
+      ObjectId: (o) => new ObjectId3(o),
       BSONRegExp: (o) => new BSONRegExp(o.pattern, o.options),
       BSONSymbol: (o) => new BSONSymbol(o.value),
       Timestamp: (o) => Timestamp.fromBits(o.low, o.high)
@@ -4205,7 +4205,7 @@ var require_bson = __commonJS({
       Long,
       MaxKey,
       MinKey,
-      ObjectId: ObjectId2,
+      ObjectId: ObjectId3,
       Timestamp,
       UUID,
       calculateObjectSize,
@@ -4235,7 +4235,7 @@ var require_bson = __commonJS({
     exports.Long = Long;
     exports.MaxKey = MaxKey;
     exports.MinKey = MinKey;
-    exports.ObjectId = ObjectId2;
+    exports.ObjectId = ObjectId3;
     exports.Timestamp = Timestamp;
     exports.UUID = UUID;
     exports.calculateObjectSize = calculateObjectSize;
@@ -4248,9 +4248,9 @@ var require_bson = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/bson.js
+// node_modules/mongoose/node_modules/mongodb/lib/bson.js
 var require_bson2 = __commonJS({
-  "node_modules/mongodb/lib/bson.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/bson.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.resolveBSONOptions = exports.pluckBSONSerializeOptions = exports.toUTF8 = exports.getBigInt64LE = exports.getFloat64LE = exports.getInt32LE = exports.parseToElementsToArray = exports.UUID = exports.Timestamp = exports.serialize = exports.ObjectId = exports.MinKey = exports.MaxKey = exports.Long = exports.Int32 = exports.EJSON = exports.Double = exports.deserialize = exports.Decimal128 = exports.DBRef = exports.Code = exports.calculateObjectSize = exports.BSONType = exports.BSONSymbol = exports.BSONRegExp = exports.BSONError = exports.BSON = exports.Binary = void 0;
@@ -4363,9 +4363,9 @@ var require_bson2 = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/error.js
+// node_modules/mongoose/node_modules/mongodb/lib/error.js
 var require_error = __commonJS({
-  "node_modules/mongodb/lib/error.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/error.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isResumableError = exports.isNetworkTimeoutError = exports.isSDAMUnrecoverableError = exports.isNodeShuttingDownError = exports.isRetryableReadError = exports.isRetryableWriteError = exports.needsRetryableWriteLabel = exports.MongoWriteConcernError = exports.MongoServerSelectionError = exports.MongoSystemError = exports.MongoMissingDependencyError = exports.MongoMissingCredentialsError = exports.MongoCompatibilityError = exports.MongoInvalidArgumentError = exports.MongoParseError = exports.MongoNetworkTimeoutError = exports.MongoNetworkError = exports.isNetworkErrorBeforeHandshake = exports.MongoTopologyClosedError = exports.MongoCursorExhaustedError = exports.MongoServerClosedError = exports.MongoCursorInUseError = exports.MongoUnexpectedServerResponseError = exports.MongoGridFSChunkError = exports.MongoGridFSStreamError = exports.MongoTailableCursorError = exports.MongoChangeStreamError = exports.MongoGCPError = exports.MongoAzureError = exports.MongoOIDCError = exports.MongoAWSError = exports.MongoKerberosError = exports.MongoExpiredSessionError = exports.MongoTransactionError = exports.MongoNotConnectedError = exports.MongoDecompressionError = exports.MongoBatchReExecutionError = exports.MongoRuntimeError = exports.MongoAPIError = exports.MongoDriverError = exports.MongoServerError = exports.MongoError = exports.MongoErrorLabel = exports.GET_MORE_RESUMABLE_CODES = exports.MONGODB_ERROR_CODES = exports.NODE_IS_RECOVERING_ERROR_MESSAGE = exports.LEGACY_NOT_PRIMARY_OR_SECONDARY_ERROR_MESSAGE = exports.LEGACY_NOT_WRITABLE_PRIMARY_ERROR_MESSAGE = void 0;
@@ -4941,9 +4941,9 @@ var require_error = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/read_preference.js
+// node_modules/mongoose/node_modules/mongodb/lib/read_preference.js
 var require_read_preference = __commonJS({
-  "node_modules/mongodb/lib/read_preference.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/read_preference.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ReadPreference = exports.ReadPreferenceMode = void 0;
@@ -5093,9 +5093,9 @@ var require_read_preference = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sdam/common.js
+// node_modules/mongoose/node_modules/mongodb/lib/sdam/common.js
 var require_common = __commonJS({
-  "node_modules/mongodb/lib/sdam/common.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sdam/common.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports._advanceClusterTime = exports.drainTimerQueue = exports.ServerType = exports.TopologyType = exports.STATE_CONNECTED = exports.STATE_CONNECTING = exports.STATE_CLOSED = exports.STATE_CLOSING = void 0;
@@ -5142,9 +5142,9 @@ var require_common = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sdam/server_selection.js
+// node_modules/mongoose/node_modules/mongodb/lib/sdam/server_selection.js
 var require_server_selection = __commonJS({
-  "node_modules/mongodb/lib/sdam/server_selection.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sdam/server_selection.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.readPreferenceServerSelector = exports.secondaryWritableServerSelector = exports.sameServerSelector = exports.writableServerSelector = exports.MIN_SECONDARY_WRITE_WIRE_VERSION = void 0;
@@ -5317,9 +5317,9 @@ var require_server_selection = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/wire_protocol/constants.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/constants.js
 var require_constants = __commonJS({
-  "node_modules/mongodb/lib/cmap/wire_protocol/constants.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/constants.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.OP_MSG = exports.OP_COMPRESSED = exports.OP_DELETE = exports.OP_QUERY = exports.OP_INSERT = exports.OP_UPDATE = exports.OP_REPLY = exports.MIN_SUPPORTED_QE_SERVER_VERSION = exports.MIN_SUPPORTED_QE_WIRE_VERSION = exports.MAX_SUPPORTED_WIRE_VERSION = exports.MIN_SUPPORTED_WIRE_VERSION = exports.MAX_SUPPORTED_SERVER_VERSION = exports.MIN_SUPPORTED_SERVER_VERSION = void 0;
@@ -5339,9 +5339,9 @@ var require_constants = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/constants.js
+// node_modules/mongoose/node_modules/mongodb/lib/constants.js
 var require_constants2 = __commonJS({
-  "node_modules/mongodb/lib/constants.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/constants.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.END = exports.CHANGE = exports.INIT = exports.MORE = exports.RESPONSE = exports.SERVER_HEARTBEAT_FAILED = exports.SERVER_HEARTBEAT_SUCCEEDED = exports.SERVER_HEARTBEAT_STARTED = exports.COMMAND_FAILED = exports.COMMAND_SUCCEEDED = exports.COMMAND_STARTED = exports.CLUSTER_TIME_RECEIVED = exports.CONNECTION_CHECKED_IN = exports.CONNECTION_CHECKED_OUT = exports.CONNECTION_CHECK_OUT_FAILED = exports.CONNECTION_CHECK_OUT_STARTED = exports.CONNECTION_CLOSED = exports.CONNECTION_READY = exports.CONNECTION_CREATED = exports.CONNECTION_POOL_READY = exports.CONNECTION_POOL_CLEARED = exports.CONNECTION_POOL_CLOSED = exports.CONNECTION_POOL_CREATED = exports.WAITING_FOR_SUITABLE_SERVER = exports.SERVER_SELECTION_SUCCEEDED = exports.SERVER_SELECTION_FAILED = exports.SERVER_SELECTION_STARTED = exports.TOPOLOGY_DESCRIPTION_CHANGED = exports.TOPOLOGY_CLOSED = exports.TOPOLOGY_OPENING = exports.SERVER_DESCRIPTION_CHANGED = exports.SERVER_CLOSED = exports.SERVER_OPENING = exports.DESCRIPTION_RECEIVED = exports.UNPINNED = exports.PINNED = exports.MESSAGE = exports.ENDED = exports.CLOSED = exports.CONNECT = exports.OPEN = exports.CLOSE = exports.TIMEOUT = exports.ERROR = exports.SYSTEM_JS_COLLECTION = exports.SYSTEM_COMMAND_COLLECTION = exports.SYSTEM_USER_COLLECTION = exports.SYSTEM_PROFILE_COLLECTION = exports.SYSTEM_INDEX_COLLECTION = exports.SYSTEM_NAMESPACE_COLLECTION = void 0;
@@ -5457,9 +5457,9 @@ var require_constants2 = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/read_concern.js
+// node_modules/mongoose/node_modules/mongodb/lib/read_concern.js
 var require_read_concern = __commonJS({
-  "node_modules/mongodb/lib/read_concern.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/read_concern.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ReadConcern = exports.ReadConcernLevel = void 0;
@@ -5513,9 +5513,9 @@ var require_read_concern = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/write_concern.js
+// node_modules/mongoose/node_modules/mongodb/lib/write_concern.js
 var require_write_concern = __commonJS({
-  "node_modules/mongodb/lib/write_concern.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/write_concern.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.WriteConcern = exports.WRITE_CONCERN_KEYS = void 0;
@@ -5577,9 +5577,9 @@ var require_write_concern = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/utils.js
+// node_modules/mongoose/node_modules/mongodb/lib/utils.js
 var require_utils = __commonJS({
-  "node_modules/mongodb/lib/utils.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/utils.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.COSMOS_DB_CHECK = exports.DOCUMENT_DB_CHECK = exports.request = exports.get = exports.matchesParentDomain = exports.parseUnsignedInteger = exports.parseInteger = exports.compareObjectId = exports.commandSupportsReadConcern = exports.shuffle = exports.supportsRetryableWrites = exports.enumToString = exports.emitWarningOnce = exports.emitWarning = exports.MONGODB_WARNING_CODE = exports.DEFAULT_PK_FACTORY = exports.HostAddress = exports.BufferPool = exports.List = exports.deepCopy = exports.isRecord = exports.setDifference = exports.isHello = exports.isSuperset = exports.resolveOptions = exports.hasAtomicOperators = exports.calculateDurationInMs = exports.now = exports.makeStateMachine = exports.errorStrictEqual = exports.arrayStrictEqual = exports.maxWireVersion = exports.uuidV4 = exports.makeCounter = exports.MongoDBCollectionNamespace = exports.MongoDBNamespace = exports.ns = exports.getTopology = exports.decorateWithExplain = exports.decorateWithReadConcern = exports.decorateWithCollation = exports.isPromiseLike = exports.applyRetryableWrites = exports.filterOptions = exports.mergeOptions = exports.isObject = exports.normalizeHintField = exports.hostMatchesWildcards = exports.isUint8Array = exports.ByteUtils = void 0;
@@ -6388,9 +6388,9 @@ var require_utils = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/operation.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/operation.js
 var require_operation = __commonJS({
-  "node_modules/mongodb/lib/operations/operation.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/operation.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.defineAspects = exports.AbstractOperation = exports.Aspect = void 0;
@@ -6451,9 +6451,9 @@ var require_operation = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/execute_operation.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/execute_operation.js
 var require_execute_operation = __commonJS({
-  "node_modules/mongodb/lib/operations/execute_operation.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/execute_operation.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.executeOperation = void 0;
@@ -6605,9 +6605,9 @@ var require_execute_operation = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/explain.js
+// node_modules/mongoose/node_modules/mongodb/lib/explain.js
 var require_explain = __commonJS({
-  "node_modules/mongodb/lib/explain.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/explain.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Explain = exports.ExplainVerbosity = void 0;
@@ -6640,9 +6640,9 @@ var require_explain = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/command.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/command.js
 var require_command = __commonJS({
-  "node_modules/mongodb/lib/operations/command.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/command.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CommandOperation = void 0;
@@ -6712,9 +6712,9 @@ var require_command = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/list_databases.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/list_databases.js
 var require_list_databases = __commonJS({
-  "node_modules/mongodb/lib/operations/list_databases.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/list_databases.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ListDatabasesOperation = void 0;
@@ -6752,9 +6752,9 @@ var require_list_databases = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/remove_user.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/remove_user.js
 var require_remove_user = __commonJS({
-  "node_modules/mongodb/lib/operations/remove_user.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/remove_user.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.RemoveUserOperation = void 0;
@@ -6779,9 +6779,9 @@ var require_remove_user = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/run_command.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/run_command.js
 var require_run_command = __commonJS({
-  "node_modules/mongodb/lib/operations/run_command.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/run_command.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.RunAdminCommandOperation = exports.RunCommandOperation = void 0;
@@ -6832,9 +6832,9 @@ var require_run_command = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/validate_collection.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/validate_collection.js
 var require_validate_collection = __commonJS({
-  "node_modules/mongodb/lib/operations/validate_collection.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/validate_collection.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ValidateCollectionOperation = void 0;
@@ -6873,9 +6873,9 @@ var require_validate_collection = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/admin.js
+// node_modules/mongoose/node_modules/mongodb/lib/admin.js
 var require_admin = __commonJS({
-  "node_modules/mongodb/lib/admin.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/admin.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Admin = void 0;
@@ -6925,9 +6925,9 @@ var require_admin = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/delete.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/delete.js
 var require_delete = __commonJS({
-  "node_modules/mongodb/lib/operations/delete.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/delete.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.makeDeleteStatement = exports.DeleteManyOperation = exports.DeleteOneOperation = exports.DeleteOperation = void 0;
@@ -7042,9 +7042,9 @@ var require_delete = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/bulk_write.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/bulk_write.js
 var require_bulk_write = __commonJS({
-  "node_modules/mongodb/lib/operations/bulk_write.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/bulk_write.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.BulkWriteOperation = void 0;
@@ -7076,9 +7076,9 @@ var require_bulk_write = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/insert.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/insert.js
 var require_insert = __commonJS({
-  "node_modules/mongodb/lib/operations/insert.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/insert.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.InsertManyOperation = exports.InsertOneOperation = exports.InsertOperation = void 0;
@@ -7176,9 +7176,9 @@ var require_insert = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/update.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/update.js
 var require_update = __commonJS({
-  "node_modules/mongodb/lib/operations/update.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/update.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.makeUpdateStatement = exports.ReplaceOneOperation = exports.UpdateManyOperation = exports.UpdateOneOperation = exports.UpdateOperation = void 0;
@@ -7350,9 +7350,9 @@ var require_update = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/bulk/common.js
+// node_modules/mongoose/node_modules/mongodb/lib/bulk/common.js
 var require_common2 = __commonJS({
-  "node_modules/mongodb/lib/bulk/common.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/bulk/common.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.BulkOperationBase = exports.BulkWriteShimOperation = exports.FindOperators = exports.MongoBulkWriteError = exports.mergeBatchResults = exports.WriteError = exports.WriteConcernError = exports.BulkWriteResult = exports.Batch = exports.BatchType = void 0;
@@ -7987,9 +7987,9 @@ var require_common2 = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/bulk/ordered.js
+// node_modules/mongoose/node_modules/mongodb/lib/bulk/ordered.js
 var require_ordered = __commonJS({
-  "node_modules/mongodb/lib/bulk/ordered.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/bulk/ordered.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.OrderedBulkOperation = void 0;
@@ -8038,9 +8038,9 @@ var require_ordered = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/bulk/unordered.js
+// node_modules/mongoose/node_modules/mongodb/lib/bulk/unordered.js
 var require_unordered = __commonJS({
-  "node_modules/mongodb/lib/bulk/unordered.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/bulk/unordered.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.UnorderedBulkOperation = void 0;
@@ -8107,9 +8107,9 @@ var require_unordered = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/aggregate.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/aggregate.js
 var require_aggregate = __commonJS({
-  "node_modules/mongodb/lib/operations/aggregate.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/aggregate.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.AggregateOperation = exports.DB_AGGREGATE_COLLECTION = void 0;
@@ -8200,9 +8200,9 @@ var require_aggregate = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/wire_protocol/on_demand/document.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/on_demand/document.js
 var require_document = __commonJS({
-  "node_modules/mongodb/lib/cmap/wire_protocol/on_demand/document.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/on_demand/document.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.OnDemandDocument = void 0;
@@ -8371,9 +8371,9 @@ var require_document = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/wire_protocol/responses.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/responses.js
 var require_responses = __commonJS({
-  "node_modules/mongodb/lib/cmap/wire_protocol/responses.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/responses.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CursorResponse = exports.MongoDBResponse = exports.isErrorResponse = void 0;
@@ -8526,9 +8526,9 @@ var require_responses = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/mongo_logger.js
+// node_modules/mongoose/node_modules/mongodb/lib/mongo_logger.js
 var require_mongo_logger = __commonJS({
-  "node_modules/mongodb/lib/mongo_logger.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/mongo_logger.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MongoLogger = exports.defaultLogTransform = exports.stringifyWithMaxLen = exports.createStdioLogger = exports.parseSeverityFromString = exports.MongoLoggableComponent = exports.SEVERITY_LEVEL_MAP = exports.DEFAULT_MAX_DOCUMENT_LENGTH = exports.SeverityLevel = void 0;
@@ -8999,9 +8999,9 @@ var require_mongo_logger = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/mongo_types.js
+// node_modules/mongoose/node_modules/mongodb/lib/mongo_types.js
 var require_mongo_types = __commonJS({
-  "node_modules/mongodb/lib/mongo_types.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/mongo_types.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CancellationToken = exports.TypedEventEmitter = void 0;
@@ -9044,9 +9044,9 @@ var require_mongo_types = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/get_more.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/get_more.js
 var require_get_more = __commonJS({
-  "node_modules/mongodb/lib/operations/get_more.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/get_more.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.GetMoreOperation = void 0;
@@ -9102,9 +9102,9 @@ var require_get_more = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/kill_cursors.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/kill_cursors.js
 var require_kill_cursors = __commonJS({
-  "node_modules/mongodb/lib/operations/kill_cursors.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/kill_cursors.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.KillCursorsOperation = void 0;
@@ -9145,9 +9145,9 @@ var require_kill_cursors = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/metrics.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/metrics.js
 var require_metrics = __commonJS({
-  "node_modules/mongodb/lib/cmap/metrics.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/metrics.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ConnectionPoolMetrics = void 0;
@@ -9191,9 +9191,9 @@ var require_metrics = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sdam/server_description.js
+// node_modules/mongoose/node_modules/mongodb/lib/sdam/server_description.js
 var require_server_description = __commonJS({
-  "node_modules/mongodb/lib/sdam/server_description.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sdam/server_description.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.compareTopologyVersion = exports.parseServerType = exports.ServerDescription = void 0;
@@ -9320,9 +9320,9 @@ var require_server_description = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sdam/topology_description.js
+// node_modules/mongoose/node_modules/mongodb/lib/sdam/topology_description.js
 var require_topology_description = __commonJS({
-  "node_modules/mongodb/lib/sdam/topology_description.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sdam/topology_description.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.TopologyDescription = void 0;
@@ -9610,9 +9610,9 @@ var require_topology_description = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/wire_protocol/shared.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/shared.js
 var require_shared = __commonJS({
-  "node_modules/mongodb/lib/cmap/wire_protocol/shared.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/shared.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isSharded = exports.getReadPreference = void 0;
@@ -9648,9 +9648,9 @@ var require_shared = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/transactions.js
+// node_modules/mongoose/node_modules/mongodb/lib/transactions.js
 var require_transactions = __commonJS({
-  "node_modules/mongodb/lib/transactions.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/transactions.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.isTransactionCommand = exports.Transaction = exports.TxnState = void 0;
@@ -9770,9 +9770,9 @@ var require_transactions = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sessions.js
+// node_modules/mongoose/node_modules/mongodb/lib/sessions.js
 var require_sessions = __commonJS({
-  "node_modules/mongodb/lib/sessions.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sessions.js"(exports) {
     "use strict";
     var _a;
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -10327,9 +10327,9 @@ var require_sessions = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cursor/abstract_cursor.js
+// node_modules/mongoose/node_modules/mongodb/lib/cursor/abstract_cursor.js
 var require_abstract_cursor = __commonJS({
-  "node_modules/mongodb/lib/cursor/abstract_cursor.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cursor/abstract_cursor.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.assertUninitialized = exports.AbstractCursor = exports.CURSOR_FLAGS = void 0;
@@ -10857,9 +10857,9 @@ var require_abstract_cursor = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cursor/aggregation_cursor.js
+// node_modules/mongoose/node_modules/mongodb/lib/cursor/aggregation_cursor.js
 var require_aggregation_cursor = __commonJS({
-  "node_modules/mongodb/lib/cursor/aggregation_cursor.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cursor/aggregation_cursor.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.AggregationCursor = void 0;
@@ -10947,9 +10947,9 @@ var require_aggregation_cursor = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/count.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/count.js
 var require_count = __commonJS({
-  "node_modules/mongodb/lib/operations/count.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/count.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CountOperation = void 0;
@@ -10992,9 +10992,9 @@ var require_count = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sort.js
+// node_modules/mongoose/node_modules/mongodb/lib/sort.js
 var require_sort = __commonJS({
-  "node_modules/mongodb/lib/sort.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sort.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.formatSort = void 0;
@@ -11084,9 +11084,9 @@ var require_sort = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/find.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/find.js
 var require_find = __commonJS({
-  "node_modules/mongodb/lib/operations/find.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/find.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.FindOperation = void 0;
@@ -11230,9 +11230,9 @@ var require_find = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cursor/find_cursor.js
+// node_modules/mongoose/node_modules/mongodb/lib/cursor/find_cursor.js
 var require_find_cursor = __commonJS({
-  "node_modules/mongodb/lib/cursor/find_cursor.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cursor/find_cursor.js"(exports) {
     "use strict";
     var _a;
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -11481,9 +11481,9 @@ var require_find_cursor = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/indexes.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/indexes.js
 var require_indexes = __commonJS({
-  "node_modules/mongodb/lib/operations/indexes.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/indexes.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ListIndexesOperation = exports.DropIndexOperation = exports.CreateIndexesOperation = void 0;
@@ -11637,9 +11637,9 @@ var require_indexes = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cursor/list_indexes_cursor.js
+// node_modules/mongoose/node_modules/mongodb/lib/cursor/list_indexes_cursor.js
 var require_list_indexes_cursor = __commonJS({
-  "node_modules/mongodb/lib/cursor/list_indexes_cursor.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cursor/list_indexes_cursor.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ListIndexesCursor = void 0;
@@ -11672,9 +11672,9 @@ var require_list_indexes_cursor = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cursor/list_search_indexes_cursor.js
+// node_modules/mongoose/node_modules/mongodb/lib/cursor/list_search_indexes_cursor.js
 var require_list_search_indexes_cursor = __commonJS({
-  "node_modules/mongodb/lib/cursor/list_search_indexes_cursor.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cursor/list_search_indexes_cursor.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ListSearchIndexesCursor = void 0;
@@ -11689,9 +11689,9 @@ var require_list_search_indexes_cursor = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/count_documents.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/count_documents.js
 var require_count_documents = __commonJS({
-  "node_modules/mongodb/lib/operations/count_documents.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/count_documents.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CountDocumentsOperation = void 0;
@@ -11723,9 +11723,9 @@ var require_count_documents = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/distinct.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/distinct.js
 var require_distinct = __commonJS({
-  "node_modules/mongodb/lib/operations/distinct.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/distinct.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DistinctOperation = void 0;
@@ -11770,9 +11770,9 @@ var require_distinct = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/drop.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/drop.js
 var require_drop = __commonJS({
-  "node_modules/mongodb/lib/operations/drop.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/drop.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DropDatabaseOperation = exports.DropCollectionOperation = void 0;
@@ -11840,9 +11840,9 @@ var require_drop = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/estimated_document_count.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/estimated_document_count.js
 var require_estimated_document_count = __commonJS({
-  "node_modules/mongodb/lib/operations/estimated_document_count.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/estimated_document_count.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.EstimatedDocumentCountOperation = void 0;
@@ -11878,9 +11878,9 @@ var require_estimated_document_count = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/find_and_modify.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/find_and_modify.js
 var require_find_and_modify = __commonJS({
-  "node_modules/mongodb/lib/operations/find_and_modify.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/find_and_modify.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.FindOneAndUpdateOperation = exports.FindOneAndReplaceOperation = exports.FindOneAndDeleteOperation = exports.FindAndModifyOperation = exports.ReturnDocument = void 0;
@@ -12019,9 +12019,9 @@ var require_find_and_modify = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/is_capped.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/is_capped.js
 var require_is_capped = __commonJS({
-  "node_modules/mongodb/lib/operations/is_capped.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/is_capped.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.IsCappedOperation = void 0;
@@ -12049,9 +12049,9 @@ var require_is_capped = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/options_operation.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/options_operation.js
 var require_options_operation = __commonJS({
-  "node_modules/mongodb/lib/operations/options_operation.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/options_operation.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.OptionsOperation = void 0;
@@ -12079,9 +12079,9 @@ var require_options_operation = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/rename.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/rename.js
 var require_rename = __commonJS({
-  "node_modules/mongodb/lib/operations/rename.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/rename.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.RenameOperation = void 0;
@@ -12118,9 +12118,9 @@ var require_rename = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/search_indexes/create.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/search_indexes/create.js
 var require_create = __commonJS({
-  "node_modules/mongodb/lib/operations/search_indexes/create.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/search_indexes/create.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CreateSearchIndexesOperation = void 0;
@@ -12149,9 +12149,9 @@ var require_create = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/search_indexes/drop.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/search_indexes/drop.js
 var require_drop2 = __commonJS({
-  "node_modules/mongodb/lib/operations/search_indexes/drop.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/search_indexes/drop.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DropSearchIndexOperation = void 0;
@@ -12188,9 +12188,9 @@ var require_drop2 = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/search_indexes/update.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/search_indexes/update.js
 var require_update2 = __commonJS({
-  "node_modules/mongodb/lib/operations/search_indexes/update.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/search_indexes/update.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.UpdateSearchIndexOperation = void 0;
@@ -12220,9 +12220,9 @@ var require_update2 = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/collection.js
+// node_modules/mongoose/node_modules/mongodb/lib/collection.js
 var require_collection2 = __commonJS({
-  "node_modules/mongodb/lib/collection.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/collection.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Collection = void 0;
@@ -12468,9 +12468,9 @@ var require_collection2 = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cursor/change_stream_cursor.js
+// node_modules/mongoose/node_modules/mongodb/lib/cursor/change_stream_cursor.js
 var require_change_stream_cursor = __commonJS({
-  "node_modules/mongodb/lib/cursor/change_stream_cursor.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cursor/change_stream_cursor.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ChangeStreamCursor = void 0;
@@ -12571,9 +12571,9 @@ var require_change_stream_cursor = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/list_collections.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/list_collections.js
 var require_list_collections = __commonJS({
-  "node_modules/mongodb/lib/operations/list_collections.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/list_collections.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ListCollectionsOperation = void 0;
@@ -12622,9 +12622,9 @@ var require_list_collections = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cursor/list_collections_cursor.js
+// node_modules/mongoose/node_modules/mongodb/lib/cursor/list_collections_cursor.js
 var require_list_collections_cursor = __commonJS({
-  "node_modules/mongodb/lib/cursor/list_collections_cursor.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cursor/list_collections_cursor.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ListCollectionsCursor = void 0;
@@ -12658,9 +12658,9 @@ var require_list_collections_cursor = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cursor/run_command_cursor.js
+// node_modules/mongoose/node_modules/mongodb/lib/cursor/run_command_cursor.js
 var require_run_command_cursor = __commonJS({
-  "node_modules/mongodb/lib/cursor/run_command_cursor.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cursor/run_command_cursor.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.RunCommandCursor = void 0;
@@ -12734,9 +12734,9 @@ var require_run_command_cursor = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/collections.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/collections.js
 var require_collections = __commonJS({
-  "node_modules/mongodb/lib/operations/collections.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/collections.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CollectionsOperation = void 0;
@@ -12766,9 +12766,9 @@ var require_collections = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/create_collection.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/create_collection.js
 var require_create_collection = __commonJS({
-  "node_modules/mongodb/lib/operations/create_collection.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/create_collection.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CreateCollectionOperation = void 0;
@@ -12862,9 +12862,9 @@ var require_create_collection = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/profiling_level.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/profiling_level.js
 var require_profiling_level = __commonJS({
-  "node_modules/mongodb/lib/operations/profiling_level.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/profiling_level.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ProfilingLevelOperation = void 0;
@@ -12898,9 +12898,9 @@ var require_profiling_level = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/set_profiling_level.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/set_profiling_level.js
 var require_set_profiling_level = __commonJS({
-  "node_modules/mongodb/lib/operations/set_profiling_level.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/set_profiling_level.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.SetProfilingLevelOperation = exports.ProfilingLevel = void 0;
@@ -12949,9 +12949,9 @@ var require_set_profiling_level = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/operations/stats.js
+// node_modules/mongoose/node_modules/mongodb/lib/operations/stats.js
 var require_stats = __commonJS({
-  "node_modules/mongodb/lib/operations/stats.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/operations/stats.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DbStatsOperation = void 0;
@@ -12978,9 +12978,9 @@ var require_stats = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/db.js
+// node_modules/mongoose/node_modules/mongodb/lib/db.js
 var require_db = __commonJS({
-  "node_modules/mongodb/lib/db.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/db.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Db = void 0;
@@ -13154,9 +13154,9 @@ var require_db = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/deps.js
+// node_modules/mongoose/node_modules/mongodb/lib/deps.js
 var require_deps = __commonJS({
-  "node_modules/mongodb/lib/deps.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/deps.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getMongoDBClientEncryption = exports.aws4 = exports.getSocks = exports.getSnappy = exports.getGcpMetadata = exports.getAwsCredentialProvider = exports.getZstdLibrary = exports.getKerberos = void 0;
@@ -13257,9 +13257,9 @@ var require_deps = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/auth_provider.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/auth_provider.js
 var require_auth_provider = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/auth_provider.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/auth_provider.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.AuthProvider = exports.AuthContext = void 0;
@@ -13293,9 +13293,9 @@ var require_auth_provider = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/gssapi.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/gssapi.js
 var require_gssapi = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/gssapi.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/gssapi.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.resolveCname = exports.performGSSAPICanonicalizeHostName = exports.GSSAPI = exports.GSSAPICanonicalizationValue = void 0;
@@ -13428,9 +13428,9 @@ var require_gssapi = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/providers.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/providers.js
 var require_providers = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/providers.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/providers.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.AUTH_MECHS_AUTH_SRC_EXTERNAL = exports.AuthMechanism = void 0;
@@ -13454,9 +13454,9 @@ var require_providers = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongo_credentials.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongo_credentials.js
 var require_mongo_credentials = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongo_credentials.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongo_credentials.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MongoCredentials = exports.DEFAULT_ALLOWED_HOSTS = void 0;
@@ -17465,9 +17465,9 @@ var require_lib2 = __commonJS({
   }
 });
 
-// node_modules/mongodb/package.json
+// node_modules/mongoose/node_modules/mongodb/package.json
 var require_package = __commonJS({
-  "node_modules/mongodb/package.json"(exports, module2) {
+  "node_modules/mongoose/node_modules/mongodb/package.json"(exports, module2) {
     module2.exports = {
       name: "mongodb",
       version: "6.7.0",
@@ -17650,9 +17650,9 @@ var require_package = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/handshake/client_metadata.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/handshake/client_metadata.js
 var require_client_metadata = __commonJS({
-  "node_modules/mongodb/lib/cmap/handshake/client_metadata.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/handshake/client_metadata.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.getFAASEnv = exports.addContainerMetadata = exports.makeClientMetadata = exports.LimitedSizeDocument = void 0;
@@ -17826,9 +17826,9 @@ var require_client_metadata = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/commands.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/commands.js
 var require_commands = __commonJS({
-  "node_modules/mongodb/lib/cmap/commands.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/commands.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.OpCompressedRequest = exports.OpMsgResponse = exports.OpMsgRequest = exports.OpReply = exports.OpQueryRequest = void 0;
@@ -18184,9 +18184,9 @@ var require_commands = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/wire_protocol/compression.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/compression.js
 var require_compression = __commonJS({
-  "node_modules/mongodb/lib/cmap/wire_protocol/compression.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/compression.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.decompressResponse = exports.compressCommand = exports.decompress = exports.compress = exports.uncompressibleCommands = exports.Compressor = void 0;
@@ -18327,9 +18327,9 @@ var require_compression = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/client-side-encryption/crypto_callbacks.js
+// node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/crypto_callbacks.js
 var require_crypto_callbacks = __commonJS({
-  "node_modules/mongodb/lib/client-side-encryption/crypto_callbacks.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/crypto_callbacks.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.hmacSha256Hook = exports.hmacSha512Hook = exports.aes256CtrDecryptHook = exports.aes256CtrEncryptHook = exports.aes256CbcDecryptHook = exports.aes256CbcEncryptHook = exports.signRsaSha256Hook = exports.makeHmacHook = exports.sha256Hook = exports.randomHook = exports.makeAES256Hook = void 0;
@@ -18411,9 +18411,9 @@ ${key.toString("base64")}
   }
 });
 
-// node_modules/mongodb/lib/client-side-encryption/errors.js
+// node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/errors.js
 var require_errors = __commonJS({
-  "node_modules/mongodb/lib/client-side-encryption/errors.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/errors.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MongoCryptKMSRequestNetworkTimeoutError = exports.MongoCryptAzureKMSRequestError = exports.MongoCryptCreateEncryptedCollectionError = exports.MongoCryptCreateDataKeyError = exports.MongoCryptInvalidArgumentError = exports.MongoCryptError = void 0;
@@ -18475,9 +18475,9 @@ var require_errors = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/client-side-encryption/mongocryptd_manager.js
+// node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/mongocryptd_manager.js
 var require_mongocryptd_manager = __commonJS({
-  "node_modules/mongodb/lib/client-side-encryption/mongocryptd_manager.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/mongocryptd_manager.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MongocryptdManager = void 0;
@@ -18526,9 +18526,9 @@ var require_mongocryptd_manager = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/aws_temporary_credentials.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/aws_temporary_credentials.js
 var require_aws_temporary_credentials = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/aws_temporary_credentials.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/aws_temporary_credentials.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.LegacyAWSTemporaryCredentialProvider = exports.AWSSDKCredentialProvider = exports.AWSTemporaryCredentialProvider = void 0;
@@ -18623,9 +18623,9 @@ var require_aws_temporary_credentials = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/client-side-encryption/providers/aws.js
+// node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/providers/aws.js
 var require_aws = __commonJS({
-  "node_modules/mongodb/lib/client-side-encryption/providers/aws.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/providers/aws.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.loadAWSCredentials = void 0;
@@ -18644,9 +18644,9 @@ var require_aws = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/client-side-encryption/providers/azure.js
+// node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/providers/azure.js
 var require_azure = __commonJS({
-  "node_modules/mongodb/lib/client-side-encryption/providers/azure.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/providers/azure.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.loadAzureCredentials = exports.fetchAzureKMSToken = exports.prepareRequest = exports.addAzureParams = exports.tokenCache = exports.AzureCredentialCache = exports.AZURE_BASE_URL = void 0;
@@ -18742,9 +18742,9 @@ var require_azure = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/client-side-encryption/providers/gcp.js
+// node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/providers/gcp.js
 var require_gcp = __commonJS({
-  "node_modules/mongodb/lib/client-side-encryption/providers/gcp.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/providers/gcp.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.loadGCPCredentials = void 0;
@@ -18763,9 +18763,9 @@ var require_gcp = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/client-side-encryption/providers/index.js
+// node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/providers/index.js
 var require_providers2 = __commonJS({
-  "node_modules/mongodb/lib/client-side-encryption/providers/index.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/providers/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.refreshKMSCredentials = exports.isEmptyCredentials = void 0;
@@ -18797,9 +18797,9 @@ var require_providers2 = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/client-side-encryption/state_machine.js
+// node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/state_machine.js
 var require_state_machine = __commonJS({
-  "node_modules/mongodb/lib/client-side-encryption/state_machine.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/state_machine.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.StateMachine = void 0;
@@ -19075,9 +19075,9 @@ var require_state_machine = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/client-side-encryption/auto_encrypter.js
+// node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/auto_encrypter.js
 var require_auto_encrypter = __commonJS({
-  "node_modules/mongodb/lib/client-side-encryption/auto_encrypter.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/auto_encrypter.js"(exports) {
     "use strict";
     var _a;
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -19264,9 +19264,9 @@ var require_auto_encrypter = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/encrypter.js
+// node_modules/mongoose/node_modules/mongodb/lib/encrypter.js
 var require_encrypter = __commonJS({
-  "node_modules/mongodb/lib/encrypter.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/encrypter.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Encrypter = void 0;
@@ -19373,9 +19373,9 @@ var require_encrypter = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/command_monitoring_events.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/command_monitoring_events.js
 var require_command_monitoring_events = __commonJS({
-  "node_modules/mongodb/lib/cmap/command_monitoring_events.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/command_monitoring_events.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.SENSITIVE_COMMANDS = exports.CommandFailedEvent = exports.CommandSucceededEvent = exports.CommandStartedEvent = void 0;
@@ -19571,9 +19571,9 @@ var require_command_monitoring_events = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/stream_description.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/stream_description.js
 var require_stream_description = __commonJS({
-  "node_modules/mongodb/lib/cmap/stream_description.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/stream_description.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.StreamDescription = void 0;
@@ -19634,9 +19634,9 @@ var require_stream_description = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/wire_protocol/on_data.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/on_data.js
 var require_on_data = __commonJS({
-  "node_modules/mongodb/lib/cmap/wire_protocol/on_data.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/wire_protocol/on_data.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.onData = void 0;
@@ -19707,9 +19707,9 @@ var require_on_data = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/connection.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/connection.js
 var require_connection = __commonJS({
-  "node_modules/mongodb/lib/cmap/connection.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/connection.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CryptoConnection = exports.SizedMessageTransform = exports.Connection = exports.hasSessionSupport = void 0;
@@ -20086,9 +20086,9 @@ var require_connection = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/connect.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/connect.js
 var require_connect = __commonJS({
-  "node_modules/mongodb/lib/cmap/connect.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/connect.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.makeSocket = exports.LEGAL_TCP_SOCKET_OPTIONS = exports.LEGAL_TLS_SOCKET_OPTIONS = exports.prepareHandshakeDocument = exports.performInitialHandshake = exports.makeConnection = exports.connect = void 0;
@@ -20410,9 +20410,9 @@ var require_connect = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sdam/events.js
+// node_modules/mongoose/node_modules/mongodb/lib/sdam/events.js
 var require_events = __commonJS({
-  "node_modules/mongodb/lib/sdam/events.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sdam/events.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ServerHeartbeatFailedEvent = exports.ServerHeartbeatSucceededEvent = exports.ServerHeartbeatStartedEvent = exports.TopologyClosedEvent = exports.TopologyOpeningEvent = exports.TopologyDescriptionChangedEvent = exports.ServerClosedEvent = exports.ServerOpeningEvent = exports.ServerDescriptionChangedEvent = void 0;
@@ -20497,9 +20497,9 @@ var require_events = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/timeout.js
+// node_modules/mongoose/node_modules/mongodb/lib/timeout.js
 var require_timeout = __commonJS({
-  "node_modules/mongodb/lib/timeout.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/timeout.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Timeout = exports.TimeoutError = void 0;
@@ -20561,9 +20561,9 @@ var require_timeout = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/connection_pool_events.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/connection_pool_events.js
 var require_connection_pool_events = __commonJS({
-  "node_modules/mongodb/lib/cmap/connection_pool_events.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/connection_pool_events.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ConnectionPoolClearedEvent = exports.ConnectionCheckedInEvent = exports.ConnectionCheckedOutEvent = exports.ConnectionCheckOutFailedEvent = exports.ConnectionCheckOutStartedEvent = exports.ConnectionClosedEvent = exports.ConnectionReadyEvent = exports.ConnectionCreatedEvent = exports.ConnectionPoolClosedEvent = exports.ConnectionPoolReadyEvent = exports.ConnectionPoolCreatedEvent = exports.ConnectionPoolMonitoringEvent = void 0;
@@ -20669,9 +20669,9 @@ var require_connection_pool_events = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/errors.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/errors.js
 var require_errors2 = __commonJS({
-  "node_modules/mongodb/lib/cmap/errors.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/errors.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.WaitQueueTimeoutError = exports.PoolClearedOnNetworkError = exports.PoolClearedError = exports.PoolClosedError = void 0;
@@ -20720,9 +20720,9 @@ var require_errors2 = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/connection_pool.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/connection_pool.js
 var require_connection_pool = __commonJS({
-  "node_modules/mongodb/lib/cmap/connection_pool.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/connection_pool.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ConnectionPool = exports.PoolState = void 0;
@@ -21159,9 +21159,9 @@ var require_connection_pool = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sdam/server.js
+// node_modules/mongoose/node_modules/mongodb/lib/sdam/server.js
 var require_server = __commonJS({
-  "node_modules/mongodb/lib/sdam/server.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sdam/server.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Server = void 0;
@@ -21446,9 +21446,9 @@ var require_server = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sdam/monitor.js
+// node_modules/mongoose/node_modules/mongodb/lib/sdam/monitor.js
 var require_monitor = __commonJS({
-  "node_modules/mongodb/lib/sdam/monitor.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sdam/monitor.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.RTTSampler = exports.MonitorInterval = exports.RTTPinger = exports.Monitor = exports.ServerMonitoringMode = void 0;
@@ -21919,9 +21919,9 @@ var require_monitor = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/connection_string.js
+// node_modules/mongoose/node_modules/mongodb/lib/connection_string.js
 var require_connection_string = __commonJS({
-  "node_modules/mongodb/lib/connection_string.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/connection_string.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.FEATURE_FLAGS = exports.DEFAULT_OPTIONS = exports.OPTIONS = exports.parseOptions = exports.resolveSRVRecord = void 0;
@@ -22925,9 +22925,9 @@ var require_connection_string = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongocr.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongocr.js
 var require_mongocr = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongocr.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongocr.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MongoCR = void 0;
@@ -22958,9 +22958,9 @@ var require_mongocr = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_aws.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_aws.js
 var require_mongodb_aws = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_aws.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_aws.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MongoDBAWS = void 0;
@@ -23084,9 +23084,9 @@ var require_mongodb_aws = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/command_builders.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/command_builders.js
 var require_command_builders = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/command_builders.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/command_builders.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.startCommandDocument = exports.finishCommandDocument = void 0;
@@ -23123,9 +23123,9 @@ var require_command_builders = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/machine_workflow.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/machine_workflow.js
 var require_machine_workflow = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/machine_workflow.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/machine_workflow.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MachineWorkflow = void 0;
@@ -23194,9 +23194,9 @@ var require_machine_workflow = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/azure_machine_workflow.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/azure_machine_workflow.js
 var require_azure_machine_workflow = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/azure_machine_workflow.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/azure_machine_workflow.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.AzureMachineWorkflow = void 0;
@@ -23248,9 +23248,9 @@ var require_azure_machine_workflow = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/gcp_machine_workflow.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/gcp_machine_workflow.js
 var require_gcp_machine_workflow = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/gcp_machine_workflow.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/gcp_machine_workflow.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.GCPMachineWorkflow = void 0;
@@ -23287,9 +23287,9 @@ var require_gcp_machine_workflow = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_cache.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_cache.js
 var require_token_cache = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_cache.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_cache.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.TokenCache = void 0;
@@ -23343,9 +23343,9 @@ var require_token_cache = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_machine_workflow.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_machine_workflow.js
 var require_token_machine_workflow = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_machine_workflow.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_machine_workflow.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.TokenMachineWorkflow = void 0;
@@ -23370,9 +23370,9 @@ var require_token_machine_workflow = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_oidc.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc.js
 var require_mongodb_oidc = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MongoDBOIDC = exports.OIDC_WORKFLOWS = exports.OIDC_VERSION = void 0;
@@ -23426,9 +23426,9 @@ var require_mongodb_oidc = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/callback_workflow.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/callback_workflow.js
 var require_callback_workflow = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/callback_workflow.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/callback_workflow.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CallbackWorkflow = exports.AUTOMATED_TIMEOUT_MS = exports.HUMAN_TIMEOUT_MS = void 0;
@@ -23514,9 +23514,9 @@ var require_callback_workflow = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/automated_callback_workflow.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/automated_callback_workflow.js
 var require_automated_callback_workflow = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/automated_callback_workflow.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/automated_callback_workflow.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.AutomatedCallbackWorkflow = void 0;
@@ -23574,9 +23574,9 @@ var require_automated_callback_workflow = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/human_callback_workflow.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/human_callback_workflow.js
 var require_human_callback_workflow = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/human_callback_workflow.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/mongodb_oidc/human_callback_workflow.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.HumanCallbackWorkflow = void 0;
@@ -23661,9 +23661,9 @@ var require_human_callback_workflow = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/plain.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/plain.js
 var require_plain = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/plain.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/plain.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Plain = void 0;
@@ -24058,9 +24058,9 @@ var require_node = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/scram.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/scram.js
 var require_scram = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/scram.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/scram.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ScramSHA256 = exports.ScramSHA1 = void 0;
@@ -24299,9 +24299,9 @@ var require_scram = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/cmap/auth/x509.js
+// node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/x509.js
 var require_x509 = __commonJS({
-  "node_modules/mongodb/lib/cmap/auth/x509.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/cmap/auth/x509.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.X509 = void 0;
@@ -24340,9 +24340,9 @@ var require_x509 = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/mongo_client_auth_providers.js
+// node_modules/mongoose/node_modules/mongodb/lib/mongo_client_auth_providers.js
 var require_mongo_client_auth_providers = __commonJS({
-  "node_modules/mongodb/lib/mongo_client_auth_providers.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/mongo_client_auth_providers.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MongoClientAuthProviders = void 0;
@@ -24409,9 +24409,9 @@ var require_mongo_client_auth_providers = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sdam/server_selection_events.js
+// node_modules/mongoose/node_modules/mongodb/lib/sdam/server_selection_events.js
 var require_server_selection_events = __commonJS({
-  "node_modules/mongodb/lib/sdam/server_selection_events.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sdam/server_selection_events.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.WaitingForSuitableServerEvent = exports.ServerSelectionSucceededEvent = exports.ServerSelectionFailedEvent = exports.ServerSelectionStartedEvent = exports.ServerSelectionEvent = void 0;
@@ -24465,9 +24465,9 @@ var require_server_selection_events = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sdam/srv_polling.js
+// node_modules/mongoose/node_modules/mongodb/lib/sdam/srv_polling.js
 var require_srv_polling = __commonJS({
-  "node_modules/mongodb/lib/sdam/srv_polling.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sdam/srv_polling.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.SrvPoller = exports.SrvPollingEvent = void 0;
@@ -24565,9 +24565,9 @@ var require_srv_polling = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/sdam/topology.js
+// node_modules/mongoose/node_modules/mongodb/lib/sdam/topology.js
 var require_topology = __commonJS({
-  "node_modules/mongodb/lib/sdam/topology.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/sdam/topology.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ServerCapabilities = exports.Topology = void 0;
@@ -25111,9 +25111,9 @@ var require_topology = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/mongo_client.js
+// node_modules/mongoose/node_modules/mongodb/lib/mongo_client.js
 var require_mongo_client = __commonJS({
-  "node_modules/mongodb/lib/mongo_client.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/mongo_client.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MongoClient = exports.ServerApiVersion = void 0;
@@ -25370,9 +25370,9 @@ var require_mongo_client = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/change_stream.js
+// node_modules/mongoose/node_modules/mongodb/lib/change_stream.js
 var require_change_stream = __commonJS({
-  "node_modules/mongodb/lib/change_stream.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/change_stream.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ChangeStream = void 0;
@@ -25667,9 +25667,9 @@ var require_change_stream = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/gridfs/download.js
+// node_modules/mongoose/node_modules/mongodb/lib/gridfs/download.js
 var require_download = __commonJS({
-  "node_modules/mongodb/lib/gridfs/download.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/gridfs/download.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.GridFSBucketReadStream = void 0;
@@ -25894,9 +25894,9 @@ var require_download = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/gridfs/upload.js
+// node_modules/mongoose/node_modules/mongodb/lib/gridfs/upload.js
 var require_upload = __commonJS({
-  "node_modules/mongodb/lib/gridfs/upload.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/gridfs/upload.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.GridFSBucketWriteStream = void 0;
@@ -26143,9 +26143,9 @@ var require_upload = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/gridfs/index.js
+// node_modules/mongoose/node_modules/mongodb/lib/gridfs/index.js
 var require_gridfs = __commonJS({
-  "node_modules/mongodb/lib/gridfs/index.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/gridfs/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.GridFSBucket = void 0;
@@ -26226,9 +26226,9 @@ var require_gridfs = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/client-side-encryption/client_encryption.js
+// node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/client_encryption.js
 var require_client_encryption = __commonJS({
-  "node_modules/mongodb/lib/client-side-encryption/client_encryption.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/client-side-encryption/client_encryption.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ClientEncryption = void 0;
@@ -26473,9 +26473,9 @@ var require_client_encryption = __commonJS({
   }
 });
 
-// node_modules/mongodb/lib/index.js
+// node_modules/mongoose/node_modules/mongodb/lib/index.js
 var require_lib3 = __commonJS({
-  "node_modules/mongodb/lib/index.js"(exports) {
+  "node_modules/mongoose/node_modules/mongodb/lib/index.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.MongoTopologyClosedError = exports.MongoTailableCursorError = exports.MongoSystemError = exports.MongoServerSelectionError = exports.MongoServerError = exports.MongoServerClosedError = exports.MongoRuntimeError = exports.MongoParseError = exports.MongoOIDCError = exports.MongoNotConnectedError = exports.MongoNetworkTimeoutError = exports.MongoNetworkError = exports.MongoMissingDependencyError = exports.MongoMissingCredentialsError = exports.MongoKerberosError = exports.MongoInvalidArgumentError = exports.MongoGridFSStreamError = exports.MongoGridFSChunkError = exports.MongoGCPError = exports.MongoExpiredSessionError = exports.MongoError = exports.MongoDriverError = exports.MongoDecompressionError = exports.MongoCursorInUseError = exports.MongoCursorExhaustedError = exports.MongoCompatibilityError = exports.MongoChangeStreamError = exports.MongoBatchReExecutionError = exports.MongoAzureError = exports.MongoAWSError = exports.MongoAPIError = exports.ChangeStreamCursor = exports.ClientEncryption = exports.MongoBulkWriteError = exports.UUID = exports.Timestamp = exports.ObjectId = exports.MinKey = exports.MaxKey = exports.Long = exports.Int32 = exports.Double = exports.Decimal128 = exports.DBRef = exports.Code = exports.BSONType = exports.BSONSymbol = exports.BSONRegExp = exports.Binary = exports.BSON = void 0;
@@ -26935,22 +26935,22 @@ var require_symbols = __commonJS({
 var require_objectid = __commonJS({
   "node_modules/mongoose/lib/types/objectid.js"(exports, module2) {
     "use strict";
-    var ObjectId2 = require_bson().ObjectId;
+    var ObjectId3 = require_bson().ObjectId;
     var objectIdSymbol = require_symbols().objectIdSymbol;
-    Object.defineProperty(ObjectId2.prototype, "_id", {
+    Object.defineProperty(ObjectId3.prototype, "_id", {
       enumerable: false,
       configurable: true,
       get: function() {
         return this;
       }
     });
-    if (!ObjectId2.prototype.hasOwnProperty("valueOf")) {
-      ObjectId2.prototype.valueOf = function objectIdValueOf() {
+    if (!ObjectId3.prototype.hasOwnProperty("valueOf")) {
+      ObjectId3.prototype.valueOf = function objectIdValueOf() {
         return this.toString();
       };
     }
-    ObjectId2.prototype[objectIdSymbol] = true;
-    module2.exports = ObjectId2;
+    ObjectId3.prototype[objectIdSymbol] = true;
+    module2.exports = ObjectId3;
   }
 });
 
@@ -27091,7 +27091,7 @@ var require_clone = __commonJS({
   "node_modules/mongoose/lib/helpers/clone.js"(exports, module2) {
     "use strict";
     var Decimal = require_decimal128();
-    var ObjectId2 = require_objectid();
+    var ObjectId3 = require_objectid();
     var specialProperties = require_specialProperties();
     var isMongooseObject = require_isMongooseObject();
     var getFunctionName = require_getFunctionName();
@@ -27160,7 +27160,7 @@ var require_clone = __commonJS({
         if (options && options.flattenObjectIds) {
           return obj.toJSON();
         }
-        return new ObjectId2(obj.id);
+        return new ObjectId3(obj.id);
       }
       if (isBsonType(obj, "Decimal128")) {
         if (options && options.flattenDecimals) {
@@ -27240,7 +27240,7 @@ var require_collection3 = __commonJS({
     var MongooseCollection = require_collection();
     var MongooseError = require_mongooseError();
     var Collection = require_lib3().Collection;
-    var ObjectId2 = require_objectid();
+    var ObjectId3 = require_objectid();
     var getConstructorName = require_getConstructorName();
     var internalToObjectOptions = require_options().internalToObjectOptions;
     var stream = require("stream");
@@ -27282,7 +27282,7 @@ var require_collection3 = __commonJS({
         const connectionDebug = _this && _this.conn && _this.conn.options && _this.conn.options.debug;
         const debug = connectionDebug == null ? globalDebug : connectionDebug;
         const lastArg = arguments[arguments.length - 1];
-        const opId = new ObjectId2();
+        const opId = new ObjectId3();
         if (this.conn.$wasForceClosed) {
           const error = new MongooseError("Connection was force closed");
           if (args.length > 0 && typeof args[args.length - 1] === "function") {
@@ -31920,7 +31920,7 @@ var require_objectid2 = __commonJS({
   "node_modules/mongoose/lib/cast/objectid.js"(exports, module2) {
     "use strict";
     var isBsonType = require_isBsonType();
-    var ObjectId2 = require_objectid();
+    var ObjectId3 = require_objectid();
     module2.exports = function castObjectId(value) {
       if (value == null) {
         return value;
@@ -31933,13 +31933,13 @@ var require_objectid2 = __commonJS({
           return value._id;
         }
         if (value._id.toString instanceof Function) {
-          return new ObjectId2(value._id.toString());
+          return new ObjectId3(value._id.toString());
         }
       }
       if (value.toString instanceof Function) {
-        return new ObjectId2(value.toString());
+        return new ObjectId3(value.toString());
       }
-      return new ObjectId2(value);
+      return new ObjectId3(value);
     };
   }
 });
@@ -35235,7 +35235,7 @@ var require_utils3 = __commonJS({
     var UUID = require_bson().UUID;
     var ms = require_ms();
     var mpath = require_mpath();
-    var ObjectId2 = require_objectid();
+    var ObjectId3 = require_objectid();
     var PopulateOptions = require_populateOptions();
     var clone = require_clone();
     var immediate = require_immediate();
@@ -35418,7 +35418,7 @@ var require_utils3 = __commonJS({
               }
               continue;
             } else if (isBsonType(from[key], "ObjectId")) {
-              to[key] = new ObjectId2(from[key]);
+              to[key] = new ObjectId3(from[key]);
               continue;
             }
           }
@@ -40292,7 +40292,7 @@ var require_mergeDiscriminatorSchema = __commonJS({
     var schemaMerge = require_merge();
     var specialProperties = require_specialProperties();
     var isBsonType = require_isBsonType();
-    var ObjectId2 = require_objectid();
+    var ObjectId3 = require_objectid();
     var isObject = require_isObject();
     module2.exports = function mergeDiscriminatorSchema(to, from, path, seen) {
       const keys = Object.keys(from);
@@ -40335,7 +40335,7 @@ var require_mergeDiscriminatorSchema = __commonJS({
               }
               continue;
             } else if (isBsonType(from[key], "ObjectId")) {
-              to[key] = new ObjectId2(from[key]);
+              to[key] = new ObjectId3(from[key]);
               continue;
             }
           }
@@ -56982,7 +56982,7 @@ var require_browserDocument = __commonJS({
     var EventEmitter = require("events").EventEmitter;
     var MongooseError = require_error2();
     var Schema2 = require_schema2();
-    var ObjectId2 = require_objectid();
+    var ObjectId3 = require_objectid();
     var ValidationError = MongooseError.ValidationError;
     var applyHooks = require_applyHooks();
     var isObject = require_isObject();
@@ -56997,7 +56997,7 @@ var require_browserDocument = __commonJS({
       if (!this.schema && schema.options._id) {
         obj = obj || {};
         if (obj._id === void 0) {
-          obj._id = new ObjectId2();
+          obj._id = new ObjectId3();
         }
       }
       if (!schema) {
@@ -57538,6 +57538,18430 @@ var require_mongoose2 = __commonJS({
     module2.exports.trusted = mongoose3.trusted;
     module2.exports.skipMiddlewareFunction = mongoose3.skipMiddlewareFunction;
     module2.exports.overwriteMiddlewareResult = mongoose3.overwriteMiddlewareResult;
+  }
+});
+
+// node_modules/mongodb/lib/bson.js
+var require_bson3 = __commonJS({
+  "node_modules/mongodb/lib/bson.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.resolveBSONOptions = exports.pluckBSONSerializeOptions = exports.toUTF8 = exports.getBigInt64LE = exports.getFloat64LE = exports.getInt32LE = exports.parseToElementsToArray = exports.UUID = exports.Timestamp = exports.serialize = exports.ObjectId = exports.MinKey = exports.MaxKey = exports.Long = exports.Int32 = exports.EJSON = exports.Double = exports.deserialize = exports.Decimal128 = exports.DBRef = exports.Code = exports.calculateObjectSize = exports.BSONType = exports.BSONSymbol = exports.BSONRegExp = exports.BSONError = exports.BSON = exports.Binary = void 0;
+    var bson_1 = require_bson();
+    var bson_2 = require_bson();
+    Object.defineProperty(exports, "Binary", { enumerable: true, get: function() {
+      return bson_2.Binary;
+    } });
+    Object.defineProperty(exports, "BSON", { enumerable: true, get: function() {
+      return bson_2.BSON;
+    } });
+    Object.defineProperty(exports, "BSONError", { enumerable: true, get: function() {
+      return bson_2.BSONError;
+    } });
+    Object.defineProperty(exports, "BSONRegExp", { enumerable: true, get: function() {
+      return bson_2.BSONRegExp;
+    } });
+    Object.defineProperty(exports, "BSONSymbol", { enumerable: true, get: function() {
+      return bson_2.BSONSymbol;
+    } });
+    Object.defineProperty(exports, "BSONType", { enumerable: true, get: function() {
+      return bson_2.BSONType;
+    } });
+    Object.defineProperty(exports, "calculateObjectSize", { enumerable: true, get: function() {
+      return bson_2.calculateObjectSize;
+    } });
+    Object.defineProperty(exports, "Code", { enumerable: true, get: function() {
+      return bson_2.Code;
+    } });
+    Object.defineProperty(exports, "DBRef", { enumerable: true, get: function() {
+      return bson_2.DBRef;
+    } });
+    Object.defineProperty(exports, "Decimal128", { enumerable: true, get: function() {
+      return bson_2.Decimal128;
+    } });
+    Object.defineProperty(exports, "deserialize", { enumerable: true, get: function() {
+      return bson_2.deserialize;
+    } });
+    Object.defineProperty(exports, "Double", { enumerable: true, get: function() {
+      return bson_2.Double;
+    } });
+    Object.defineProperty(exports, "EJSON", { enumerable: true, get: function() {
+      return bson_2.EJSON;
+    } });
+    Object.defineProperty(exports, "Int32", { enumerable: true, get: function() {
+      return bson_2.Int32;
+    } });
+    Object.defineProperty(exports, "Long", { enumerable: true, get: function() {
+      return bson_2.Long;
+    } });
+    Object.defineProperty(exports, "MaxKey", { enumerable: true, get: function() {
+      return bson_2.MaxKey;
+    } });
+    Object.defineProperty(exports, "MinKey", { enumerable: true, get: function() {
+      return bson_2.MinKey;
+    } });
+    Object.defineProperty(exports, "ObjectId", { enumerable: true, get: function() {
+      return bson_2.ObjectId;
+    } });
+    Object.defineProperty(exports, "serialize", { enumerable: true, get: function() {
+      return bson_2.serialize;
+    } });
+    Object.defineProperty(exports, "Timestamp", { enumerable: true, get: function() {
+      return bson_2.Timestamp;
+    } });
+    Object.defineProperty(exports, "UUID", { enumerable: true, get: function() {
+      return bson_2.UUID;
+    } });
+    function parseToElementsToArray(bytes, offset) {
+      const res = bson_1.BSON.onDemand.parseToElements(bytes, offset);
+      return Array.isArray(res) ? res : [...res];
+    }
+    exports.parseToElementsToArray = parseToElementsToArray;
+    exports.getInt32LE = bson_1.BSON.onDemand.NumberUtils.getInt32LE;
+    exports.getFloat64LE = bson_1.BSON.onDemand.NumberUtils.getFloat64LE;
+    exports.getBigInt64LE = bson_1.BSON.onDemand.NumberUtils.getBigInt64LE;
+    exports.toUTF8 = bson_1.BSON.onDemand.ByteUtils.toUTF8;
+    function pluckBSONSerializeOptions(options) {
+      const { fieldsAsRaw, useBigInt64, promoteValues, promoteBuffers, promoteLongs, serializeFunctions, ignoreUndefined, bsonRegExp, raw, enableUtf8Validation } = options;
+      return {
+        fieldsAsRaw,
+        useBigInt64,
+        promoteValues,
+        promoteBuffers,
+        promoteLongs,
+        serializeFunctions,
+        ignoreUndefined,
+        bsonRegExp,
+        raw,
+        enableUtf8Validation
+      };
+    }
+    exports.pluckBSONSerializeOptions = pluckBSONSerializeOptions;
+    function resolveBSONOptions(options, parent) {
+      const parentOptions = parent?.bsonOptions;
+      return {
+        raw: options?.raw ?? parentOptions?.raw ?? false,
+        useBigInt64: options?.useBigInt64 ?? parentOptions?.useBigInt64 ?? false,
+        promoteLongs: options?.promoteLongs ?? parentOptions?.promoteLongs ?? true,
+        promoteValues: options?.promoteValues ?? parentOptions?.promoteValues ?? true,
+        promoteBuffers: options?.promoteBuffers ?? parentOptions?.promoteBuffers ?? false,
+        ignoreUndefined: options?.ignoreUndefined ?? parentOptions?.ignoreUndefined ?? false,
+        bsonRegExp: options?.bsonRegExp ?? parentOptions?.bsonRegExp ?? false,
+        serializeFunctions: options?.serializeFunctions ?? parentOptions?.serializeFunctions ?? false,
+        fieldsAsRaw: options?.fieldsAsRaw ?? parentOptions?.fieldsAsRaw ?? {},
+        enableUtf8Validation: options?.enableUtf8Validation ?? parentOptions?.enableUtf8Validation ?? true
+      };
+    }
+    exports.resolveBSONOptions = resolveBSONOptions;
+  }
+});
+
+// node_modules/mongodb/lib/error.js
+var require_error3 = __commonJS({
+  "node_modules/mongodb/lib/error.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.isResumableError = exports.isNetworkTimeoutError = exports.isSDAMUnrecoverableError = exports.isNodeShuttingDownError = exports.isRetryableReadError = exports.isRetryableWriteError = exports.needsRetryableWriteLabel = exports.MongoWriteConcernError = exports.MongoServerSelectionError = exports.MongoSystemError = exports.MongoMissingDependencyError = exports.MongoMissingCredentialsError = exports.MongoCompatibilityError = exports.MongoInvalidArgumentError = exports.MongoParseError = exports.MongoNetworkTimeoutError = exports.MongoNetworkError = exports.isNetworkErrorBeforeHandshake = exports.MongoTopologyClosedError = exports.MongoCursorExhaustedError = exports.MongoServerClosedError = exports.MongoCursorInUseError = exports.MongoUnexpectedServerResponseError = exports.MongoGridFSChunkError = exports.MongoGridFSStreamError = exports.MongoTailableCursorError = exports.MongoChangeStreamError = exports.MongoGCPError = exports.MongoAzureError = exports.MongoOIDCError = exports.MongoAWSError = exports.MongoKerberosError = exports.MongoExpiredSessionError = exports.MongoTransactionError = exports.MongoNotConnectedError = exports.MongoDecompressionError = exports.MongoBatchReExecutionError = exports.MongoRuntimeError = exports.MongoAPIError = exports.MongoDriverError = exports.MongoServerError = exports.MongoError = exports.MongoErrorLabel = exports.GET_MORE_RESUMABLE_CODES = exports.MONGODB_ERROR_CODES = exports.NODE_IS_RECOVERING_ERROR_MESSAGE = exports.LEGACY_NOT_PRIMARY_OR_SECONDARY_ERROR_MESSAGE = exports.LEGACY_NOT_WRITABLE_PRIMARY_ERROR_MESSAGE = void 0;
+    var kErrorLabels = Symbol("errorLabels");
+    exports.LEGACY_NOT_WRITABLE_PRIMARY_ERROR_MESSAGE = new RegExp("not master", "i");
+    exports.LEGACY_NOT_PRIMARY_OR_SECONDARY_ERROR_MESSAGE = new RegExp("not master or secondary", "i");
+    exports.NODE_IS_RECOVERING_ERROR_MESSAGE = new RegExp("node is recovering", "i");
+    exports.MONGODB_ERROR_CODES = Object.freeze({
+      HostUnreachable: 6,
+      HostNotFound: 7,
+      AuthenticationFailed: 18,
+      NetworkTimeout: 89,
+      ShutdownInProgress: 91,
+      PrimarySteppedDown: 189,
+      ExceededTimeLimit: 262,
+      SocketException: 9001,
+      NotWritablePrimary: 10107,
+      InterruptedAtShutdown: 11600,
+      InterruptedDueToReplStateChange: 11602,
+      NotPrimaryNoSecondaryOk: 13435,
+      NotPrimaryOrSecondary: 13436,
+      StaleShardVersion: 63,
+      StaleEpoch: 150,
+      StaleConfig: 13388,
+      RetryChangeStream: 234,
+      FailedToSatisfyReadPreference: 133,
+      CursorNotFound: 43,
+      LegacyNotPrimary: 10058,
+      WriteConcernFailed: 64,
+      NamespaceNotFound: 26,
+      IllegalOperation: 20,
+      MaxTimeMSExpired: 50,
+      UnknownReplWriteConcern: 79,
+      UnsatisfiableWriteConcern: 100,
+      Reauthenticate: 391,
+      ReadConcernMajorityNotAvailableYet: 134
+    });
+    exports.GET_MORE_RESUMABLE_CODES = /* @__PURE__ */ new Set([
+      exports.MONGODB_ERROR_CODES.HostUnreachable,
+      exports.MONGODB_ERROR_CODES.HostNotFound,
+      exports.MONGODB_ERROR_CODES.NetworkTimeout,
+      exports.MONGODB_ERROR_CODES.ShutdownInProgress,
+      exports.MONGODB_ERROR_CODES.PrimarySteppedDown,
+      exports.MONGODB_ERROR_CODES.ExceededTimeLimit,
+      exports.MONGODB_ERROR_CODES.SocketException,
+      exports.MONGODB_ERROR_CODES.NotWritablePrimary,
+      exports.MONGODB_ERROR_CODES.InterruptedAtShutdown,
+      exports.MONGODB_ERROR_CODES.InterruptedDueToReplStateChange,
+      exports.MONGODB_ERROR_CODES.NotPrimaryNoSecondaryOk,
+      exports.MONGODB_ERROR_CODES.NotPrimaryOrSecondary,
+      exports.MONGODB_ERROR_CODES.StaleShardVersion,
+      exports.MONGODB_ERROR_CODES.StaleEpoch,
+      exports.MONGODB_ERROR_CODES.StaleConfig,
+      exports.MONGODB_ERROR_CODES.RetryChangeStream,
+      exports.MONGODB_ERROR_CODES.FailedToSatisfyReadPreference,
+      exports.MONGODB_ERROR_CODES.CursorNotFound
+    ]);
+    exports.MongoErrorLabel = Object.freeze({
+      RetryableWriteError: "RetryableWriteError",
+      TransientTransactionError: "TransientTransactionError",
+      UnknownTransactionCommitResult: "UnknownTransactionCommitResult",
+      ResumableChangeStreamError: "ResumableChangeStreamError",
+      HandshakeError: "HandshakeError",
+      ResetPool: "ResetPool",
+      PoolRequstedRetry: "PoolRequstedRetry",
+      InterruptInUseConnections: "InterruptInUseConnections",
+      NoWritesPerformed: "NoWritesPerformed"
+    });
+    function isAggregateError(e) {
+      return e != null && typeof e === "object" && "errors" in e && Array.isArray(e.errors);
+    }
+    var MongoError = class extends Error {
+      constructor(message, options) {
+        super(message, options);
+        this[kErrorLabels] = /* @__PURE__ */ new Set();
+      }
+      static buildErrorMessage(e) {
+        if (typeof e === "string") {
+          return e;
+        }
+        if (isAggregateError(e) && e.message.length === 0) {
+          return e.errors.length === 0 ? "AggregateError has an empty errors array. Please check the `cause` property for more information." : e.errors.map(({ message }) => message).join(", ");
+        }
+        return e != null && typeof e === "object" && "message" in e && typeof e.message === "string" ? e.message : "empty error message";
+      }
+      get name() {
+        return "MongoError";
+      }
+      get errmsg() {
+        return this.message;
+      }
+      hasErrorLabel(label) {
+        return this[kErrorLabels].has(label);
+      }
+      addErrorLabel(label) {
+        this[kErrorLabels].add(label);
+      }
+      get errorLabels() {
+        return Array.from(this[kErrorLabels]);
+      }
+    };
+    exports.MongoError = MongoError;
+    var MongoServerError = class extends MongoError {
+      constructor(message) {
+        super(message.message || message.errmsg || message.$err || "n/a");
+        if (message.errorLabels) {
+          this[kErrorLabels] = new Set(message.errorLabels);
+        }
+        this.errorResponse = message;
+        for (const name in message) {
+          if (name !== "errorLabels" && name !== "errmsg" && name !== "message" && name !== "errorResponse") {
+            this[name] = message[name];
+          }
+        }
+      }
+      get name() {
+        return "MongoServerError";
+      }
+    };
+    exports.MongoServerError = MongoServerError;
+    var MongoDriverError = class extends MongoError {
+      constructor(message, options) {
+        super(message, options);
+      }
+      get name() {
+        return "MongoDriverError";
+      }
+    };
+    exports.MongoDriverError = MongoDriverError;
+    var MongoAPIError = class extends MongoDriverError {
+      constructor(message, options) {
+        super(message, options);
+      }
+      get name() {
+        return "MongoAPIError";
+      }
+    };
+    exports.MongoAPIError = MongoAPIError;
+    var MongoRuntimeError = class extends MongoDriverError {
+      constructor(message, options) {
+        super(message, options);
+      }
+      get name() {
+        return "MongoRuntimeError";
+      }
+    };
+    exports.MongoRuntimeError = MongoRuntimeError;
+    var MongoBatchReExecutionError = class extends MongoAPIError {
+      constructor(message = "This batch has already been executed, create new batch to execute") {
+        super(message);
+      }
+      get name() {
+        return "MongoBatchReExecutionError";
+      }
+    };
+    exports.MongoBatchReExecutionError = MongoBatchReExecutionError;
+    var MongoDecompressionError = class extends MongoRuntimeError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoDecompressionError";
+      }
+    };
+    exports.MongoDecompressionError = MongoDecompressionError;
+    var MongoNotConnectedError = class extends MongoAPIError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoNotConnectedError";
+      }
+    };
+    exports.MongoNotConnectedError = MongoNotConnectedError;
+    var MongoTransactionError = class extends MongoAPIError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoTransactionError";
+      }
+    };
+    exports.MongoTransactionError = MongoTransactionError;
+    var MongoExpiredSessionError = class extends MongoAPIError {
+      constructor(message = "Cannot use a session that has ended") {
+        super(message);
+      }
+      get name() {
+        return "MongoExpiredSessionError";
+      }
+    };
+    exports.MongoExpiredSessionError = MongoExpiredSessionError;
+    var MongoKerberosError = class extends MongoRuntimeError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoKerberosError";
+      }
+    };
+    exports.MongoKerberosError = MongoKerberosError;
+    var MongoAWSError = class extends MongoRuntimeError {
+      constructor(message, options) {
+        super(message, options);
+      }
+      get name() {
+        return "MongoAWSError";
+      }
+    };
+    exports.MongoAWSError = MongoAWSError;
+    var MongoOIDCError = class extends MongoRuntimeError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoOIDCError";
+      }
+    };
+    exports.MongoOIDCError = MongoOIDCError;
+    var MongoAzureError = class extends MongoOIDCError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoAzureError";
+      }
+    };
+    exports.MongoAzureError = MongoAzureError;
+    var MongoGCPError = class extends MongoOIDCError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoGCPError";
+      }
+    };
+    exports.MongoGCPError = MongoGCPError;
+    var MongoChangeStreamError = class extends MongoRuntimeError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoChangeStreamError";
+      }
+    };
+    exports.MongoChangeStreamError = MongoChangeStreamError;
+    var MongoTailableCursorError = class extends MongoAPIError {
+      constructor(message = "Tailable cursor does not support this operation") {
+        super(message);
+      }
+      get name() {
+        return "MongoTailableCursorError";
+      }
+    };
+    exports.MongoTailableCursorError = MongoTailableCursorError;
+    var MongoGridFSStreamError = class extends MongoRuntimeError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoGridFSStreamError";
+      }
+    };
+    exports.MongoGridFSStreamError = MongoGridFSStreamError;
+    var MongoGridFSChunkError = class extends MongoRuntimeError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoGridFSChunkError";
+      }
+    };
+    exports.MongoGridFSChunkError = MongoGridFSChunkError;
+    var MongoUnexpectedServerResponseError = class extends MongoRuntimeError {
+      constructor(message, options) {
+        super(message, options);
+      }
+      get name() {
+        return "MongoUnexpectedServerResponseError";
+      }
+    };
+    exports.MongoUnexpectedServerResponseError = MongoUnexpectedServerResponseError;
+    var MongoCursorInUseError = class extends MongoAPIError {
+      constructor(message = "Cursor is already initialized") {
+        super(message);
+      }
+      get name() {
+        return "MongoCursorInUseError";
+      }
+    };
+    exports.MongoCursorInUseError = MongoCursorInUseError;
+    var MongoServerClosedError = class extends MongoAPIError {
+      constructor(message = "Server is closed") {
+        super(message);
+      }
+      get name() {
+        return "MongoServerClosedError";
+      }
+    };
+    exports.MongoServerClosedError = MongoServerClosedError;
+    var MongoCursorExhaustedError = class extends MongoAPIError {
+      constructor(message) {
+        super(message || "Cursor is exhausted");
+      }
+      get name() {
+        return "MongoCursorExhaustedError";
+      }
+    };
+    exports.MongoCursorExhaustedError = MongoCursorExhaustedError;
+    var MongoTopologyClosedError = class extends MongoAPIError {
+      constructor(message = "Topology is closed") {
+        super(message);
+      }
+      get name() {
+        return "MongoTopologyClosedError";
+      }
+    };
+    exports.MongoTopologyClosedError = MongoTopologyClosedError;
+    var kBeforeHandshake = Symbol("beforeHandshake");
+    function isNetworkErrorBeforeHandshake(err) {
+      return err[kBeforeHandshake] === true;
+    }
+    exports.isNetworkErrorBeforeHandshake = isNetworkErrorBeforeHandshake;
+    var MongoNetworkError = class extends MongoError {
+      constructor(message, options) {
+        super(message, { cause: options?.cause });
+        if (options && typeof options.beforeHandshake === "boolean") {
+          this[kBeforeHandshake] = options.beforeHandshake;
+        }
+      }
+      get name() {
+        return "MongoNetworkError";
+      }
+    };
+    exports.MongoNetworkError = MongoNetworkError;
+    var MongoNetworkTimeoutError = class extends MongoNetworkError {
+      constructor(message, options) {
+        super(message, options);
+      }
+      get name() {
+        return "MongoNetworkTimeoutError";
+      }
+    };
+    exports.MongoNetworkTimeoutError = MongoNetworkTimeoutError;
+    var MongoParseError = class extends MongoDriverError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoParseError";
+      }
+    };
+    exports.MongoParseError = MongoParseError;
+    var MongoInvalidArgumentError = class extends MongoAPIError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoInvalidArgumentError";
+      }
+    };
+    exports.MongoInvalidArgumentError = MongoInvalidArgumentError;
+    var MongoCompatibilityError = class extends MongoAPIError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoCompatibilityError";
+      }
+    };
+    exports.MongoCompatibilityError = MongoCompatibilityError;
+    var MongoMissingCredentialsError = class extends MongoAPIError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoMissingCredentialsError";
+      }
+    };
+    exports.MongoMissingCredentialsError = MongoMissingCredentialsError;
+    var MongoMissingDependencyError = class extends MongoAPIError {
+      constructor(message, options) {
+        super(message, options);
+        this.dependencyName = options.dependencyName;
+      }
+      get name() {
+        return "MongoMissingDependencyError";
+      }
+    };
+    exports.MongoMissingDependencyError = MongoMissingDependencyError;
+    var MongoSystemError = class extends MongoError {
+      constructor(message, reason) {
+        if (reason && reason.error) {
+          super(MongoError.buildErrorMessage(reason.error.message || reason.error), {
+            cause: reason.error
+          });
+        } else {
+          super(message);
+        }
+        if (reason) {
+          this.reason = reason;
+        }
+        this.code = reason.error?.code;
+      }
+      get name() {
+        return "MongoSystemError";
+      }
+    };
+    exports.MongoSystemError = MongoSystemError;
+    var MongoServerSelectionError = class extends MongoSystemError {
+      constructor(message, reason) {
+        super(message, reason);
+      }
+      get name() {
+        return "MongoServerSelectionError";
+      }
+    };
+    exports.MongoServerSelectionError = MongoServerSelectionError;
+    var MongoWriteConcernError = class extends MongoServerError {
+      constructor(result) {
+        super({ ...result, ...result.writeConcernError });
+        this.errInfo = result.writeConcernError.errInfo;
+        this.result = result;
+      }
+      get name() {
+        return "MongoWriteConcernError";
+      }
+    };
+    exports.MongoWriteConcernError = MongoWriteConcernError;
+    var RETRYABLE_READ_ERROR_CODES = /* @__PURE__ */ new Set([
+      exports.MONGODB_ERROR_CODES.HostUnreachable,
+      exports.MONGODB_ERROR_CODES.HostNotFound,
+      exports.MONGODB_ERROR_CODES.NetworkTimeout,
+      exports.MONGODB_ERROR_CODES.ShutdownInProgress,
+      exports.MONGODB_ERROR_CODES.PrimarySteppedDown,
+      exports.MONGODB_ERROR_CODES.SocketException,
+      exports.MONGODB_ERROR_CODES.NotWritablePrimary,
+      exports.MONGODB_ERROR_CODES.InterruptedAtShutdown,
+      exports.MONGODB_ERROR_CODES.InterruptedDueToReplStateChange,
+      exports.MONGODB_ERROR_CODES.NotPrimaryNoSecondaryOk,
+      exports.MONGODB_ERROR_CODES.NotPrimaryOrSecondary,
+      exports.MONGODB_ERROR_CODES.ExceededTimeLimit,
+      exports.MONGODB_ERROR_CODES.ReadConcernMajorityNotAvailableYet
+    ]);
+    var RETRYABLE_WRITE_ERROR_CODES = RETRYABLE_READ_ERROR_CODES;
+    function needsRetryableWriteLabel(error, maxWireVersion) {
+      if (error instanceof MongoNetworkError) {
+        return true;
+      }
+      if (error instanceof MongoError) {
+        if ((maxWireVersion >= 9 || isRetryableWriteError(error)) && !error.hasErrorLabel(exports.MongoErrorLabel.HandshakeError)) {
+          return false;
+        }
+      }
+      if (error instanceof MongoWriteConcernError) {
+        return RETRYABLE_WRITE_ERROR_CODES.has(error.result?.code ?? error.code ?? 0);
+      }
+      if (error instanceof MongoError && typeof error.code === "number") {
+        return RETRYABLE_WRITE_ERROR_CODES.has(error.code);
+      }
+      const isNotWritablePrimaryError2 = exports.LEGACY_NOT_WRITABLE_PRIMARY_ERROR_MESSAGE.test(error.message);
+      if (isNotWritablePrimaryError2) {
+        return true;
+      }
+      const isNodeIsRecoveringError = exports.NODE_IS_RECOVERING_ERROR_MESSAGE.test(error.message);
+      if (isNodeIsRecoveringError) {
+        return true;
+      }
+      return false;
+    }
+    exports.needsRetryableWriteLabel = needsRetryableWriteLabel;
+    function isRetryableWriteError(error) {
+      return error.hasErrorLabel(exports.MongoErrorLabel.RetryableWriteError) || error.hasErrorLabel(exports.MongoErrorLabel.PoolRequstedRetry);
+    }
+    exports.isRetryableWriteError = isRetryableWriteError;
+    function isRetryableReadError(error) {
+      const hasRetryableErrorCode = typeof error.code === "number" ? RETRYABLE_READ_ERROR_CODES.has(error.code) : false;
+      if (hasRetryableErrorCode) {
+        return true;
+      }
+      if (error instanceof MongoNetworkError) {
+        return true;
+      }
+      const isNotWritablePrimaryError2 = exports.LEGACY_NOT_WRITABLE_PRIMARY_ERROR_MESSAGE.test(error.message);
+      if (isNotWritablePrimaryError2) {
+        return true;
+      }
+      const isNodeIsRecoveringError = exports.NODE_IS_RECOVERING_ERROR_MESSAGE.test(error.message);
+      if (isNodeIsRecoveringError) {
+        return true;
+      }
+      return false;
+    }
+    exports.isRetryableReadError = isRetryableReadError;
+    var SDAM_RECOVERING_CODES = /* @__PURE__ */ new Set([
+      exports.MONGODB_ERROR_CODES.ShutdownInProgress,
+      exports.MONGODB_ERROR_CODES.PrimarySteppedDown,
+      exports.MONGODB_ERROR_CODES.InterruptedAtShutdown,
+      exports.MONGODB_ERROR_CODES.InterruptedDueToReplStateChange,
+      exports.MONGODB_ERROR_CODES.NotPrimaryOrSecondary
+    ]);
+    var SDAM_NOT_PRIMARY_CODES = /* @__PURE__ */ new Set([
+      exports.MONGODB_ERROR_CODES.NotWritablePrimary,
+      exports.MONGODB_ERROR_CODES.NotPrimaryNoSecondaryOk,
+      exports.MONGODB_ERROR_CODES.LegacyNotPrimary
+    ]);
+    var SDAM_NODE_SHUTTING_DOWN_ERROR_CODES = /* @__PURE__ */ new Set([
+      exports.MONGODB_ERROR_CODES.InterruptedAtShutdown,
+      exports.MONGODB_ERROR_CODES.ShutdownInProgress
+    ]);
+    function isRecoveringError(err) {
+      if (typeof err.code === "number") {
+        return SDAM_RECOVERING_CODES.has(err.code);
+      }
+      return exports.LEGACY_NOT_PRIMARY_OR_SECONDARY_ERROR_MESSAGE.test(err.message) || exports.NODE_IS_RECOVERING_ERROR_MESSAGE.test(err.message);
+    }
+    function isNotWritablePrimaryError(err) {
+      if (typeof err.code === "number") {
+        return SDAM_NOT_PRIMARY_CODES.has(err.code);
+      }
+      if (isRecoveringError(err)) {
+        return false;
+      }
+      return exports.LEGACY_NOT_WRITABLE_PRIMARY_ERROR_MESSAGE.test(err.message);
+    }
+    function isNodeShuttingDownError(err) {
+      return !!(typeof err.code === "number" && SDAM_NODE_SHUTTING_DOWN_ERROR_CODES.has(err.code));
+    }
+    exports.isNodeShuttingDownError = isNodeShuttingDownError;
+    function isSDAMUnrecoverableError(error) {
+      if (error instanceof MongoParseError || error == null) {
+        return true;
+      }
+      return isRecoveringError(error) || isNotWritablePrimaryError(error);
+    }
+    exports.isSDAMUnrecoverableError = isSDAMUnrecoverableError;
+    function isNetworkTimeoutError(err) {
+      return !!(err instanceof MongoNetworkError && err.message.match(/timed out/));
+    }
+    exports.isNetworkTimeoutError = isNetworkTimeoutError;
+    function isResumableError(error, wireVersion) {
+      if (error == null || !(error instanceof MongoError)) {
+        return false;
+      }
+      if (error instanceof MongoNetworkError) {
+        return true;
+      }
+      if (wireVersion != null && wireVersion >= 9) {
+        if (error.code === exports.MONGODB_ERROR_CODES.CursorNotFound) {
+          return true;
+        }
+        return error.hasErrorLabel(exports.MongoErrorLabel.ResumableChangeStreamError);
+      }
+      if (typeof error.code === "number") {
+        return exports.GET_MORE_RESUMABLE_CODES.has(error.code);
+      }
+      return false;
+    }
+    exports.isResumableError = isResumableError;
+  }
+});
+
+// node_modules/mongodb/lib/read_preference.js
+var require_read_preference2 = __commonJS({
+  "node_modules/mongodb/lib/read_preference.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ReadPreference = exports.ReadPreferenceMode = void 0;
+    var error_1 = require_error3();
+    exports.ReadPreferenceMode = Object.freeze({
+      primary: "primary",
+      primaryPreferred: "primaryPreferred",
+      secondary: "secondary",
+      secondaryPreferred: "secondaryPreferred",
+      nearest: "nearest"
+    });
+    var ReadPreference = class {
+      constructor(mode, tags, options) {
+        if (!ReadPreference.isValid(mode)) {
+          throw new error_1.MongoInvalidArgumentError(`Invalid read preference mode ${JSON.stringify(mode)}`);
+        }
+        if (options == null && typeof tags === "object" && !Array.isArray(tags)) {
+          options = tags;
+          tags = void 0;
+        } else if (tags && !Array.isArray(tags)) {
+          throw new error_1.MongoInvalidArgumentError("ReadPreference tags must be an array");
+        }
+        this.mode = mode;
+        this.tags = tags;
+        this.hedge = options?.hedge;
+        this.maxStalenessSeconds = void 0;
+        this.minWireVersion = void 0;
+        options = options ?? {};
+        if (options.maxStalenessSeconds != null) {
+          if (options.maxStalenessSeconds <= 0) {
+            throw new error_1.MongoInvalidArgumentError("maxStalenessSeconds must be a positive integer");
+          }
+          this.maxStalenessSeconds = options.maxStalenessSeconds;
+          this.minWireVersion = 5;
+        }
+        if (this.mode === ReadPreference.PRIMARY) {
+          if (this.tags && Array.isArray(this.tags) && this.tags.length > 0) {
+            throw new error_1.MongoInvalidArgumentError("Primary read preference cannot be combined with tags");
+          }
+          if (this.maxStalenessSeconds) {
+            throw new error_1.MongoInvalidArgumentError("Primary read preference cannot be combined with maxStalenessSeconds");
+          }
+          if (this.hedge) {
+            throw new error_1.MongoInvalidArgumentError("Primary read preference cannot be combined with hedge");
+          }
+        }
+      }
+      get preference() {
+        return this.mode;
+      }
+      static fromString(mode) {
+        return new ReadPreference(mode);
+      }
+      static fromOptions(options) {
+        if (!options)
+          return;
+        const readPreference = options.readPreference ?? options.session?.transaction.options.readPreference;
+        const readPreferenceTags = options.readPreferenceTags;
+        if (readPreference == null) {
+          return;
+        }
+        if (typeof readPreference === "string") {
+          return new ReadPreference(readPreference, readPreferenceTags, {
+            maxStalenessSeconds: options.maxStalenessSeconds,
+            hedge: options.hedge
+          });
+        } else if (!(readPreference instanceof ReadPreference) && typeof readPreference === "object") {
+          const mode = readPreference.mode || readPreference.preference;
+          if (mode && typeof mode === "string") {
+            return new ReadPreference(mode, readPreference.tags ?? readPreferenceTags, {
+              maxStalenessSeconds: readPreference.maxStalenessSeconds,
+              hedge: options.hedge
+            });
+          }
+        }
+        if (readPreferenceTags) {
+          readPreference.tags = readPreferenceTags;
+        }
+        return readPreference;
+      }
+      static translate(options) {
+        if (options.readPreference == null)
+          return options;
+        const r = options.readPreference;
+        if (typeof r === "string") {
+          options.readPreference = new ReadPreference(r);
+        } else if (r && !(r instanceof ReadPreference) && typeof r === "object") {
+          const mode = r.mode || r.preference;
+          if (mode && typeof mode === "string") {
+            options.readPreference = new ReadPreference(mode, r.tags, {
+              maxStalenessSeconds: r.maxStalenessSeconds
+            });
+          }
+        } else if (!(r instanceof ReadPreference)) {
+          throw new error_1.MongoInvalidArgumentError(`Invalid read preference: ${r}`);
+        }
+        return options;
+      }
+      static isValid(mode) {
+        const VALID_MODES = /* @__PURE__ */ new Set([
+          ReadPreference.PRIMARY,
+          ReadPreference.PRIMARY_PREFERRED,
+          ReadPreference.SECONDARY,
+          ReadPreference.SECONDARY_PREFERRED,
+          ReadPreference.NEAREST,
+          null
+        ]);
+        return VALID_MODES.has(mode);
+      }
+      isValid(mode) {
+        return ReadPreference.isValid(typeof mode === "string" ? mode : this.mode);
+      }
+      secondaryOk() {
+        const NEEDS_SECONDARYOK = /* @__PURE__ */ new Set([
+          ReadPreference.PRIMARY_PREFERRED,
+          ReadPreference.SECONDARY,
+          ReadPreference.SECONDARY_PREFERRED,
+          ReadPreference.NEAREST
+        ]);
+        return NEEDS_SECONDARYOK.has(this.mode);
+      }
+      equals(readPreference) {
+        return readPreference.mode === this.mode;
+      }
+      toJSON() {
+        const readPreference = { mode: this.mode };
+        if (Array.isArray(this.tags))
+          readPreference.tags = this.tags;
+        if (this.maxStalenessSeconds)
+          readPreference.maxStalenessSeconds = this.maxStalenessSeconds;
+        if (this.hedge)
+          readPreference.hedge = this.hedge;
+        return readPreference;
+      }
+    };
+    ReadPreference.PRIMARY = exports.ReadPreferenceMode.primary;
+    ReadPreference.PRIMARY_PREFERRED = exports.ReadPreferenceMode.primaryPreferred;
+    ReadPreference.SECONDARY = exports.ReadPreferenceMode.secondary;
+    ReadPreference.SECONDARY_PREFERRED = exports.ReadPreferenceMode.secondaryPreferred;
+    ReadPreference.NEAREST = exports.ReadPreferenceMode.nearest;
+    ReadPreference.primary = new ReadPreference(exports.ReadPreferenceMode.primary);
+    ReadPreference.primaryPreferred = new ReadPreference(exports.ReadPreferenceMode.primaryPreferred);
+    ReadPreference.secondary = new ReadPreference(exports.ReadPreferenceMode.secondary);
+    ReadPreference.secondaryPreferred = new ReadPreference(exports.ReadPreferenceMode.secondaryPreferred);
+    ReadPreference.nearest = new ReadPreference(exports.ReadPreferenceMode.nearest);
+    exports.ReadPreference = ReadPreference;
+  }
+});
+
+// node_modules/mongodb/lib/sdam/common.js
+var require_common5 = __commonJS({
+  "node_modules/mongodb/lib/sdam/common.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports._advanceClusterTime = exports.drainTimerQueue = exports.ServerType = exports.TopologyType = exports.STATE_CONNECTED = exports.STATE_CONNECTING = exports.STATE_CLOSED = exports.STATE_CLOSING = void 0;
+    var timers_1 = require("timers");
+    exports.STATE_CLOSING = "closing";
+    exports.STATE_CLOSED = "closed";
+    exports.STATE_CONNECTING = "connecting";
+    exports.STATE_CONNECTED = "connected";
+    exports.TopologyType = Object.freeze({
+      Single: "Single",
+      ReplicaSetNoPrimary: "ReplicaSetNoPrimary",
+      ReplicaSetWithPrimary: "ReplicaSetWithPrimary",
+      Sharded: "Sharded",
+      Unknown: "Unknown",
+      LoadBalanced: "LoadBalanced"
+    });
+    exports.ServerType = Object.freeze({
+      Standalone: "Standalone",
+      Mongos: "Mongos",
+      PossiblePrimary: "PossiblePrimary",
+      RSPrimary: "RSPrimary",
+      RSSecondary: "RSSecondary",
+      RSArbiter: "RSArbiter",
+      RSOther: "RSOther",
+      RSGhost: "RSGhost",
+      Unknown: "Unknown",
+      LoadBalancer: "LoadBalancer"
+    });
+    function drainTimerQueue(queue) {
+      queue.forEach(timers_1.clearTimeout);
+      queue.clear();
+    }
+    exports.drainTimerQueue = drainTimerQueue;
+    function _advanceClusterTime(entity, $clusterTime) {
+      if (entity.clusterTime == null) {
+        entity.clusterTime = $clusterTime;
+      } else {
+        if ($clusterTime.clusterTime.greaterThan(entity.clusterTime.clusterTime)) {
+          entity.clusterTime = $clusterTime;
+        }
+      }
+    }
+    exports._advanceClusterTime = _advanceClusterTime;
+  }
+});
+
+// node_modules/mongodb/lib/sdam/server_selection.js
+var require_server_selection2 = __commonJS({
+  "node_modules/mongodb/lib/sdam/server_selection.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.readPreferenceServerSelector = exports.secondaryWritableServerSelector = exports.sameServerSelector = exports.writableServerSelector = exports.MIN_SECONDARY_WRITE_WIRE_VERSION = void 0;
+    var error_1 = require_error3();
+    var read_preference_1 = require_read_preference2();
+    var common_1 = require_common5();
+    var IDLE_WRITE_PERIOD = 1e4;
+    var SMALLEST_MAX_STALENESS_SECONDS = 90;
+    exports.MIN_SECONDARY_WRITE_WIRE_VERSION = 13;
+    function writableServerSelector() {
+      return function writableServer(topologyDescription, servers) {
+        return latencyWindowReducer(topologyDescription, servers.filter((s) => s.isWritable));
+      };
+    }
+    exports.writableServerSelector = writableServerSelector;
+    function sameServerSelector(description) {
+      return function sameServerSelector2(topologyDescription, servers) {
+        if (!description)
+          return [];
+        return servers.filter((sd) => {
+          return sd.address === description.address && sd.type !== common_1.ServerType.Unknown;
+        });
+      };
+    }
+    exports.sameServerSelector = sameServerSelector;
+    function secondaryWritableServerSelector(wireVersion, readPreference) {
+      if (!readPreference || !wireVersion || wireVersion && wireVersion < exports.MIN_SECONDARY_WRITE_WIRE_VERSION) {
+        return readPreferenceServerSelector(read_preference_1.ReadPreference.primary);
+      }
+      return readPreferenceServerSelector(readPreference);
+    }
+    exports.secondaryWritableServerSelector = secondaryWritableServerSelector;
+    function maxStalenessReducer(readPreference, topologyDescription, servers) {
+      if (readPreference.maxStalenessSeconds == null || readPreference.maxStalenessSeconds < 0) {
+        return servers;
+      }
+      const maxStaleness = readPreference.maxStalenessSeconds;
+      const maxStalenessVariance = (topologyDescription.heartbeatFrequencyMS + IDLE_WRITE_PERIOD) / 1e3;
+      if (maxStaleness < maxStalenessVariance) {
+        throw new error_1.MongoInvalidArgumentError(`Option "maxStalenessSeconds" must be at least ${maxStalenessVariance} seconds`);
+      }
+      if (maxStaleness < SMALLEST_MAX_STALENESS_SECONDS) {
+        throw new error_1.MongoInvalidArgumentError(`Option "maxStalenessSeconds" must be at least ${SMALLEST_MAX_STALENESS_SECONDS} seconds`);
+      }
+      if (topologyDescription.type === common_1.TopologyType.ReplicaSetWithPrimary) {
+        const primary = Array.from(topologyDescription.servers.values()).filter(primaryFilter)[0];
+        return servers.reduce((result, server) => {
+          const stalenessMS = server.lastUpdateTime - server.lastWriteDate - (primary.lastUpdateTime - primary.lastWriteDate) + topologyDescription.heartbeatFrequencyMS;
+          const staleness = stalenessMS / 1e3;
+          const maxStalenessSeconds = readPreference.maxStalenessSeconds ?? 0;
+          if (staleness <= maxStalenessSeconds) {
+            result.push(server);
+          }
+          return result;
+        }, []);
+      }
+      if (topologyDescription.type === common_1.TopologyType.ReplicaSetNoPrimary) {
+        if (servers.length === 0) {
+          return servers;
+        }
+        const sMax = servers.reduce((max, s) => s.lastWriteDate > max.lastWriteDate ? s : max);
+        return servers.reduce((result, server) => {
+          const stalenessMS = sMax.lastWriteDate - server.lastWriteDate + topologyDescription.heartbeatFrequencyMS;
+          const staleness = stalenessMS / 1e3;
+          const maxStalenessSeconds = readPreference.maxStalenessSeconds ?? 0;
+          if (staleness <= maxStalenessSeconds) {
+            result.push(server);
+          }
+          return result;
+        }, []);
+      }
+      return servers;
+    }
+    function tagSetMatch(tagSet, serverTags) {
+      const keys = Object.keys(tagSet);
+      const serverTagKeys = Object.keys(serverTags);
+      for (let i = 0; i < keys.length; ++i) {
+        const key = keys[i];
+        if (serverTagKeys.indexOf(key) === -1 || serverTags[key] !== tagSet[key]) {
+          return false;
+        }
+      }
+      return true;
+    }
+    function tagSetReducer(readPreference, servers) {
+      if (readPreference.tags == null || Array.isArray(readPreference.tags) && readPreference.tags.length === 0) {
+        return servers;
+      }
+      for (let i = 0; i < readPreference.tags.length; ++i) {
+        const tagSet = readPreference.tags[i];
+        const serversMatchingTagset = servers.reduce((matched, server) => {
+          if (tagSetMatch(tagSet, server.tags))
+            matched.push(server);
+          return matched;
+        }, []);
+        if (serversMatchingTagset.length) {
+          return serversMatchingTagset;
+        }
+      }
+      return [];
+    }
+    function latencyWindowReducer(topologyDescription, servers) {
+      const low = servers.reduce((min, server) => Math.min(server.roundTripTime, min), Infinity);
+      const high = low + topologyDescription.localThresholdMS;
+      return servers.reduce((result, server) => {
+        if (server.roundTripTime <= high && server.roundTripTime >= low)
+          result.push(server);
+        return result;
+      }, []);
+    }
+    function primaryFilter(server) {
+      return server.type === common_1.ServerType.RSPrimary;
+    }
+    function secondaryFilter(server) {
+      return server.type === common_1.ServerType.RSSecondary;
+    }
+    function nearestFilter(server) {
+      return server.type === common_1.ServerType.RSSecondary || server.type === common_1.ServerType.RSPrimary;
+    }
+    function knownFilter(server) {
+      return server.type !== common_1.ServerType.Unknown;
+    }
+    function loadBalancerFilter(server) {
+      return server.type === common_1.ServerType.LoadBalancer;
+    }
+    function readPreferenceServerSelector(readPreference) {
+      if (!readPreference.isValid()) {
+        throw new error_1.MongoInvalidArgumentError("Invalid read preference specified");
+      }
+      return function readPreferenceServers(topologyDescription, servers, deprioritized = []) {
+        const commonWireVersion = topologyDescription.commonWireVersion;
+        if (commonWireVersion && readPreference.minWireVersion && readPreference.minWireVersion > commonWireVersion) {
+          throw new error_1.MongoCompatibilityError(`Minimum wire version '${readPreference.minWireVersion}' required, but found '${commonWireVersion}'`);
+        }
+        if (topologyDescription.type === common_1.TopologyType.LoadBalanced) {
+          return servers.filter(loadBalancerFilter);
+        }
+        if (topologyDescription.type === common_1.TopologyType.Unknown) {
+          return [];
+        }
+        if (topologyDescription.type === common_1.TopologyType.Single) {
+          return latencyWindowReducer(topologyDescription, servers.filter(knownFilter));
+        }
+        if (topologyDescription.type === common_1.TopologyType.Sharded) {
+          const filtered = servers.filter((server) => {
+            return !deprioritized.includes(server);
+          });
+          const selectable = filtered.length > 0 ? filtered : deprioritized;
+          return latencyWindowReducer(topologyDescription, selectable.filter(knownFilter));
+        }
+        const mode = readPreference.mode;
+        if (mode === read_preference_1.ReadPreference.PRIMARY) {
+          return servers.filter(primaryFilter);
+        }
+        if (mode === read_preference_1.ReadPreference.PRIMARY_PREFERRED) {
+          const result = servers.filter(primaryFilter);
+          if (result.length) {
+            return result;
+          }
+        }
+        const filter = mode === read_preference_1.ReadPreference.NEAREST ? nearestFilter : secondaryFilter;
+        const selectedServers = latencyWindowReducer(topologyDescription, tagSetReducer(readPreference, maxStalenessReducer(readPreference, topologyDescription, servers.filter(filter))));
+        if (mode === read_preference_1.ReadPreference.SECONDARY_PREFERRED && selectedServers.length === 0) {
+          return servers.filter(primaryFilter);
+        }
+        return selectedServers;
+      };
+    }
+    exports.readPreferenceServerSelector = readPreferenceServerSelector;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/wire_protocol/constants.js
+var require_constants4 = __commonJS({
+  "node_modules/mongodb/lib/cmap/wire_protocol/constants.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.OP_MSG = exports.OP_COMPRESSED = exports.OP_DELETE = exports.OP_QUERY = exports.OP_INSERT = exports.OP_UPDATE = exports.OP_REPLY = exports.MIN_SUPPORTED_QE_SERVER_VERSION = exports.MIN_SUPPORTED_QE_WIRE_VERSION = exports.MAX_SUPPORTED_WIRE_VERSION = exports.MIN_SUPPORTED_WIRE_VERSION = exports.MAX_SUPPORTED_SERVER_VERSION = exports.MIN_SUPPORTED_SERVER_VERSION = void 0;
+    exports.MIN_SUPPORTED_SERVER_VERSION = "3.6";
+    exports.MAX_SUPPORTED_SERVER_VERSION = "7.0";
+    exports.MIN_SUPPORTED_WIRE_VERSION = 6;
+    exports.MAX_SUPPORTED_WIRE_VERSION = 21;
+    exports.MIN_SUPPORTED_QE_WIRE_VERSION = 21;
+    exports.MIN_SUPPORTED_QE_SERVER_VERSION = "7.0";
+    exports.OP_REPLY = 1;
+    exports.OP_UPDATE = 2001;
+    exports.OP_INSERT = 2002;
+    exports.OP_QUERY = 2004;
+    exports.OP_DELETE = 2006;
+    exports.OP_COMPRESSED = 2012;
+    exports.OP_MSG = 2013;
+  }
+});
+
+// node_modules/mongodb/lib/constants.js
+var require_constants5 = __commonJS({
+  "node_modules/mongodb/lib/constants.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.END = exports.CHANGE = exports.INIT = exports.MORE = exports.RESPONSE = exports.SERVER_HEARTBEAT_FAILED = exports.SERVER_HEARTBEAT_SUCCEEDED = exports.SERVER_HEARTBEAT_STARTED = exports.COMMAND_FAILED = exports.COMMAND_SUCCEEDED = exports.COMMAND_STARTED = exports.CLUSTER_TIME_RECEIVED = exports.CONNECTION_CHECKED_IN = exports.CONNECTION_CHECKED_OUT = exports.CONNECTION_CHECK_OUT_FAILED = exports.CONNECTION_CHECK_OUT_STARTED = exports.CONNECTION_CLOSED = exports.CONNECTION_READY = exports.CONNECTION_CREATED = exports.CONNECTION_POOL_READY = exports.CONNECTION_POOL_CLEARED = exports.CONNECTION_POOL_CLOSED = exports.CONNECTION_POOL_CREATED = exports.WAITING_FOR_SUITABLE_SERVER = exports.SERVER_SELECTION_SUCCEEDED = exports.SERVER_SELECTION_FAILED = exports.SERVER_SELECTION_STARTED = exports.TOPOLOGY_DESCRIPTION_CHANGED = exports.TOPOLOGY_CLOSED = exports.TOPOLOGY_OPENING = exports.SERVER_DESCRIPTION_CHANGED = exports.SERVER_CLOSED = exports.SERVER_OPENING = exports.DESCRIPTION_RECEIVED = exports.UNPINNED = exports.PINNED = exports.MESSAGE = exports.ENDED = exports.CLOSED = exports.CONNECT = exports.OPEN = exports.CLOSE = exports.TIMEOUT = exports.ERROR = exports.SYSTEM_JS_COLLECTION = exports.SYSTEM_COMMAND_COLLECTION = exports.SYSTEM_USER_COLLECTION = exports.SYSTEM_PROFILE_COLLECTION = exports.SYSTEM_INDEX_COLLECTION = exports.SYSTEM_NAMESPACE_COLLECTION = void 0;
+    exports.kDecoratedKeys = exports.kDecorateResult = exports.LEGACY_HELLO_COMMAND_CAMEL_CASE = exports.LEGACY_HELLO_COMMAND = exports.MONGO_CLIENT_EVENTS = exports.LOCAL_SERVER_EVENTS = exports.SERVER_RELAY_EVENTS = exports.APM_EVENTS = exports.TOPOLOGY_EVENTS = exports.CMAP_EVENTS = exports.HEARTBEAT_EVENTS = exports.RESUME_TOKEN_CHANGED = void 0;
+    exports.SYSTEM_NAMESPACE_COLLECTION = "system.namespaces";
+    exports.SYSTEM_INDEX_COLLECTION = "system.indexes";
+    exports.SYSTEM_PROFILE_COLLECTION = "system.profile";
+    exports.SYSTEM_USER_COLLECTION = "system.users";
+    exports.SYSTEM_COMMAND_COLLECTION = "$cmd";
+    exports.SYSTEM_JS_COLLECTION = "system.js";
+    exports.ERROR = "error";
+    exports.TIMEOUT = "timeout";
+    exports.CLOSE = "close";
+    exports.OPEN = "open";
+    exports.CONNECT = "connect";
+    exports.CLOSED = "closed";
+    exports.ENDED = "ended";
+    exports.MESSAGE = "message";
+    exports.PINNED = "pinned";
+    exports.UNPINNED = "unpinned";
+    exports.DESCRIPTION_RECEIVED = "descriptionReceived";
+    exports.SERVER_OPENING = "serverOpening";
+    exports.SERVER_CLOSED = "serverClosed";
+    exports.SERVER_DESCRIPTION_CHANGED = "serverDescriptionChanged";
+    exports.TOPOLOGY_OPENING = "topologyOpening";
+    exports.TOPOLOGY_CLOSED = "topologyClosed";
+    exports.TOPOLOGY_DESCRIPTION_CHANGED = "topologyDescriptionChanged";
+    exports.SERVER_SELECTION_STARTED = "serverSelectionStarted";
+    exports.SERVER_SELECTION_FAILED = "serverSelectionFailed";
+    exports.SERVER_SELECTION_SUCCEEDED = "serverSelectionSucceeded";
+    exports.WAITING_FOR_SUITABLE_SERVER = "waitingForSuitableServer";
+    exports.CONNECTION_POOL_CREATED = "connectionPoolCreated";
+    exports.CONNECTION_POOL_CLOSED = "connectionPoolClosed";
+    exports.CONNECTION_POOL_CLEARED = "connectionPoolCleared";
+    exports.CONNECTION_POOL_READY = "connectionPoolReady";
+    exports.CONNECTION_CREATED = "connectionCreated";
+    exports.CONNECTION_READY = "connectionReady";
+    exports.CONNECTION_CLOSED = "connectionClosed";
+    exports.CONNECTION_CHECK_OUT_STARTED = "connectionCheckOutStarted";
+    exports.CONNECTION_CHECK_OUT_FAILED = "connectionCheckOutFailed";
+    exports.CONNECTION_CHECKED_OUT = "connectionCheckedOut";
+    exports.CONNECTION_CHECKED_IN = "connectionCheckedIn";
+    exports.CLUSTER_TIME_RECEIVED = "clusterTimeReceived";
+    exports.COMMAND_STARTED = "commandStarted";
+    exports.COMMAND_SUCCEEDED = "commandSucceeded";
+    exports.COMMAND_FAILED = "commandFailed";
+    exports.SERVER_HEARTBEAT_STARTED = "serverHeartbeatStarted";
+    exports.SERVER_HEARTBEAT_SUCCEEDED = "serverHeartbeatSucceeded";
+    exports.SERVER_HEARTBEAT_FAILED = "serverHeartbeatFailed";
+    exports.RESPONSE = "response";
+    exports.MORE = "more";
+    exports.INIT = "init";
+    exports.CHANGE = "change";
+    exports.END = "end";
+    exports.RESUME_TOKEN_CHANGED = "resumeTokenChanged";
+    exports.HEARTBEAT_EVENTS = Object.freeze([
+      exports.SERVER_HEARTBEAT_STARTED,
+      exports.SERVER_HEARTBEAT_SUCCEEDED,
+      exports.SERVER_HEARTBEAT_FAILED
+    ]);
+    exports.CMAP_EVENTS = Object.freeze([
+      exports.CONNECTION_POOL_CREATED,
+      exports.CONNECTION_POOL_READY,
+      exports.CONNECTION_POOL_CLEARED,
+      exports.CONNECTION_POOL_CLOSED,
+      exports.CONNECTION_CREATED,
+      exports.CONNECTION_READY,
+      exports.CONNECTION_CLOSED,
+      exports.CONNECTION_CHECK_OUT_STARTED,
+      exports.CONNECTION_CHECK_OUT_FAILED,
+      exports.CONNECTION_CHECKED_OUT,
+      exports.CONNECTION_CHECKED_IN
+    ]);
+    exports.TOPOLOGY_EVENTS = Object.freeze([
+      exports.SERVER_OPENING,
+      exports.SERVER_CLOSED,
+      exports.SERVER_DESCRIPTION_CHANGED,
+      exports.TOPOLOGY_OPENING,
+      exports.TOPOLOGY_CLOSED,
+      exports.TOPOLOGY_DESCRIPTION_CHANGED,
+      exports.ERROR,
+      exports.TIMEOUT,
+      exports.CLOSE
+    ]);
+    exports.APM_EVENTS = Object.freeze([
+      exports.COMMAND_STARTED,
+      exports.COMMAND_SUCCEEDED,
+      exports.COMMAND_FAILED
+    ]);
+    exports.SERVER_RELAY_EVENTS = Object.freeze([
+      exports.SERVER_HEARTBEAT_STARTED,
+      exports.SERVER_HEARTBEAT_SUCCEEDED,
+      exports.SERVER_HEARTBEAT_FAILED,
+      exports.COMMAND_STARTED,
+      exports.COMMAND_SUCCEEDED,
+      exports.COMMAND_FAILED,
+      ...exports.CMAP_EVENTS
+    ]);
+    exports.LOCAL_SERVER_EVENTS = Object.freeze([
+      exports.CONNECT,
+      exports.DESCRIPTION_RECEIVED,
+      exports.CLOSED,
+      exports.ENDED
+    ]);
+    exports.MONGO_CLIENT_EVENTS = Object.freeze([
+      ...exports.CMAP_EVENTS,
+      ...exports.APM_EVENTS,
+      ...exports.TOPOLOGY_EVENTS,
+      ...exports.HEARTBEAT_EVENTS
+    ]);
+    exports.LEGACY_HELLO_COMMAND = "ismaster";
+    exports.LEGACY_HELLO_COMMAND_CAMEL_CASE = "isMaster";
+    exports.kDecorateResult = Symbol.for("@@mdb.decorateDecryptionResult");
+    exports.kDecoratedKeys = Symbol.for("@@mdb.decryptedKeys");
+  }
+});
+
+// node_modules/mongodb/lib/read_concern.js
+var require_read_concern2 = __commonJS({
+  "node_modules/mongodb/lib/read_concern.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ReadConcern = exports.ReadConcernLevel = void 0;
+    exports.ReadConcernLevel = Object.freeze({
+      local: "local",
+      majority: "majority",
+      linearizable: "linearizable",
+      available: "available",
+      snapshot: "snapshot"
+    });
+    var ReadConcern = class {
+      constructor(level) {
+        this.level = exports.ReadConcernLevel[level] ?? level;
+      }
+      static fromOptions(options) {
+        if (options == null) {
+          return;
+        }
+        if (options.readConcern) {
+          const { readConcern } = options;
+          if (readConcern instanceof ReadConcern) {
+            return readConcern;
+          } else if (typeof readConcern === "string") {
+            return new ReadConcern(readConcern);
+          } else if ("level" in readConcern && readConcern.level) {
+            return new ReadConcern(readConcern.level);
+          }
+        }
+        if (options.level) {
+          return new ReadConcern(options.level);
+        }
+        return;
+      }
+      static get MAJORITY() {
+        return exports.ReadConcernLevel.majority;
+      }
+      static get AVAILABLE() {
+        return exports.ReadConcernLevel.available;
+      }
+      static get LINEARIZABLE() {
+        return exports.ReadConcernLevel.linearizable;
+      }
+      static get SNAPSHOT() {
+        return exports.ReadConcernLevel.snapshot;
+      }
+      toJSON() {
+        return { level: this.level };
+      }
+    };
+    exports.ReadConcern = ReadConcern;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/wire_protocol/on_demand/document.js
+var require_document3 = __commonJS({
+  "node_modules/mongodb/lib/cmap/wire_protocol/on_demand/document.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.OnDemandDocument = void 0;
+    var bson_1 = require_bson3();
+    var OnDemandDocument = class {
+      constructor(bson, offset = 0, isArray = false, elements) {
+        this.bson = bson;
+        this.offset = offset;
+        this.isArray = isArray;
+        this.cache = /* @__PURE__ */ Object.create(null);
+        this.indexFound = /* @__PURE__ */ Object.create(null);
+        this.elements = elements ?? (0, bson_1.parseToElementsToArray)(this.bson, offset);
+      }
+      isElementName(name, element) {
+        const nameLength = element[2];
+        const nameOffset = element[1];
+        if (name.length !== nameLength)
+          return false;
+        const nameEnd = nameOffset + nameLength;
+        for (let byteIndex = nameOffset, charIndex = 0; charIndex < name.length && byteIndex < nameEnd; charIndex++, byteIndex++) {
+          if (this.bson[byteIndex] !== name.charCodeAt(charIndex))
+            return false;
+        }
+        return true;
+      }
+      getElement(name) {
+        const cachedElement = this.cache[name];
+        if (cachedElement === false)
+          return null;
+        if (cachedElement != null) {
+          return cachedElement;
+        }
+        if (typeof name === "number") {
+          if (this.isArray) {
+            if (name < this.elements.length) {
+              const element = this.elements[name];
+              const cachedElement2 = { element, value: void 0 };
+              this.cache[name] = cachedElement2;
+              this.indexFound[name] = true;
+              return cachedElement2;
+            } else {
+              return null;
+            }
+          } else {
+            return null;
+          }
+        }
+        for (let index = 0; index < this.elements.length; index++) {
+          const element = this.elements[index];
+          if (!(index in this.indexFound) && this.isElementName(name, element)) {
+            const cachedElement2 = { element, value: void 0 };
+            this.cache[name] = cachedElement2;
+            this.indexFound[index] = true;
+            return cachedElement2;
+          }
+        }
+        this.cache[name] = false;
+        return null;
+      }
+      toJSValue(element, as) {
+        const type = element[0];
+        const offset = element[3];
+        const length = element[4];
+        if (as !== type) {
+          return null;
+        }
+        switch (as) {
+          case bson_1.BSONType.null:
+          case bson_1.BSONType.undefined:
+            return null;
+          case bson_1.BSONType.double:
+            return (0, bson_1.getFloat64LE)(this.bson, offset);
+          case bson_1.BSONType.int:
+            return (0, bson_1.getInt32LE)(this.bson, offset);
+          case bson_1.BSONType.long:
+            return (0, bson_1.getBigInt64LE)(this.bson, offset);
+          case bson_1.BSONType.bool:
+            return Boolean(this.bson[offset]);
+          case bson_1.BSONType.objectId:
+            return new bson_1.ObjectId(this.bson.subarray(offset, offset + 12));
+          case bson_1.BSONType.timestamp:
+            return new bson_1.Timestamp((0, bson_1.getBigInt64LE)(this.bson, offset));
+          case bson_1.BSONType.string:
+            return (0, bson_1.toUTF8)(this.bson, offset + 4, offset + length - 1, false);
+          case bson_1.BSONType.binData: {
+            const totalBinarySize = (0, bson_1.getInt32LE)(this.bson, offset);
+            const subType = this.bson[offset + 4];
+            if (subType === 2) {
+              const subType2BinarySize = (0, bson_1.getInt32LE)(this.bson, offset + 1 + 4);
+              if (subType2BinarySize < 0)
+                throw new bson_1.BSONError("Negative binary type element size found for subtype 0x02");
+              if (subType2BinarySize > totalBinarySize - 4)
+                throw new bson_1.BSONError("Binary type with subtype 0x02 contains too long binary size");
+              if (subType2BinarySize < totalBinarySize - 4)
+                throw new bson_1.BSONError("Binary type with subtype 0x02 contains too short binary size");
+              return new bson_1.Binary(this.bson.subarray(offset + 1 + 4 + 4, offset + 1 + 4 + 4 + subType2BinarySize), 2);
+            }
+            return new bson_1.Binary(this.bson.subarray(offset + 1 + 4, offset + 1 + 4 + totalBinarySize), subType);
+          }
+          case bson_1.BSONType.date:
+            return new Date(Number((0, bson_1.getBigInt64LE)(this.bson, offset)));
+          case bson_1.BSONType.object:
+            return new OnDemandDocument(this.bson, offset);
+          case bson_1.BSONType.array:
+            return new OnDemandDocument(this.bson, offset, true);
+          default:
+            throw new bson_1.BSONError(`Unsupported BSON type: ${as}`);
+        }
+      }
+      size() {
+        return this.elements.length;
+      }
+      has(name) {
+        const cachedElement = this.cache[name];
+        if (cachedElement === false)
+          return false;
+        if (cachedElement != null)
+          return true;
+        return this.getElement(name) != null;
+      }
+      get(name, as, required) {
+        const element = this.getElement(name);
+        if (element == null) {
+          if (required === true) {
+            throw new bson_1.BSONError(`BSON element "${name}" is missing`);
+          } else {
+            return null;
+          }
+        }
+        if (element.value == null) {
+          const value = this.toJSValue(element.element, as);
+          if (value == null) {
+            if (required === true) {
+              throw new bson_1.BSONError(`BSON element "${name}" is missing`);
+            } else {
+              return null;
+            }
+          }
+          element.value = value;
+        }
+        return element.value;
+      }
+      getNumber(name, required) {
+        const maybeBool = this.get(name, bson_1.BSONType.bool);
+        const bool = maybeBool == null ? null : maybeBool ? 1 : 0;
+        const maybeLong = this.get(name, bson_1.BSONType.long);
+        const long = maybeLong == null ? null : Number(maybeLong);
+        const result = bool ?? long ?? this.get(name, bson_1.BSONType.int) ?? this.get(name, bson_1.BSONType.double);
+        if (required === true && result == null) {
+          throw new bson_1.BSONError(`BSON element "${name}" is missing`);
+        }
+        return result;
+      }
+      toObject(options) {
+        return bson_1.BSON.deserialize(this.bson, {
+          ...options,
+          index: this.offset,
+          allowObjectSmallerThanBufferSize: true
+        });
+      }
+      toBytes() {
+        const size = (0, bson_1.getInt32LE)(this.bson, this.offset);
+        return this.bson.subarray(this.offset, this.offset + size);
+      }
+    };
+    exports.OnDemandDocument = OnDemandDocument;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/wire_protocol/responses.js
+var require_responses2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/wire_protocol/responses.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ExplainedCursorResponse = exports.CursorResponse = exports.MongoDBResponse = exports.isErrorResponse = void 0;
+    var bson_1 = require_bson3();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var document_1 = require_document3();
+    function isErrorResponse(bson, elements) {
+      for (let eIdx = 0; eIdx < elements.length; eIdx++) {
+        const element = elements[eIdx];
+        if (element[2] === 2) {
+          const nameOffset = element[1];
+          if (bson[nameOffset] === 111 && bson[nameOffset + 1] === 107) {
+            const valueOffset = element[3];
+            const valueLength = element[4];
+            for (let i = valueOffset; i < valueOffset + valueLength; i++) {
+              if (bson[i] !== 0)
+                return false;
+            }
+            return true;
+          }
+        }
+      }
+      return true;
+    }
+    exports.isErrorResponse = isErrorResponse;
+    var MongoDBResponse = class extends document_1.OnDemandDocument {
+      get(name, as, required) {
+        try {
+          return super.get(name, as, required);
+        } catch (cause) {
+          throw new error_1.MongoUnexpectedServerResponseError(cause.message, { cause });
+        }
+      }
+      static is(value) {
+        return value instanceof MongoDBResponse;
+      }
+      static make(bson) {
+        const elements = (0, bson_1.parseToElementsToArray)(bson, 0);
+        const isError = isErrorResponse(bson, elements);
+        return isError ? new MongoDBResponse(bson, 0, false, elements) : new this(bson, 0, false, elements);
+      }
+      get recoveryToken() {
+        return this.get("recoveryToken", bson_1.BSONType.object)?.toObject({
+          promoteValues: false,
+          promoteLongs: false,
+          promoteBuffers: false
+        }) ?? null;
+      }
+      get atClusterTime() {
+        return this.get("cursor", bson_1.BSONType.object)?.get("atClusterTime", bson_1.BSONType.timestamp) ?? this.get("atClusterTime", bson_1.BSONType.timestamp);
+      }
+      get operationTime() {
+        return this.get("operationTime", bson_1.BSONType.timestamp);
+      }
+      get ok() {
+        return this.getNumber("ok") ? 1 : 0;
+      }
+      get $err() {
+        return this.get("$err", bson_1.BSONType.string);
+      }
+      get errmsg() {
+        return this.get("errmsg", bson_1.BSONType.string);
+      }
+      get code() {
+        return this.getNumber("code");
+      }
+      get $clusterTime() {
+        if (!("clusterTime" in this)) {
+          const clusterTimeDoc = this.get("$clusterTime", bson_1.BSONType.object);
+          if (clusterTimeDoc == null) {
+            this.clusterTime = null;
+            return null;
+          }
+          const clusterTime = clusterTimeDoc.get("clusterTime", bson_1.BSONType.timestamp, true);
+          const signature = clusterTimeDoc.get("signature", bson_1.BSONType.object)?.toObject();
+          this.clusterTime = { clusterTime, signature };
+        }
+        return this.clusterTime ?? null;
+      }
+      toObject(options) {
+        const exactBSONOptions = {
+          ...(0, bson_1.pluckBSONSerializeOptions)(options ?? {}),
+          validation: this.parseBsonSerializationOptions(options)
+        };
+        return super.toObject(exactBSONOptions);
+      }
+      parseBsonSerializationOptions(options) {
+        const enableUtf8Validation = options?.enableUtf8Validation;
+        if (enableUtf8Validation === false) {
+          return { utf8: false };
+        }
+        return { utf8: { writeErrors: false } };
+      }
+    };
+    MongoDBResponse.empty = new MongoDBResponse(new Uint8Array([13, 0, 0, 0, 16, 111, 107, 0, 1, 0, 0, 0, 0]));
+    exports.MongoDBResponse = MongoDBResponse;
+    var CursorResponse = class extends MongoDBResponse {
+      constructor() {
+        super(...arguments);
+        this._batch = null;
+        this.iterated = 0;
+        this._encryptedBatch = null;
+      }
+      static is(value) {
+        return value instanceof CursorResponse || value === CursorResponse.emptyGetMore;
+      }
+      get cursor() {
+        return this.get("cursor", bson_1.BSONType.object, true);
+      }
+      get id() {
+        try {
+          return bson_1.Long.fromBigInt(this.cursor.get("id", bson_1.BSONType.long, true));
+        } catch (cause) {
+          throw new error_1.MongoUnexpectedServerResponseError(cause.message, { cause });
+        }
+      }
+      get ns() {
+        const namespace = this.cursor.get("ns", bson_1.BSONType.string);
+        if (namespace != null)
+          return (0, utils_1.ns)(namespace);
+        return null;
+      }
+      get length() {
+        return Math.max(this.batchSize - this.iterated, 0);
+      }
+      get encryptedBatch() {
+        if (this.encryptedResponse == null)
+          return null;
+        if (this._encryptedBatch != null)
+          return this._encryptedBatch;
+        const cursor = this.encryptedResponse?.get("cursor", bson_1.BSONType.object);
+        if (cursor?.has("firstBatch"))
+          this._encryptedBatch = cursor.get("firstBatch", bson_1.BSONType.array, true);
+        else if (cursor?.has("nextBatch"))
+          this._encryptedBatch = cursor.get("nextBatch", bson_1.BSONType.array, true);
+        else
+          throw new error_1.MongoUnexpectedServerResponseError("Cursor document did not contain a batch");
+        return this._encryptedBatch;
+      }
+      get batch() {
+        if (this._batch != null)
+          return this._batch;
+        const cursor = this.cursor;
+        if (cursor.has("firstBatch"))
+          this._batch = cursor.get("firstBatch", bson_1.BSONType.array, true);
+        else if (cursor.has("nextBatch"))
+          this._batch = cursor.get("nextBatch", bson_1.BSONType.array, true);
+        else
+          throw new error_1.MongoUnexpectedServerResponseError("Cursor document did not contain a batch");
+        return this._batch;
+      }
+      get batchSize() {
+        return this.batch?.size();
+      }
+      get postBatchResumeToken() {
+        return this.cursor.get("postBatchResumeToken", bson_1.BSONType.object)?.toObject({
+          promoteValues: false,
+          promoteLongs: false,
+          promoteBuffers: false
+        }) ?? null;
+      }
+      shift(options) {
+        if (this.iterated >= this.batchSize) {
+          return null;
+        }
+        const result = this.batch.get(this.iterated, bson_1.BSONType.object, true) ?? null;
+        const encryptedResult = this.encryptedBatch?.get(this.iterated, bson_1.BSONType.object, true) ?? null;
+        this.iterated += 1;
+        if (options?.raw) {
+          return result.toBytes();
+        } else {
+          const object = result.toObject(options);
+          if (encryptedResult) {
+            (0, utils_1.decorateDecryptionResult)(object, encryptedResult.toObject(options), true);
+          }
+          return object;
+        }
+      }
+      clear() {
+        this.iterated = this.batchSize;
+      }
+    };
+    CursorResponse.emptyGetMore = {
+      id: new bson_1.Long(0),
+      length: 0,
+      shift: () => null
+    };
+    exports.CursorResponse = CursorResponse;
+    var ExplainedCursorResponse = class extends CursorResponse {
+      constructor() {
+        super(...arguments);
+        this.isExplain = true;
+        this._length = 1;
+      }
+      get id() {
+        return bson_1.Long.fromBigInt(0n);
+      }
+      get batchSize() {
+        return 0;
+      }
+      get ns() {
+        return null;
+      }
+      get length() {
+        return this._length;
+      }
+      shift(options) {
+        if (this._length === 0)
+          return null;
+        this._length -= 1;
+        return this.toObject(options);
+      }
+    };
+    exports.ExplainedCursorResponse = ExplainedCursorResponse;
+  }
+});
+
+// node_modules/mongodb/lib/write_concern.js
+var require_write_concern2 = __commonJS({
+  "node_modules/mongodb/lib/write_concern.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.throwIfWriteConcernError = exports.WriteConcern = exports.WRITE_CONCERN_KEYS = void 0;
+    var responses_1 = require_responses2();
+    var error_1 = require_error3();
+    exports.WRITE_CONCERN_KEYS = ["w", "wtimeout", "j", "journal", "fsync"];
+    var WriteConcern = class {
+      constructor(w, wtimeoutMS, journal, fsync) {
+        if (w != null) {
+          if (!Number.isNaN(Number(w))) {
+            this.w = Number(w);
+          } else {
+            this.w = w;
+          }
+        }
+        if (wtimeoutMS != null) {
+          this.wtimeoutMS = this.wtimeout = wtimeoutMS;
+        }
+        if (journal != null) {
+          this.journal = this.j = journal;
+        }
+        if (fsync != null) {
+          this.journal = this.j = fsync ? true : false;
+        }
+      }
+      static apply(command, writeConcern) {
+        const wc = {};
+        if (writeConcern.w != null)
+          wc.w = writeConcern.w;
+        if (writeConcern.wtimeoutMS != null)
+          wc.wtimeout = writeConcern.wtimeoutMS;
+        if (writeConcern.journal != null)
+          wc.j = writeConcern.j;
+        command.writeConcern = wc;
+        return command;
+      }
+      static fromOptions(options, inherit) {
+        if (options == null)
+          return void 0;
+        inherit = inherit ?? {};
+        let opts;
+        if (typeof options === "string" || typeof options === "number") {
+          opts = { w: options };
+        } else if (options instanceof WriteConcern) {
+          opts = options;
+        } else {
+          opts = options.writeConcern;
+        }
+        const parentOpts = inherit instanceof WriteConcern ? inherit : inherit.writeConcern;
+        const { w = void 0, wtimeout = void 0, j = void 0, fsync = void 0, journal = void 0, wtimeoutMS = void 0 } = {
+          ...parentOpts,
+          ...opts
+        };
+        if (w != null || wtimeout != null || wtimeoutMS != null || j != null || journal != null || fsync != null) {
+          return new WriteConcern(w, wtimeout ?? wtimeoutMS, j ?? journal, fsync);
+        }
+        return void 0;
+      }
+    };
+    exports.WriteConcern = WriteConcern;
+    function throwIfWriteConcernError(response) {
+      if (typeof response === "object" && response != null) {
+        const writeConcernError = responses_1.MongoDBResponse.is(response) && response.has("writeConcernError") ? response.toObject() : !responses_1.MongoDBResponse.is(response) && "writeConcernError" in response ? response : null;
+        if (writeConcernError != null) {
+          throw new error_1.MongoWriteConcernError(writeConcernError);
+        }
+      }
+    }
+    exports.throwIfWriteConcernError = throwIfWriteConcernError;
+  }
+});
+
+// node_modules/mongodb/lib/utils.js
+var require_utils5 = __commonJS({
+  "node_modules/mongodb/lib/utils.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.COSMOS_DB_CHECK = exports.DOCUMENT_DB_CHECK = exports.request = exports.get = exports.matchesParentDomain = exports.parseUnsignedInteger = exports.parseInteger = exports.compareObjectId = exports.commandSupportsReadConcern = exports.shuffle = exports.supportsRetryableWrites = exports.enumToString = exports.emitWarningOnce = exports.emitWarning = exports.MONGODB_WARNING_CODE = exports.DEFAULT_PK_FACTORY = exports.HostAddress = exports.BufferPool = exports.List = exports.deepCopy = exports.isRecord = exports.setDifference = exports.isHello = exports.isSuperset = exports.resolveOptions = exports.hasAtomicOperators = exports.calculateDurationInMs = exports.now = exports.makeStateMachine = exports.errorStrictEqual = exports.arrayStrictEqual = exports.maxWireVersion = exports.uuidV4 = exports.makeCounter = exports.MongoDBCollectionNamespace = exports.MongoDBNamespace = exports.ns = exports.getTopology = exports.decorateWithExplain = exports.decorateWithReadConcern = exports.decorateWithCollation = exports.isPromiseLike = exports.applyRetryableWrites = exports.filterOptions = exports.mergeOptions = exports.isObject = exports.normalizeHintField = exports.hostMatchesWildcards = exports.isUint8Array = exports.ByteUtils = void 0;
+    exports.decorateDecryptionResult = exports.noop = exports.fileIsAccessible = exports.maybeAddIdToDocuments = exports.once = exports.randomBytes = exports.squashError = exports.promiseWithResolvers = exports.isHostMatch = exports.COSMOS_DB_MSG = exports.DOCUMENT_DB_MSG = void 0;
+    var crypto = require("crypto");
+    var fs_1 = require("fs");
+    var http = require("http");
+    var timers_1 = require("timers");
+    var url = require("url");
+    var url_1 = require("url");
+    var util_1 = require("util");
+    var bson_1 = require_bson3();
+    var constants_1 = require_constants4();
+    var constants_2 = require_constants5();
+    var error_1 = require_error3();
+    var read_concern_1 = require_read_concern2();
+    var read_preference_1 = require_read_preference2();
+    var common_1 = require_common5();
+    var write_concern_1 = require_write_concern2();
+    exports.ByteUtils = {
+      toLocalBufferType(buffer) {
+        return Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+      },
+      equals(seqA, seqB) {
+        return exports.ByteUtils.toLocalBufferType(seqA).equals(seqB);
+      },
+      compare(seqA, seqB) {
+        return exports.ByteUtils.toLocalBufferType(seqA).compare(seqB);
+      },
+      toBase64(uint8array) {
+        return exports.ByteUtils.toLocalBufferType(uint8array).toString("base64");
+      }
+    };
+    function isUint8Array(value) {
+      return value != null && typeof value === "object" && Symbol.toStringTag in value && value[Symbol.toStringTag] === "Uint8Array";
+    }
+    exports.isUint8Array = isUint8Array;
+    function hostMatchesWildcards(host, wildcards) {
+      for (const wildcard of wildcards) {
+        if (host === wildcard || wildcard.startsWith("*.") && host?.endsWith(wildcard.substring(2, wildcard.length)) || wildcard.startsWith("*/") && host?.endsWith(wildcard.substring(2, wildcard.length))) {
+          return true;
+        }
+      }
+      return false;
+    }
+    exports.hostMatchesWildcards = hostMatchesWildcards;
+    function normalizeHintField(hint) {
+      let finalHint = void 0;
+      if (typeof hint === "string") {
+        finalHint = hint;
+      } else if (Array.isArray(hint)) {
+        finalHint = {};
+        hint.forEach((param) => {
+          finalHint[param] = 1;
+        });
+      } else if (hint != null && typeof hint === "object") {
+        finalHint = {};
+        for (const name in hint) {
+          finalHint[name] = hint[name];
+        }
+      }
+      return finalHint;
+    }
+    exports.normalizeHintField = normalizeHintField;
+    var TO_STRING = (object) => Object.prototype.toString.call(object);
+    function isObject(arg) {
+      return "[object Object]" === TO_STRING(arg);
+    }
+    exports.isObject = isObject;
+    function mergeOptions(target, source) {
+      return { ...target, ...source };
+    }
+    exports.mergeOptions = mergeOptions;
+    function filterOptions(options, names) {
+      const filterOptions2 = {};
+      for (const name in options) {
+        if (names.includes(name)) {
+          filterOptions2[name] = options[name];
+        }
+      }
+      return filterOptions2;
+    }
+    exports.filterOptions = filterOptions;
+    function applyRetryableWrites(target, db) {
+      if (db && db.s.options?.retryWrites) {
+        target.retryWrites = true;
+      }
+      return target;
+    }
+    exports.applyRetryableWrites = applyRetryableWrites;
+    function isPromiseLike(value) {
+      return value != null && typeof value === "object" && "then" in value && typeof value.then === "function";
+    }
+    exports.isPromiseLike = isPromiseLike;
+    function decorateWithCollation(command, target, options) {
+      const capabilities = getTopology(target).capabilities;
+      if (options.collation && typeof options.collation === "object") {
+        if (capabilities && capabilities.commandsTakeCollation) {
+          command.collation = options.collation;
+        } else {
+          throw new error_1.MongoCompatibilityError(`Current topology does not support collation`);
+        }
+      }
+    }
+    exports.decorateWithCollation = decorateWithCollation;
+    function decorateWithReadConcern(command, coll, options) {
+      if (options && options.session && options.session.inTransaction()) {
+        return;
+      }
+      const readConcern = Object.assign({}, command.readConcern || {});
+      if (coll.s.readConcern) {
+        Object.assign(readConcern, coll.s.readConcern);
+      }
+      if (Object.keys(readConcern).length > 0) {
+        Object.assign(command, { readConcern });
+      }
+    }
+    exports.decorateWithReadConcern = decorateWithReadConcern;
+    function decorateWithExplain(command, explain) {
+      if (command.explain) {
+        return command;
+      }
+      return { explain: command, verbosity: explain.verbosity };
+    }
+    exports.decorateWithExplain = decorateWithExplain;
+    function getTopology(provider) {
+      if ("topology" in provider && provider.topology) {
+        return provider.topology;
+      } else if ("client" in provider && provider.client.topology) {
+        return provider.client.topology;
+      }
+      throw new error_1.MongoNotConnectedError("MongoClient must be connected to perform this operation");
+    }
+    exports.getTopology = getTopology;
+    function ns(ns2) {
+      return MongoDBNamespace.fromString(ns2);
+    }
+    exports.ns = ns;
+    var MongoDBNamespace = class {
+      constructor(db, collection) {
+        this.db = db;
+        this.collection = collection;
+        this.collection = collection === "" ? void 0 : collection;
+      }
+      toString() {
+        return this.collection ? `${this.db}.${this.collection}` : this.db;
+      }
+      withCollection(collection) {
+        return new MongoDBCollectionNamespace(this.db, collection);
+      }
+      static fromString(namespace) {
+        if (typeof namespace !== "string" || namespace === "") {
+          throw new error_1.MongoRuntimeError(`Cannot parse namespace from "${namespace}"`);
+        }
+        const [db, ...collectionParts] = namespace.split(".");
+        const collection = collectionParts.join(".");
+        return new MongoDBNamespace(db, collection === "" ? void 0 : collection);
+      }
+    };
+    exports.MongoDBNamespace = MongoDBNamespace;
+    var MongoDBCollectionNamespace = class extends MongoDBNamespace {
+      constructor(db, collection) {
+        super(db, collection);
+        this.collection = collection;
+      }
+      static fromString(namespace) {
+        return super.fromString(namespace);
+      }
+    };
+    exports.MongoDBCollectionNamespace = MongoDBCollectionNamespace;
+    function* makeCounter(seed = 0) {
+      let count = seed;
+      while (true) {
+        const newCount = count;
+        count += 1;
+        yield newCount;
+      }
+    }
+    exports.makeCounter = makeCounter;
+    function uuidV4() {
+      const result = crypto.randomBytes(16);
+      result[6] = result[6] & 15 | 64;
+      result[8] = result[8] & 63 | 128;
+      return result;
+    }
+    exports.uuidV4 = uuidV4;
+    function maxWireVersion(topologyOrServer) {
+      if (topologyOrServer) {
+        if (topologyOrServer.loadBalanced || topologyOrServer.serverApi?.version) {
+          return constants_1.MAX_SUPPORTED_WIRE_VERSION;
+        }
+        if (topologyOrServer.hello) {
+          return topologyOrServer.hello.maxWireVersion;
+        }
+        if ("lastHello" in topologyOrServer && typeof topologyOrServer.lastHello === "function") {
+          const lastHello = topologyOrServer.lastHello();
+          if (lastHello) {
+            return lastHello.maxWireVersion;
+          }
+        }
+        if (topologyOrServer.description && "maxWireVersion" in topologyOrServer.description && topologyOrServer.description.maxWireVersion != null) {
+          return topologyOrServer.description.maxWireVersion;
+        }
+      }
+      return 0;
+    }
+    exports.maxWireVersion = maxWireVersion;
+    function arrayStrictEqual(arr, arr2) {
+      if (!Array.isArray(arr) || !Array.isArray(arr2)) {
+        return false;
+      }
+      return arr.length === arr2.length && arr.every((elt, idx) => elt === arr2[idx]);
+    }
+    exports.arrayStrictEqual = arrayStrictEqual;
+    function errorStrictEqual(lhs, rhs) {
+      if (lhs === rhs) {
+        return true;
+      }
+      if (!lhs || !rhs) {
+        return lhs === rhs;
+      }
+      if (lhs == null && rhs != null || lhs != null && rhs == null) {
+        return false;
+      }
+      if (lhs.constructor.name !== rhs.constructor.name) {
+        return false;
+      }
+      if (lhs.message !== rhs.message) {
+        return false;
+      }
+      return true;
+    }
+    exports.errorStrictEqual = errorStrictEqual;
+    function makeStateMachine(stateTable) {
+      return function stateTransition(target, newState) {
+        const legalStates = stateTable[target.s.state];
+        if (legalStates && legalStates.indexOf(newState) < 0) {
+          throw new error_1.MongoRuntimeError(`illegal state transition from [${target.s.state}] => [${newState}], allowed: [${legalStates}]`);
+        }
+        target.emit("stateChanged", target.s.state, newState);
+        target.s.state = newState;
+      };
+    }
+    exports.makeStateMachine = makeStateMachine;
+    function now() {
+      const hrtime = process.hrtime();
+      return Math.floor(hrtime[0] * 1e3 + hrtime[1] / 1e6);
+    }
+    exports.now = now;
+    function calculateDurationInMs(started) {
+      if (typeof started !== "number") {
+        return -1;
+      }
+      const elapsed = now() - started;
+      return elapsed < 0 ? 0 : elapsed;
+    }
+    exports.calculateDurationInMs = calculateDurationInMs;
+    function hasAtomicOperators(doc) {
+      if (Array.isArray(doc)) {
+        for (const document2 of doc) {
+          if (hasAtomicOperators(document2)) {
+            return true;
+          }
+        }
+        return false;
+      }
+      const keys = Object.keys(doc);
+      return keys.length > 0 && keys[0][0] === "$";
+    }
+    exports.hasAtomicOperators = hasAtomicOperators;
+    function resolveOptions(parent, options) {
+      const result = Object.assign({}, options, (0, bson_1.resolveBSONOptions)(options, parent));
+      const session = options?.session;
+      if (!session?.inTransaction()) {
+        const readConcern = read_concern_1.ReadConcern.fromOptions(options) ?? parent?.readConcern;
+        if (readConcern) {
+          result.readConcern = readConcern;
+        }
+        const writeConcern = write_concern_1.WriteConcern.fromOptions(options) ?? parent?.writeConcern;
+        if (writeConcern) {
+          result.writeConcern = writeConcern;
+        }
+      }
+      const readPreference = read_preference_1.ReadPreference.fromOptions(options) ?? parent?.readPreference;
+      if (readPreference) {
+        result.readPreference = readPreference;
+      }
+      return result;
+    }
+    exports.resolveOptions = resolveOptions;
+    function isSuperset(set, subset) {
+      set = Array.isArray(set) ? new Set(set) : set;
+      subset = Array.isArray(subset) ? new Set(subset) : subset;
+      for (const elem of subset) {
+        if (!set.has(elem)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    exports.isSuperset = isSuperset;
+    function isHello(doc) {
+      return doc[constants_2.LEGACY_HELLO_COMMAND] || doc.hello ? true : false;
+    }
+    exports.isHello = isHello;
+    function setDifference(setA, setB) {
+      const difference = new Set(setA);
+      for (const elem of setB) {
+        difference.delete(elem);
+      }
+      return difference;
+    }
+    exports.setDifference = setDifference;
+    var HAS_OWN = (object, prop) => Object.prototype.hasOwnProperty.call(object, prop);
+    function isRecord(value, requiredKeys = void 0) {
+      if (!isObject(value)) {
+        return false;
+      }
+      const ctor = value.constructor;
+      if (ctor && ctor.prototype) {
+        if (!isObject(ctor.prototype)) {
+          return false;
+        }
+        if (!HAS_OWN(ctor.prototype, "isPrototypeOf")) {
+          return false;
+        }
+      }
+      if (requiredKeys) {
+        const keys = Object.keys(value);
+        return isSuperset(keys, requiredKeys);
+      }
+      return true;
+    }
+    exports.isRecord = isRecord;
+    function deepCopy(value) {
+      if (value == null) {
+        return value;
+      } else if (Array.isArray(value)) {
+        return value.map((item) => deepCopy(item));
+      } else if (isRecord(value)) {
+        const res = {};
+        for (const key in value) {
+          res[key] = deepCopy(value[key]);
+        }
+        return res;
+      }
+      const ctor = value.constructor;
+      if (ctor) {
+        switch (ctor.name.toLowerCase()) {
+          case "date":
+            return new ctor(Number(value));
+          case "map":
+            return new Map(value);
+          case "set":
+            return new Set(value);
+          case "buffer":
+            return Buffer.from(value);
+        }
+      }
+      return value;
+    }
+    exports.deepCopy = deepCopy;
+    var List = class {
+      get length() {
+        return this.count;
+      }
+      get [Symbol.toStringTag]() {
+        return "List";
+      }
+      constructor() {
+        this.count = 0;
+        this.head = {
+          next: null,
+          prev: null,
+          value: null
+        };
+        this.head.next = this.head;
+        this.head.prev = this.head;
+      }
+      toArray() {
+        return Array.from(this);
+      }
+      toString() {
+        return `head <=> ${this.toArray().join(" <=> ")} <=> head`;
+      }
+      *[Symbol.iterator]() {
+        for (const node of this.nodes()) {
+          yield node.value;
+        }
+      }
+      *nodes() {
+        let ptr = this.head.next;
+        while (ptr !== this.head) {
+          const { next } = ptr;
+          yield ptr;
+          ptr = next;
+        }
+      }
+      push(value) {
+        this.count += 1;
+        const newNode = {
+          next: this.head,
+          prev: this.head.prev,
+          value
+        };
+        this.head.prev.next = newNode;
+        this.head.prev = newNode;
+      }
+      pushMany(iterable) {
+        for (const value of iterable) {
+          this.push(value);
+        }
+      }
+      unshift(value) {
+        this.count += 1;
+        const newNode = {
+          next: this.head.next,
+          prev: this.head,
+          value
+        };
+        this.head.next.prev = newNode;
+        this.head.next = newNode;
+      }
+      remove(node) {
+        if (node === this.head || this.length === 0) {
+          return null;
+        }
+        this.count -= 1;
+        const prevNode = node.prev;
+        const nextNode = node.next;
+        prevNode.next = nextNode;
+        nextNode.prev = prevNode;
+        return node.value;
+      }
+      shift() {
+        return this.remove(this.head.next);
+      }
+      pop() {
+        return this.remove(this.head.prev);
+      }
+      prune(filter) {
+        for (const node of this.nodes()) {
+          if (filter(node.value)) {
+            this.remove(node);
+          }
+        }
+      }
+      clear() {
+        this.count = 0;
+        this.head.next = this.head;
+        this.head.prev = this.head;
+      }
+      first() {
+        return this.head.next.value;
+      }
+      last() {
+        return this.head.prev.value;
+      }
+    };
+    exports.List = List;
+    var BufferPool = class {
+      constructor() {
+        this.buffers = new List();
+        this.totalByteLength = 0;
+      }
+      get length() {
+        return this.totalByteLength;
+      }
+      append(buffer) {
+        this.buffers.push(buffer);
+        this.totalByteLength += buffer.length;
+      }
+      getInt32() {
+        if (this.totalByteLength < 4) {
+          return null;
+        }
+        const firstBuffer = this.buffers.first();
+        if (firstBuffer != null && firstBuffer.byteLength >= 4) {
+          return firstBuffer.readInt32LE(0);
+        }
+        const top4Bytes = this.read(4);
+        const value = top4Bytes.readInt32LE(0);
+        this.totalByteLength += 4;
+        this.buffers.unshift(top4Bytes);
+        return value;
+      }
+      read(size) {
+        if (typeof size !== "number" || size < 0) {
+          throw new error_1.MongoInvalidArgumentError('Argument "size" must be a non-negative number');
+        }
+        if (size > this.totalByteLength) {
+          return Buffer.alloc(0);
+        }
+        const result = Buffer.allocUnsafe(size);
+        for (let bytesRead = 0; bytesRead < size; ) {
+          const buffer = this.buffers.shift();
+          if (buffer == null) {
+            break;
+          }
+          const bytesRemaining = size - bytesRead;
+          const bytesReadable = Math.min(bytesRemaining, buffer.byteLength);
+          const bytes = buffer.subarray(0, bytesReadable);
+          result.set(bytes, bytesRead);
+          bytesRead += bytesReadable;
+          this.totalByteLength -= bytesReadable;
+          if (bytesReadable < buffer.byteLength) {
+            this.buffers.unshift(buffer.subarray(bytesReadable));
+          }
+        }
+        return result;
+      }
+    };
+    exports.BufferPool = BufferPool;
+    var HostAddress = class {
+      constructor(hostString) {
+        this.host = void 0;
+        this.port = void 0;
+        this.socketPath = void 0;
+        this.isIPv6 = false;
+        const escapedHost = hostString.split(" ").join("%20");
+        if (escapedHost.endsWith(".sock")) {
+          this.socketPath = decodeURIComponent(escapedHost);
+          return;
+        }
+        const urlString = `iLoveJS://${escapedHost}`;
+        let url2;
+        try {
+          url2 = new url_1.URL(urlString);
+        } catch (urlError) {
+          const runtimeError = new error_1.MongoRuntimeError(`Unable to parse ${escapedHost} with URL`);
+          runtimeError.cause = urlError;
+          throw runtimeError;
+        }
+        const hostname = url2.hostname;
+        const port = url2.port;
+        let normalized = decodeURIComponent(hostname).toLowerCase();
+        if (normalized.startsWith("[") && normalized.endsWith("]")) {
+          this.isIPv6 = true;
+          normalized = normalized.substring(1, hostname.length - 1);
+        }
+        this.host = normalized.toLowerCase();
+        if (typeof port === "number") {
+          this.port = port;
+        } else if (typeof port === "string" && port !== "") {
+          this.port = Number.parseInt(port, 10);
+        } else {
+          this.port = 27017;
+        }
+        if (this.port === 0) {
+          throw new error_1.MongoParseError("Invalid port (zero) with hostname");
+        }
+        Object.freeze(this);
+      }
+      [Symbol.for("nodejs.util.inspect.custom")]() {
+        return this.inspect();
+      }
+      inspect() {
+        return `new HostAddress('${this.toString()}')`;
+      }
+      toString() {
+        if (typeof this.host === "string") {
+          if (this.isIPv6) {
+            return `[${this.host}]:${this.port}`;
+          }
+          return `${this.host}:${this.port}`;
+        }
+        return `${this.socketPath}`;
+      }
+      static fromString(s) {
+        return new HostAddress(s);
+      }
+      static fromHostPort(host, port) {
+        if (host.includes(":")) {
+          host = `[${host}]`;
+        }
+        return HostAddress.fromString(`${host}:${port}`);
+      }
+      static fromSrvRecord({ name, port }) {
+        return HostAddress.fromHostPort(name, port);
+      }
+      toHostPort() {
+        if (this.socketPath) {
+          return { host: this.socketPath, port: 0 };
+        }
+        const host = this.host ?? "";
+        const port = this.port ?? 0;
+        return { host, port };
+      }
+    };
+    exports.HostAddress = HostAddress;
+    exports.DEFAULT_PK_FACTORY = {
+      createPk() {
+        return new bson_1.ObjectId();
+      }
+    };
+    exports.MONGODB_WARNING_CODE = "MONGODB DRIVER";
+    function emitWarning(message) {
+      return process.emitWarning(message, { code: exports.MONGODB_WARNING_CODE });
+    }
+    exports.emitWarning = emitWarning;
+    var emittedWarnings = /* @__PURE__ */ new Set();
+    function emitWarningOnce(message) {
+      if (!emittedWarnings.has(message)) {
+        emittedWarnings.add(message);
+        return emitWarning(message);
+      }
+    }
+    exports.emitWarningOnce = emitWarningOnce;
+    function enumToString(en) {
+      return Object.values(en).join(", ");
+    }
+    exports.enumToString = enumToString;
+    function supportsRetryableWrites(server) {
+      if (!server) {
+        return false;
+      }
+      if (server.loadBalanced) {
+        return true;
+      }
+      if (server.description.logicalSessionTimeoutMinutes != null) {
+        if (server.description.type !== common_1.ServerType.Standalone) {
+          return true;
+        }
+      }
+      return false;
+    }
+    exports.supportsRetryableWrites = supportsRetryableWrites;
+    function shuffle(sequence, limit = 0) {
+      const items = Array.from(sequence);
+      if (limit > items.length) {
+        throw new error_1.MongoRuntimeError("Limit must be less than the number of items");
+      }
+      let remainingItemsToShuffle = items.length;
+      const lowerBound = limit % items.length === 0 ? 1 : items.length - limit;
+      while (remainingItemsToShuffle > lowerBound) {
+        const randomIndex = Math.floor(Math.random() * remainingItemsToShuffle);
+        remainingItemsToShuffle -= 1;
+        const swapHold = items[remainingItemsToShuffle];
+        items[remainingItemsToShuffle] = items[randomIndex];
+        items[randomIndex] = swapHold;
+      }
+      return limit % items.length === 0 ? items : items.slice(lowerBound);
+    }
+    exports.shuffle = shuffle;
+    function commandSupportsReadConcern(command) {
+      if (command.aggregate || command.count || command.distinct || command.find || command.geoNear) {
+        return true;
+      }
+      return false;
+    }
+    exports.commandSupportsReadConcern = commandSupportsReadConcern;
+    function compareObjectId(oid1, oid2) {
+      if (oid1 == null && oid2 == null) {
+        return 0;
+      }
+      if (oid1 == null) {
+        return -1;
+      }
+      if (oid2 == null) {
+        return 1;
+      }
+      return exports.ByteUtils.compare(oid1.id, oid2.id);
+    }
+    exports.compareObjectId = compareObjectId;
+    function parseInteger(value) {
+      if (typeof value === "number")
+        return Math.trunc(value);
+      const parsedValue = Number.parseInt(String(value), 10);
+      return Number.isNaN(parsedValue) ? null : parsedValue;
+    }
+    exports.parseInteger = parseInteger;
+    function parseUnsignedInteger(value) {
+      const parsedInt = parseInteger(value);
+      return parsedInt != null && parsedInt >= 0 ? parsedInt : null;
+    }
+    exports.parseUnsignedInteger = parseUnsignedInteger;
+    function matchesParentDomain(address, srvHost) {
+      const normalizedAddress = address.endsWith(".") ? address.slice(0, address.length - 1) : address;
+      const normalizedSrvHost = srvHost.endsWith(".") ? srvHost.slice(0, srvHost.length - 1) : srvHost;
+      const allCharacterBeforeFirstDot = /^.*?\./;
+      const addressDomain = `.${normalizedAddress.replace(allCharacterBeforeFirstDot, "")}`;
+      const srvHostDomain = `.${normalizedSrvHost.replace(allCharacterBeforeFirstDot, "")}`;
+      return addressDomain.endsWith(srvHostDomain);
+    }
+    exports.matchesParentDomain = matchesParentDomain;
+    function get(url2, options = {}) {
+      return new Promise((resolve, reject) => {
+        let timeoutId;
+        const request2 = http.get(url2, options, (response) => {
+          response.setEncoding("utf8");
+          let body = "";
+          response.on("data", (chunk) => body += chunk);
+          response.on("end", () => {
+            (0, timers_1.clearTimeout)(timeoutId);
+            resolve({ status: response.statusCode, body });
+          });
+        }).on("error", (error) => {
+          (0, timers_1.clearTimeout)(timeoutId);
+          reject(error);
+        }).end();
+        timeoutId = (0, timers_1.setTimeout)(() => {
+          request2.destroy(new error_1.MongoNetworkTimeoutError(`request timed out after 10 seconds`));
+        }, 1e4);
+      });
+    }
+    exports.get = get;
+    async function request(uri, options = {}) {
+      return await new Promise((resolve, reject) => {
+        const requestOptions = {
+          method: "GET",
+          timeout: 1e4,
+          json: true,
+          ...url.parse(uri),
+          ...options
+        };
+        const req = http.request(requestOptions, (res) => {
+          res.setEncoding("utf8");
+          let data = "";
+          res.on("data", (d) => {
+            data += d;
+          });
+          res.once("end", () => {
+            if (options.json === false) {
+              resolve(data);
+              return;
+            }
+            try {
+              const parsed = JSON.parse(data);
+              resolve(parsed);
+            } catch {
+              reject(new error_1.MongoRuntimeError(`Invalid JSON response: "${data}"`));
+            }
+          });
+        });
+        req.once("timeout", () => req.destroy(new error_1.MongoNetworkTimeoutError(`Network request to ${uri} timed out after ${options.timeout} ms`)));
+        req.once("error", (error) => reject(error));
+        req.end();
+      });
+    }
+    exports.request = request;
+    exports.DOCUMENT_DB_CHECK = /(\.docdb\.amazonaws\.com$)|(\.docdb-elastic\.amazonaws\.com$)/;
+    exports.COSMOS_DB_CHECK = /\.cosmos\.azure\.com$/;
+    exports.DOCUMENT_DB_MSG = "You appear to be connected to a DocumentDB cluster. For more information regarding feature compatibility and support please visit https://www.mongodb.com/supportability/documentdb";
+    exports.COSMOS_DB_MSG = "You appear to be connected to a CosmosDB cluster. For more information regarding feature compatibility and support please visit https://www.mongodb.com/supportability/cosmosdb";
+    function isHostMatch(match, host) {
+      return host && match.test(host.toLowerCase()) ? true : false;
+    }
+    exports.isHostMatch = isHostMatch;
+    function promiseWithResolvers() {
+      let resolve;
+      let reject;
+      const promise = new Promise(function withResolversExecutor(promiseResolve, promiseReject) {
+        resolve = promiseResolve;
+        reject = promiseReject;
+      });
+      return { promise, resolve, reject };
+    }
+    exports.promiseWithResolvers = promiseWithResolvers;
+    function squashError(_error) {
+      return;
+    }
+    exports.squashError = squashError;
+    exports.randomBytes = (0, util_1.promisify)(crypto.randomBytes);
+    async function once(ee, name) {
+      const { promise, resolve, reject } = promiseWithResolvers();
+      const onEvent = (data) => resolve(data);
+      const onError = (error) => reject(error);
+      ee.once(name, onEvent).once("error", onError);
+      try {
+        const res = await promise;
+        ee.off("error", onError);
+        return res;
+      } catch (error) {
+        ee.off(name, onEvent);
+        throw error;
+      }
+    }
+    exports.once = once;
+    function maybeAddIdToDocuments(coll, docOrDocs, options) {
+      const forceServerObjectId = typeof options.forceServerObjectId === "boolean" ? options.forceServerObjectId : coll.s.db.options?.forceServerObjectId;
+      if (forceServerObjectId === true) {
+        return docOrDocs;
+      }
+      const transform = (doc) => {
+        if (doc._id == null) {
+          doc._id = coll.s.pkFactory.createPk();
+        }
+        return doc;
+      };
+      return Array.isArray(docOrDocs) ? docOrDocs.map(transform) : transform(docOrDocs);
+    }
+    exports.maybeAddIdToDocuments = maybeAddIdToDocuments;
+    async function fileIsAccessible(fileName, mode) {
+      try {
+        await fs_1.promises.access(fileName, mode);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    exports.fileIsAccessible = fileIsAccessible;
+    function noop() {
+      return;
+    }
+    exports.noop = noop;
+    function decorateDecryptionResult(decrypted, original, isTopLevelDecorateCall = true) {
+      if (isTopLevelDecorateCall) {
+        if (Buffer.isBuffer(original)) {
+          original = (0, bson_1.deserialize)(original);
+        }
+        if (Buffer.isBuffer(decrypted)) {
+          throw new error_1.MongoRuntimeError("Expected result of decryption to be deserialized BSON object");
+        }
+      }
+      if (!decrypted || typeof decrypted !== "object")
+        return;
+      for (const k of Object.keys(decrypted)) {
+        const originalValue = original[k];
+        if (originalValue && originalValue._bsontype === "Binary" && originalValue.sub_type === 6) {
+          if (!decrypted[constants_2.kDecoratedKeys]) {
+            Object.defineProperty(decrypted, constants_2.kDecoratedKeys, {
+              value: [],
+              configurable: true,
+              enumerable: false,
+              writable: false
+            });
+          }
+          decrypted[constants_2.kDecoratedKeys].push(k);
+          continue;
+        }
+        decorateDecryptionResult(decrypted[k], originalValue, false);
+      }
+    }
+    exports.decorateDecryptionResult = decorateDecryptionResult;
+  }
+});
+
+// node_modules/mongodb/lib/operations/operation.js
+var require_operation2 = __commonJS({
+  "node_modules/mongodb/lib/operations/operation.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.defineAspects = exports.AbstractOperation = exports.Aspect = void 0;
+    var bson_1 = require_bson3();
+    var read_preference_1 = require_read_preference2();
+    exports.Aspect = {
+      READ_OPERATION: Symbol("READ_OPERATION"),
+      WRITE_OPERATION: Symbol("WRITE_OPERATION"),
+      RETRYABLE: Symbol("RETRYABLE"),
+      EXPLAINABLE: Symbol("EXPLAINABLE"),
+      SKIP_COLLATION: Symbol("SKIP_COLLATION"),
+      CURSOR_CREATING: Symbol("CURSOR_CREATING"),
+      MUST_SELECT_SAME_SERVER: Symbol("MUST_SELECT_SAME_SERVER")
+    };
+    var kSession = Symbol("session");
+    var AbstractOperation = class {
+      constructor(options = {}) {
+        this.readPreference = this.hasAspect(exports.Aspect.WRITE_OPERATION) ? read_preference_1.ReadPreference.primary : read_preference_1.ReadPreference.fromOptions(options) ?? read_preference_1.ReadPreference.primary;
+        this.bsonOptions = (0, bson_1.resolveBSONOptions)(options);
+        this[kSession] = options.session != null ? options.session : void 0;
+        this.options = options;
+        this.bypassPinningCheck = !!options.bypassPinningCheck;
+        this.trySecondaryWrite = false;
+      }
+      hasAspect(aspect) {
+        const ctor = this.constructor;
+        if (ctor.aspects == null) {
+          return false;
+        }
+        return ctor.aspects.has(aspect);
+      }
+      get session() {
+        return this[kSession];
+      }
+      clearSession() {
+        this[kSession] = void 0;
+      }
+      get canRetryRead() {
+        return true;
+      }
+      get canRetryWrite() {
+        return true;
+      }
+    };
+    exports.AbstractOperation = AbstractOperation;
+    function defineAspects(operation, aspects) {
+      if (!Array.isArray(aspects) && !(aspects instanceof Set)) {
+        aspects = [aspects];
+      }
+      aspects = new Set(aspects);
+      Object.defineProperty(operation, "aspects", {
+        value: aspects,
+        writable: false
+      });
+      return aspects;
+    }
+    exports.defineAspects = defineAspects;
+  }
+});
+
+// node_modules/mongodb/lib/operations/execute_operation.js
+var require_execute_operation2 = __commonJS({
+  "node_modules/mongodb/lib/operations/execute_operation.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.executeOperation = void 0;
+    var error_1 = require_error3();
+    var read_preference_1 = require_read_preference2();
+    var server_selection_1 = require_server_selection2();
+    var utils_1 = require_utils5();
+    var operation_1 = require_operation2();
+    var MMAPv1_RETRY_WRITES_ERROR_CODE = error_1.MONGODB_ERROR_CODES.IllegalOperation;
+    var MMAPv1_RETRY_WRITES_ERROR_MESSAGE = "This MongoDB deployment does not support retryable writes. Please add retryWrites=false to your connection string.";
+    async function executeOperation(client, operation) {
+      if (!(operation instanceof operation_1.AbstractOperation)) {
+        throw new error_1.MongoRuntimeError("This method requires a valid operation instance");
+      }
+      if (client.topology == null) {
+        if (client.s.hasBeenClosed) {
+          throw new error_1.MongoNotConnectedError("Client must be connected before running operations");
+        }
+        client.s.options[Symbol.for("@@mdb.skipPingOnConnect")] = true;
+        try {
+          await client.connect();
+        } finally {
+          delete client.s.options[Symbol.for("@@mdb.skipPingOnConnect")];
+        }
+      }
+      const { topology } = client;
+      if (topology == null) {
+        throw new error_1.MongoRuntimeError("client.connect did not create a topology but also did not throw");
+      }
+      let session = operation.session;
+      let owner;
+      if (session == null) {
+        owner = Symbol();
+        session = client.startSession({ owner, explicit: false });
+      } else if (session.hasEnded) {
+        throw new error_1.MongoExpiredSessionError("Use of expired sessions is not permitted");
+      } else if (session.snapshotEnabled && !topology.capabilities.supportsSnapshotReads) {
+        throw new error_1.MongoCompatibilityError("Snapshot reads require MongoDB 5.0 or later");
+      } else if (session.client !== client) {
+        throw new error_1.MongoInvalidArgumentError("ClientSession must be from the same MongoClient");
+      }
+      if (session.explicit && session?.timeoutMS != null && operation.options.timeoutMS != null) {
+        throw new error_1.MongoInvalidArgumentError("Do not specify timeoutMS on operation if already specified on an explicit session");
+      }
+      const readPreference = operation.readPreference ?? read_preference_1.ReadPreference.primary;
+      const inTransaction = !!session?.inTransaction();
+      const hasReadAspect = operation.hasAspect(operation_1.Aspect.READ_OPERATION);
+      const hasWriteAspect = operation.hasAspect(operation_1.Aspect.WRITE_OPERATION);
+      if (inTransaction && !readPreference.equals(read_preference_1.ReadPreference.primary) && (hasReadAspect || operation.commandName === "runCommand")) {
+        throw new error_1.MongoTransactionError(`Read preference in a transaction must be primary, not: ${readPreference.mode}`);
+      }
+      if (session?.isPinned && session.transaction.isCommitted && !operation.bypassPinningCheck) {
+        session.unpin();
+      }
+      let selector;
+      if (operation.hasAspect(operation_1.Aspect.MUST_SELECT_SAME_SERVER)) {
+        selector = (0, server_selection_1.sameServerSelector)(operation.server?.description);
+      } else if (operation.trySecondaryWrite) {
+        selector = (0, server_selection_1.secondaryWritableServerSelector)(topology.commonWireVersion, readPreference);
+      } else {
+        selector = readPreference;
+      }
+      const server = await topology.selectServer(selector, {
+        session,
+        operationName: operation.commandName
+      });
+      if (session == null) {
+        return await operation.execute(server, void 0);
+      }
+      if (!operation.hasAspect(operation_1.Aspect.RETRYABLE)) {
+        try {
+          return await operation.execute(server, session);
+        } finally {
+          if (session?.owner != null && session.owner === owner) {
+            try {
+              await session.endSession();
+            } catch (error) {
+              (0, utils_1.squashError)(error);
+            }
+          }
+        }
+      }
+      const willRetryRead = topology.s.options.retryReads && !inTransaction && operation.canRetryRead;
+      const willRetryWrite = topology.s.options.retryWrites && !inTransaction && (0, utils_1.supportsRetryableWrites)(server) && operation.canRetryWrite;
+      const willRetry = hasReadAspect && willRetryRead || hasWriteAspect && willRetryWrite;
+      if (hasWriteAspect && willRetryWrite) {
+        operation.options.willRetryWrite = true;
+        session.incrementTransactionNumber();
+      }
+      try {
+        return await operation.execute(server, session);
+      } catch (operationError) {
+        if (willRetry && operationError instanceof error_1.MongoError) {
+          return await retryOperation(operation, operationError, {
+            session,
+            topology,
+            selector,
+            previousServer: server.description
+          });
+        }
+        throw operationError;
+      } finally {
+        if (session?.owner != null && session.owner === owner) {
+          try {
+            await session.endSession();
+          } catch (error) {
+            (0, utils_1.squashError)(error);
+          }
+        }
+      }
+    }
+    exports.executeOperation = executeOperation;
+    async function retryOperation(operation, originalError, { session, topology, selector, previousServer }) {
+      const isWriteOperation = operation.hasAspect(operation_1.Aspect.WRITE_OPERATION);
+      const isReadOperation = operation.hasAspect(operation_1.Aspect.READ_OPERATION);
+      if (isWriteOperation && originalError.code === MMAPv1_RETRY_WRITES_ERROR_CODE) {
+        throw new error_1.MongoServerError({
+          message: MMAPv1_RETRY_WRITES_ERROR_MESSAGE,
+          errmsg: MMAPv1_RETRY_WRITES_ERROR_MESSAGE,
+          originalError
+        });
+      }
+      if (isWriteOperation && !(0, error_1.isRetryableWriteError)(originalError)) {
+        throw originalError;
+      }
+      if (isReadOperation && !(0, error_1.isRetryableReadError)(originalError)) {
+        throw originalError;
+      }
+      if (originalError instanceof error_1.MongoNetworkError && session.isPinned && !session.inTransaction() && operation.hasAspect(operation_1.Aspect.CURSOR_CREATING)) {
+        session.unpin({ force: true, forceClear: true });
+      }
+      const server = await topology.selectServer(selector, {
+        session,
+        operationName: operation.commandName,
+        previousServer
+      });
+      if (isWriteOperation && !(0, utils_1.supportsRetryableWrites)(server)) {
+        throw new error_1.MongoUnexpectedServerResponseError("Selected server does not support retryable writes");
+      }
+      try {
+        return await operation.execute(server, session);
+      } catch (retryError) {
+        if (retryError instanceof error_1.MongoError && retryError.hasErrorLabel(error_1.MongoErrorLabel.NoWritesPerformed)) {
+          throw originalError;
+        }
+        throw retryError;
+      }
+    }
+  }
+});
+
+// node_modules/mongodb/lib/explain.js
+var require_explain2 = __commonJS({
+  "node_modules/mongodb/lib/explain.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Explain = exports.ExplainVerbosity = void 0;
+    var error_1 = require_error3();
+    exports.ExplainVerbosity = Object.freeze({
+      queryPlanner: "queryPlanner",
+      queryPlannerExtended: "queryPlannerExtended",
+      executionStats: "executionStats",
+      allPlansExecution: "allPlansExecution"
+    });
+    var Explain = class {
+      constructor(verbosity) {
+        if (typeof verbosity === "boolean") {
+          this.verbosity = verbosity ? exports.ExplainVerbosity.allPlansExecution : exports.ExplainVerbosity.queryPlanner;
+        } else {
+          this.verbosity = verbosity;
+        }
+      }
+      static fromOptions(options) {
+        if (options?.explain == null)
+          return;
+        const explain = options.explain;
+        if (typeof explain === "boolean" || typeof explain === "string") {
+          return new Explain(explain);
+        }
+        throw new error_1.MongoInvalidArgumentError('Field "explain" must be a string or a boolean');
+      }
+    };
+    exports.Explain = Explain;
+  }
+});
+
+// node_modules/mongodb/lib/operations/command.js
+var require_command2 = __commonJS({
+  "node_modules/mongodb/lib/operations/command.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.CommandOperation = void 0;
+    var error_1 = require_error3();
+    var explain_1 = require_explain2();
+    var read_concern_1 = require_read_concern2();
+    var server_selection_1 = require_server_selection2();
+    var utils_1 = require_utils5();
+    var write_concern_1 = require_write_concern2();
+    var operation_1 = require_operation2();
+    var CommandOperation = class extends operation_1.AbstractOperation {
+      constructor(parent, options) {
+        super(options);
+        this.options = options ?? {};
+        const dbNameOverride = options?.dbName || options?.authdb;
+        if (dbNameOverride) {
+          this.ns = new utils_1.MongoDBNamespace(dbNameOverride, "$cmd");
+        } else {
+          this.ns = parent ? parent.s.namespace.withCollection("$cmd") : new utils_1.MongoDBNamespace("admin", "$cmd");
+        }
+        this.readConcern = read_concern_1.ReadConcern.fromOptions(options);
+        this.writeConcern = write_concern_1.WriteConcern.fromOptions(options);
+        if (this.hasAspect(operation_1.Aspect.EXPLAINABLE)) {
+          this.explain = explain_1.Explain.fromOptions(options);
+        } else if (options?.explain != null) {
+          throw new error_1.MongoInvalidArgumentError(`Option "explain" is not supported on this command`);
+        }
+      }
+      get canRetryWrite() {
+        if (this.hasAspect(operation_1.Aspect.EXPLAINABLE)) {
+          return this.explain == null;
+        }
+        return true;
+      }
+      async executeCommand(server, session, cmd, responseType) {
+        this.server = server;
+        const options = {
+          ...this.options,
+          ...this.bsonOptions,
+          readPreference: this.readPreference,
+          session
+        };
+        const serverWireVersion = (0, utils_1.maxWireVersion)(server);
+        const inTransaction = this.session && this.session.inTransaction();
+        if (this.readConcern && (0, utils_1.commandSupportsReadConcern)(cmd) && !inTransaction) {
+          Object.assign(cmd, { readConcern: this.readConcern });
+        }
+        if (this.trySecondaryWrite && serverWireVersion < server_selection_1.MIN_SECONDARY_WRITE_WIRE_VERSION) {
+          options.omitReadPreference = true;
+        }
+        if (this.writeConcern && this.hasAspect(operation_1.Aspect.WRITE_OPERATION) && !inTransaction) {
+          write_concern_1.WriteConcern.apply(cmd, this.writeConcern);
+        }
+        if (options.collation && typeof options.collation === "object" && !this.hasAspect(operation_1.Aspect.SKIP_COLLATION)) {
+          Object.assign(cmd, { collation: options.collation });
+        }
+        if (typeof options.maxTimeMS === "number") {
+          cmd.maxTimeMS = options.maxTimeMS;
+        }
+        if (this.hasAspect(operation_1.Aspect.EXPLAINABLE) && this.explain) {
+          cmd = (0, utils_1.decorateWithExplain)(cmd, this.explain);
+        }
+        return await server.command(this.ns, cmd, options, responseType);
+      }
+    };
+    exports.CommandOperation = CommandOperation;
+  }
+});
+
+// node_modules/mongodb/lib/operations/list_databases.js
+var require_list_databases2 = __commonJS({
+  "node_modules/mongodb/lib/operations/list_databases.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ListDatabasesOperation = void 0;
+    var utils_1 = require_utils5();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var ListDatabasesOperation = class extends command_1.CommandOperation {
+      constructor(db, options) {
+        super(db, options);
+        this.options = options ?? {};
+        this.ns = new utils_1.MongoDBNamespace("admin", "$cmd");
+      }
+      get commandName() {
+        return "listDatabases";
+      }
+      async execute(server, session) {
+        const cmd = { listDatabases: 1 };
+        if (typeof this.options.nameOnly === "boolean") {
+          cmd.nameOnly = this.options.nameOnly;
+        }
+        if (this.options.filter) {
+          cmd.filter = this.options.filter;
+        }
+        if (typeof this.options.authorizedDatabases === "boolean") {
+          cmd.authorizedDatabases = this.options.authorizedDatabases;
+        }
+        if ((0, utils_1.maxWireVersion)(server) >= 9 && this.options.comment !== void 0) {
+          cmd.comment = this.options.comment;
+        }
+        return await super.executeCommand(server, session, cmd);
+      }
+    };
+    exports.ListDatabasesOperation = ListDatabasesOperation;
+    (0, operation_1.defineAspects)(ListDatabasesOperation, [operation_1.Aspect.READ_OPERATION, operation_1.Aspect.RETRYABLE]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/remove_user.js
+var require_remove_user2 = __commonJS({
+  "node_modules/mongodb/lib/operations/remove_user.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.RemoveUserOperation = void 0;
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var RemoveUserOperation = class extends command_1.CommandOperation {
+      constructor(db, username, options) {
+        super(db, options);
+        this.options = options;
+        this.username = username;
+      }
+      get commandName() {
+        return "dropUser";
+      }
+      async execute(server, session) {
+        await super.executeCommand(server, session, { dropUser: this.username });
+        return true;
+      }
+    };
+    exports.RemoveUserOperation = RemoveUserOperation;
+    (0, operation_1.defineAspects)(RemoveUserOperation, [operation_1.Aspect.WRITE_OPERATION]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/run_command.js
+var require_run_command2 = __commonJS({
+  "node_modules/mongodb/lib/operations/run_command.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.RunAdminCommandOperation = exports.RunCommandOperation = void 0;
+    var utils_1 = require_utils5();
+    var operation_1 = require_operation2();
+    var RunCommandOperation = class extends operation_1.AbstractOperation {
+      constructor(parent, command, options) {
+        super(options);
+        this.command = command;
+        this.options = options;
+        this.ns = parent.s.namespace.withCollection("$cmd");
+      }
+      get commandName() {
+        return "runCommand";
+      }
+      async execute(server, session) {
+        this.server = server;
+        const res = await server.command(this.ns, this.command, {
+          ...this.options,
+          readPreference: this.readPreference,
+          session
+        }, this.options.responseType);
+        return res;
+      }
+    };
+    exports.RunCommandOperation = RunCommandOperation;
+    var RunAdminCommandOperation = class extends operation_1.AbstractOperation {
+      constructor(command, options) {
+        super(options);
+        this.command = command;
+        this.options = options;
+        this.ns = new utils_1.MongoDBNamespace("admin", "$cmd");
+      }
+      get commandName() {
+        return "runCommand";
+      }
+      async execute(server, session) {
+        this.server = server;
+        const res = await server.command(this.ns, this.command, {
+          ...this.options,
+          readPreference: this.readPreference,
+          session
+        });
+        return res;
+      }
+    };
+    exports.RunAdminCommandOperation = RunAdminCommandOperation;
+  }
+});
+
+// node_modules/mongodb/lib/operations/validate_collection.js
+var require_validate_collection2 = __commonJS({
+  "node_modules/mongodb/lib/operations/validate_collection.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ValidateCollectionOperation = void 0;
+    var error_1 = require_error3();
+    var command_1 = require_command2();
+    var ValidateCollectionOperation = class extends command_1.CommandOperation {
+      constructor(admin, collectionName, options) {
+        const command = { validate: collectionName };
+        const keys = Object.keys(options);
+        for (let i = 0; i < keys.length; i++) {
+          if (Object.prototype.hasOwnProperty.call(options, keys[i]) && keys[i] !== "session") {
+            command[keys[i]] = options[keys[i]];
+          }
+        }
+        super(admin.s.db, options);
+        this.options = options;
+        this.command = command;
+        this.collectionName = collectionName;
+      }
+      get commandName() {
+        return "validate";
+      }
+      async execute(server, session) {
+        const collectionName = this.collectionName;
+        const doc = await super.executeCommand(server, session, this.command);
+        if (doc.result != null && typeof doc.result !== "string")
+          throw new error_1.MongoUnexpectedServerResponseError("Error with validation data");
+        if (doc.result != null && doc.result.match(/exception|corrupt/) != null)
+          throw new error_1.MongoUnexpectedServerResponseError(`Invalid collection ${collectionName}`);
+        if (doc.valid != null && !doc.valid)
+          throw new error_1.MongoUnexpectedServerResponseError(`Invalid collection ${collectionName}`);
+        return doc;
+      }
+    };
+    exports.ValidateCollectionOperation = ValidateCollectionOperation;
+  }
+});
+
+// node_modules/mongodb/lib/admin.js
+var require_admin2 = __commonJS({
+  "node_modules/mongodb/lib/admin.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Admin = void 0;
+    var bson_1 = require_bson3();
+    var execute_operation_1 = require_execute_operation2();
+    var list_databases_1 = require_list_databases2();
+    var remove_user_1 = require_remove_user2();
+    var run_command_1 = require_run_command2();
+    var validate_collection_1 = require_validate_collection2();
+    var Admin = class {
+      constructor(db) {
+        this.s = { db };
+      }
+      async command(command, options) {
+        return await (0, execute_operation_1.executeOperation)(this.s.db.client, new run_command_1.RunAdminCommandOperation(command, {
+          ...(0, bson_1.resolveBSONOptions)(options),
+          session: options?.session,
+          readPreference: options?.readPreference
+        }));
+      }
+      async buildInfo(options) {
+        return await this.command({ buildinfo: 1 }, options);
+      }
+      async serverInfo(options) {
+        return await this.command({ buildinfo: 1 }, options);
+      }
+      async serverStatus(options) {
+        return await this.command({ serverStatus: 1 }, options);
+      }
+      async ping(options) {
+        return await this.command({ ping: 1 }, options);
+      }
+      async removeUser(username, options) {
+        return await (0, execute_operation_1.executeOperation)(this.s.db.client, new remove_user_1.RemoveUserOperation(this.s.db, username, { dbName: "admin", ...options }));
+      }
+      async validateCollection(collectionName, options = {}) {
+        return await (0, execute_operation_1.executeOperation)(this.s.db.client, new validate_collection_1.ValidateCollectionOperation(this, collectionName, options));
+      }
+      async listDatabases(options) {
+        return await (0, execute_operation_1.executeOperation)(this.s.db.client, new list_databases_1.ListDatabasesOperation(this.s.db, options));
+      }
+      async replSetGetStatus(options) {
+        return await this.command({ replSetGetStatus: 1 }, options);
+      }
+    };
+    exports.Admin = Admin;
+  }
+});
+
+// node_modules/mongodb/lib/operations/delete.js
+var require_delete2 = __commonJS({
+  "node_modules/mongodb/lib/operations/delete.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.makeDeleteStatement = exports.DeleteManyOperation = exports.DeleteOneOperation = exports.DeleteOperation = void 0;
+    var error_1 = require_error3();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var DeleteOperation = class extends command_1.CommandOperation {
+      constructor(ns, statements, options) {
+        super(void 0, options);
+        this.options = options;
+        this.ns = ns;
+        this.statements = statements;
+      }
+      get commandName() {
+        return "delete";
+      }
+      get canRetryWrite() {
+        if (super.canRetryWrite === false) {
+          return false;
+        }
+        return this.statements.every((op) => op.limit != null ? op.limit > 0 : true);
+      }
+      async execute(server, session) {
+        const options = this.options ?? {};
+        const ordered = typeof options.ordered === "boolean" ? options.ordered : true;
+        const command = {
+          delete: this.ns.collection,
+          deletes: this.statements,
+          ordered
+        };
+        if (options.let) {
+          command.let = options.let;
+        }
+        if (options.comment !== void 0) {
+          command.comment = options.comment;
+        }
+        const unacknowledgedWrite = this.writeConcern && this.writeConcern.w === 0;
+        if (unacknowledgedWrite) {
+          if (this.statements.find((o) => o.hint)) {
+            throw new error_1.MongoCompatibilityError(`hint is not supported with unacknowledged writes`);
+          }
+        }
+        const res = await super.executeCommand(server, session, command);
+        return res;
+      }
+    };
+    exports.DeleteOperation = DeleteOperation;
+    var DeleteOneOperation = class extends DeleteOperation {
+      constructor(collection, filter, options) {
+        super(collection.s.namespace, [makeDeleteStatement(filter, { ...options, limit: 1 })], options);
+      }
+      async execute(server, session) {
+        const res = await super.execute(server, session);
+        if (this.explain)
+          return res;
+        if (res.code)
+          throw new error_1.MongoServerError(res);
+        if (res.writeErrors)
+          throw new error_1.MongoServerError(res.writeErrors[0]);
+        return {
+          acknowledged: this.writeConcern?.w !== 0,
+          deletedCount: res.n
+        };
+      }
+    };
+    exports.DeleteOneOperation = DeleteOneOperation;
+    var DeleteManyOperation = class extends DeleteOperation {
+      constructor(collection, filter, options) {
+        super(collection.s.namespace, [makeDeleteStatement(filter, options)], options);
+      }
+      async execute(server, session) {
+        const res = await super.execute(server, session);
+        if (this.explain)
+          return res;
+        if (res.code)
+          throw new error_1.MongoServerError(res);
+        if (res.writeErrors)
+          throw new error_1.MongoServerError(res.writeErrors[0]);
+        return {
+          acknowledged: this.writeConcern?.w !== 0,
+          deletedCount: res.n
+        };
+      }
+    };
+    exports.DeleteManyOperation = DeleteManyOperation;
+    function makeDeleteStatement(filter, options) {
+      const op = {
+        q: filter,
+        limit: typeof options.limit === "number" ? options.limit : 0
+      };
+      if (options.collation) {
+        op.collation = options.collation;
+      }
+      if (options.hint) {
+        op.hint = options.hint;
+      }
+      return op;
+    }
+    exports.makeDeleteStatement = makeDeleteStatement;
+    (0, operation_1.defineAspects)(DeleteOperation, [operation_1.Aspect.RETRYABLE, operation_1.Aspect.WRITE_OPERATION]);
+    (0, operation_1.defineAspects)(DeleteOneOperation, [
+      operation_1.Aspect.RETRYABLE,
+      operation_1.Aspect.WRITE_OPERATION,
+      operation_1.Aspect.EXPLAINABLE,
+      operation_1.Aspect.SKIP_COLLATION
+    ]);
+    (0, operation_1.defineAspects)(DeleteManyOperation, [
+      operation_1.Aspect.WRITE_OPERATION,
+      operation_1.Aspect.EXPLAINABLE,
+      operation_1.Aspect.SKIP_COLLATION
+    ]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/bulk_write.js
+var require_bulk_write2 = __commonJS({
+  "node_modules/mongodb/lib/operations/bulk_write.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.BulkWriteOperation = void 0;
+    var operation_1 = require_operation2();
+    var BulkWriteOperation = class extends operation_1.AbstractOperation {
+      constructor(collection, operations, options) {
+        super(options);
+        this.options = options;
+        this.collection = collection;
+        this.operations = operations;
+      }
+      get commandName() {
+        return "bulkWrite";
+      }
+      async execute(server, session) {
+        const coll = this.collection;
+        const operations = this.operations;
+        const options = { ...this.options, ...this.bsonOptions, readPreference: this.readPreference };
+        const bulk = options.ordered === false ? coll.initializeUnorderedBulkOp(options) : coll.initializeOrderedBulkOp(options);
+        for (let i = 0; i < operations.length; i++) {
+          bulk.raw(operations[i]);
+        }
+        return await bulk.execute({ ...options, session });
+      }
+    };
+    exports.BulkWriteOperation = BulkWriteOperation;
+    (0, operation_1.defineAspects)(BulkWriteOperation, [operation_1.Aspect.WRITE_OPERATION]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/insert.js
+var require_insert2 = __commonJS({
+  "node_modules/mongodb/lib/operations/insert.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.InsertManyOperation = exports.InsertOneOperation = exports.InsertOperation = void 0;
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var write_concern_1 = require_write_concern2();
+    var bulk_write_1 = require_bulk_write2();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var InsertOperation = class extends command_1.CommandOperation {
+      constructor(ns, documents, options) {
+        super(void 0, options);
+        this.options = { ...options, checkKeys: options.checkKeys ?? false };
+        this.ns = ns;
+        this.documents = documents;
+      }
+      get commandName() {
+        return "insert";
+      }
+      async execute(server, session) {
+        const options = this.options ?? {};
+        const ordered = typeof options.ordered === "boolean" ? options.ordered : true;
+        const command = {
+          insert: this.ns.collection,
+          documents: this.documents,
+          ordered
+        };
+        if (typeof options.bypassDocumentValidation === "boolean") {
+          command.bypassDocumentValidation = options.bypassDocumentValidation;
+        }
+        if (options.comment !== void 0) {
+          command.comment = options.comment;
+        }
+        return await super.executeCommand(server, session, command);
+      }
+    };
+    exports.InsertOperation = InsertOperation;
+    var InsertOneOperation = class extends InsertOperation {
+      constructor(collection, doc, options) {
+        super(collection.s.namespace, (0, utils_1.maybeAddIdToDocuments)(collection, [doc], options), options);
+      }
+      async execute(server, session) {
+        const res = await super.execute(server, session);
+        if (res.code)
+          throw new error_1.MongoServerError(res);
+        if (res.writeErrors) {
+          throw new error_1.MongoServerError(res.writeErrors[0]);
+        }
+        return {
+          acknowledged: this.writeConcern?.w !== 0,
+          insertedId: this.documents[0]._id
+        };
+      }
+    };
+    exports.InsertOneOperation = InsertOneOperation;
+    var InsertManyOperation = class extends operation_1.AbstractOperation {
+      constructor(collection, docs, options) {
+        super(options);
+        if (!Array.isArray(docs)) {
+          throw new error_1.MongoInvalidArgumentError('Argument "docs" must be an array of documents');
+        }
+        this.options = options;
+        this.collection = collection;
+        this.docs = docs;
+      }
+      get commandName() {
+        return "insert";
+      }
+      async execute(server, session) {
+        const coll = this.collection;
+        const options = { ...this.options, ...this.bsonOptions, readPreference: this.readPreference };
+        const writeConcern = write_concern_1.WriteConcern.fromOptions(options);
+        const bulkWriteOperation = new bulk_write_1.BulkWriteOperation(coll, this.docs.map((document2) => ({
+          insertOne: { document: document2 }
+        })), options);
+        try {
+          const res = await bulkWriteOperation.execute(server, session);
+          return {
+            acknowledged: writeConcern?.w !== 0,
+            insertedCount: res.insertedCount,
+            insertedIds: res.insertedIds
+          };
+        } catch (err) {
+          if (err && err.message === "Operation must be an object with an operation key") {
+            throw new error_1.MongoInvalidArgumentError("Collection.insertMany() cannot be called with an array that has null/undefined values");
+          }
+          throw err;
+        }
+      }
+    };
+    exports.InsertManyOperation = InsertManyOperation;
+    (0, operation_1.defineAspects)(InsertOperation, [operation_1.Aspect.RETRYABLE, operation_1.Aspect.WRITE_OPERATION]);
+    (0, operation_1.defineAspects)(InsertOneOperation, [operation_1.Aspect.RETRYABLE, operation_1.Aspect.WRITE_OPERATION]);
+    (0, operation_1.defineAspects)(InsertManyOperation, [operation_1.Aspect.WRITE_OPERATION]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/update.js
+var require_update3 = __commonJS({
+  "node_modules/mongodb/lib/operations/update.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.makeUpdateStatement = exports.ReplaceOneOperation = exports.UpdateManyOperation = exports.UpdateOneOperation = exports.UpdateOperation = void 0;
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var UpdateOperation = class extends command_1.CommandOperation {
+      constructor(ns, statements, options) {
+        super(void 0, options);
+        this.options = options;
+        this.ns = ns;
+        this.statements = statements;
+      }
+      get commandName() {
+        return "update";
+      }
+      get canRetryWrite() {
+        if (super.canRetryWrite === false) {
+          return false;
+        }
+        return this.statements.every((op) => op.multi == null || op.multi === false);
+      }
+      async execute(server, session) {
+        const options = this.options ?? {};
+        const ordered = typeof options.ordered === "boolean" ? options.ordered : true;
+        const command = {
+          update: this.ns.collection,
+          updates: this.statements,
+          ordered
+        };
+        if (typeof options.bypassDocumentValidation === "boolean") {
+          command.bypassDocumentValidation = options.bypassDocumentValidation;
+        }
+        if (options.let) {
+          command.let = options.let;
+        }
+        if (options.comment !== void 0) {
+          command.comment = options.comment;
+        }
+        const unacknowledgedWrite = this.writeConcern && this.writeConcern.w === 0;
+        if (unacknowledgedWrite) {
+          if (this.statements.find((o) => o.hint)) {
+            throw new error_1.MongoCompatibilityError(`hint is not supported with unacknowledged writes`);
+          }
+        }
+        const res = await super.executeCommand(server, session, command);
+        return res;
+      }
+    };
+    exports.UpdateOperation = UpdateOperation;
+    var UpdateOneOperation = class extends UpdateOperation {
+      constructor(collection, filter, update, options) {
+        super(collection.s.namespace, [makeUpdateStatement(filter, update, { ...options, multi: false })], options);
+        if (!(0, utils_1.hasAtomicOperators)(update)) {
+          throw new error_1.MongoInvalidArgumentError("Update document requires atomic operators");
+        }
+      }
+      async execute(server, session) {
+        const res = await super.execute(server, session);
+        if (this.explain != null)
+          return res;
+        if (res.code)
+          throw new error_1.MongoServerError(res);
+        if (res.writeErrors)
+          throw new error_1.MongoServerError(res.writeErrors[0]);
+        return {
+          acknowledged: this.writeConcern?.w !== 0,
+          modifiedCount: res.nModified ?? res.n,
+          upsertedId: Array.isArray(res.upserted) && res.upserted.length > 0 ? res.upserted[0]._id : null,
+          upsertedCount: Array.isArray(res.upserted) && res.upserted.length ? res.upserted.length : 0,
+          matchedCount: Array.isArray(res.upserted) && res.upserted.length > 0 ? 0 : res.n
+        };
+      }
+    };
+    exports.UpdateOneOperation = UpdateOneOperation;
+    var UpdateManyOperation = class extends UpdateOperation {
+      constructor(collection, filter, update, options) {
+        super(collection.s.namespace, [makeUpdateStatement(filter, update, { ...options, multi: true })], options);
+        if (!(0, utils_1.hasAtomicOperators)(update)) {
+          throw new error_1.MongoInvalidArgumentError("Update document requires atomic operators");
+        }
+      }
+      async execute(server, session) {
+        const res = await super.execute(server, session);
+        if (this.explain != null)
+          return res;
+        if (res.code)
+          throw new error_1.MongoServerError(res);
+        if (res.writeErrors)
+          throw new error_1.MongoServerError(res.writeErrors[0]);
+        return {
+          acknowledged: this.writeConcern?.w !== 0,
+          modifiedCount: res.nModified ?? res.n,
+          upsertedId: Array.isArray(res.upserted) && res.upserted.length > 0 ? res.upserted[0]._id : null,
+          upsertedCount: Array.isArray(res.upserted) && res.upserted.length ? res.upserted.length : 0,
+          matchedCount: Array.isArray(res.upserted) && res.upserted.length > 0 ? 0 : res.n
+        };
+      }
+    };
+    exports.UpdateManyOperation = UpdateManyOperation;
+    var ReplaceOneOperation = class extends UpdateOperation {
+      constructor(collection, filter, replacement, options) {
+        super(collection.s.namespace, [makeUpdateStatement(filter, replacement, { ...options, multi: false })], options);
+        if ((0, utils_1.hasAtomicOperators)(replacement)) {
+          throw new error_1.MongoInvalidArgumentError("Replacement document must not contain atomic operators");
+        }
+      }
+      async execute(server, session) {
+        const res = await super.execute(server, session);
+        if (this.explain != null)
+          return res;
+        if (res.code)
+          throw new error_1.MongoServerError(res);
+        if (res.writeErrors)
+          throw new error_1.MongoServerError(res.writeErrors[0]);
+        return {
+          acknowledged: this.writeConcern?.w !== 0,
+          modifiedCount: res.nModified ?? res.n,
+          upsertedId: Array.isArray(res.upserted) && res.upserted.length > 0 ? res.upserted[0]._id : null,
+          upsertedCount: Array.isArray(res.upserted) && res.upserted.length ? res.upserted.length : 0,
+          matchedCount: Array.isArray(res.upserted) && res.upserted.length > 0 ? 0 : res.n
+        };
+      }
+    };
+    exports.ReplaceOneOperation = ReplaceOneOperation;
+    function makeUpdateStatement(filter, update, options) {
+      if (filter == null || typeof filter !== "object") {
+        throw new error_1.MongoInvalidArgumentError("Selector must be a valid JavaScript object");
+      }
+      if (update == null || typeof update !== "object") {
+        throw new error_1.MongoInvalidArgumentError("Document must be a valid JavaScript object");
+      }
+      const op = { q: filter, u: update };
+      if (typeof options.upsert === "boolean") {
+        op.upsert = options.upsert;
+      }
+      if (options.multi) {
+        op.multi = options.multi;
+      }
+      if (options.hint) {
+        op.hint = options.hint;
+      }
+      if (options.arrayFilters) {
+        op.arrayFilters = options.arrayFilters;
+      }
+      if (options.collation) {
+        op.collation = options.collation;
+      }
+      return op;
+    }
+    exports.makeUpdateStatement = makeUpdateStatement;
+    (0, operation_1.defineAspects)(UpdateOperation, [operation_1.Aspect.RETRYABLE, operation_1.Aspect.WRITE_OPERATION, operation_1.Aspect.SKIP_COLLATION]);
+    (0, operation_1.defineAspects)(UpdateOneOperation, [
+      operation_1.Aspect.RETRYABLE,
+      operation_1.Aspect.WRITE_OPERATION,
+      operation_1.Aspect.EXPLAINABLE,
+      operation_1.Aspect.SKIP_COLLATION
+    ]);
+    (0, operation_1.defineAspects)(UpdateManyOperation, [
+      operation_1.Aspect.WRITE_OPERATION,
+      operation_1.Aspect.EXPLAINABLE,
+      operation_1.Aspect.SKIP_COLLATION
+    ]);
+    (0, operation_1.defineAspects)(ReplaceOneOperation, [
+      operation_1.Aspect.RETRYABLE,
+      operation_1.Aspect.WRITE_OPERATION,
+      operation_1.Aspect.SKIP_COLLATION
+    ]);
+  }
+});
+
+// node_modules/mongodb/lib/bulk/common.js
+var require_common6 = __commonJS({
+  "node_modules/mongodb/lib/bulk/common.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.BulkOperationBase = exports.BulkWriteShimOperation = exports.FindOperators = exports.MongoBulkWriteError = exports.mergeBatchResults = exports.WriteError = exports.WriteConcernError = exports.BulkWriteResult = exports.Batch = exports.BatchType = void 0;
+    var util_1 = require("util");
+    var bson_1 = require_bson3();
+    var error_1 = require_error3();
+    var delete_1 = require_delete2();
+    var execute_operation_1 = require_execute_operation2();
+    var insert_1 = require_insert2();
+    var operation_1 = require_operation2();
+    var update_1 = require_update3();
+    var utils_1 = require_utils5();
+    var utils_2 = require_utils5();
+    var write_concern_1 = require_write_concern2();
+    var kServerError = Symbol("serverError");
+    exports.BatchType = Object.freeze({
+      INSERT: 1,
+      UPDATE: 2,
+      DELETE: 3
+    });
+    var Batch = class {
+      constructor(batchType, originalZeroIndex) {
+        this.originalZeroIndex = originalZeroIndex;
+        this.currentIndex = 0;
+        this.originalIndexes = [];
+        this.batchType = batchType;
+        this.operations = [];
+        this.size = 0;
+        this.sizeBytes = 0;
+      }
+    };
+    exports.Batch = Batch;
+    var BulkWriteResult = class {
+      static generateIdMap(ids) {
+        const idMap = {};
+        for (const doc of ids) {
+          idMap[doc.index] = doc._id;
+        }
+        return idMap;
+      }
+      constructor(bulkResult, isOrdered) {
+        this.result = bulkResult;
+        this.insertedCount = this.result.nInserted ?? 0;
+        this.matchedCount = this.result.nMatched ?? 0;
+        this.modifiedCount = this.result.nModified ?? 0;
+        this.deletedCount = this.result.nRemoved ?? 0;
+        this.upsertedCount = this.result.upserted.length ?? 0;
+        this.upsertedIds = BulkWriteResult.generateIdMap(this.result.upserted);
+        this.insertedIds = BulkWriteResult.generateIdMap(this.getSuccessfullyInsertedIds(bulkResult, isOrdered));
+        Object.defineProperty(this, "result", { value: this.result, enumerable: false });
+      }
+      get ok() {
+        return this.result.ok;
+      }
+      getSuccessfullyInsertedIds(bulkResult, isOrdered) {
+        if (bulkResult.writeErrors.length === 0)
+          return bulkResult.insertedIds;
+        if (isOrdered) {
+          return bulkResult.insertedIds.slice(0, bulkResult.writeErrors[0].index);
+        }
+        return bulkResult.insertedIds.filter(({ index }) => !bulkResult.writeErrors.some((writeError) => index === writeError.index));
+      }
+      getUpsertedIdAt(index) {
+        return this.result.upserted[index];
+      }
+      getRawResponse() {
+        return this.result;
+      }
+      hasWriteErrors() {
+        return this.result.writeErrors.length > 0;
+      }
+      getWriteErrorCount() {
+        return this.result.writeErrors.length;
+      }
+      getWriteErrorAt(index) {
+        return index < this.result.writeErrors.length ? this.result.writeErrors[index] : void 0;
+      }
+      getWriteErrors() {
+        return this.result.writeErrors;
+      }
+      getWriteConcernError() {
+        if (this.result.writeConcernErrors.length === 0) {
+          return;
+        } else if (this.result.writeConcernErrors.length === 1) {
+          return this.result.writeConcernErrors[0];
+        } else {
+          let errmsg = "";
+          for (let i = 0; i < this.result.writeConcernErrors.length; i++) {
+            const err = this.result.writeConcernErrors[i];
+            errmsg = errmsg + err.errmsg;
+            if (i === 0)
+              errmsg = errmsg + " and ";
+          }
+          return new WriteConcernError({ errmsg, code: error_1.MONGODB_ERROR_CODES.WriteConcernFailed });
+        }
+      }
+      toString() {
+        return `BulkWriteResult(${this.result})`;
+      }
+      isOk() {
+        return this.result.ok === 1;
+      }
+    };
+    exports.BulkWriteResult = BulkWriteResult;
+    var WriteConcernError = class {
+      constructor(error) {
+        this[kServerError] = error;
+      }
+      get code() {
+        return this[kServerError].code;
+      }
+      get errmsg() {
+        return this[kServerError].errmsg;
+      }
+      get errInfo() {
+        return this[kServerError].errInfo;
+      }
+      toJSON() {
+        return this[kServerError];
+      }
+      toString() {
+        return `WriteConcernError(${this.errmsg})`;
+      }
+    };
+    exports.WriteConcernError = WriteConcernError;
+    var WriteError = class {
+      constructor(err) {
+        this.err = err;
+      }
+      get code() {
+        return this.err.code;
+      }
+      get index() {
+        return this.err.index;
+      }
+      get errmsg() {
+        return this.err.errmsg;
+      }
+      get errInfo() {
+        return this.err.errInfo;
+      }
+      getOperation() {
+        return this.err.op;
+      }
+      toJSON() {
+        return { code: this.err.code, index: this.err.index, errmsg: this.err.errmsg, op: this.err.op };
+      }
+      toString() {
+        return `WriteError(${JSON.stringify(this.toJSON())})`;
+      }
+    };
+    exports.WriteError = WriteError;
+    function mergeBatchResults(batch, bulkResult, err, result) {
+      if (err) {
+        result = err;
+      } else if (result && result.result) {
+        result = result.result;
+      }
+      if (result == null) {
+        return;
+      }
+      if (result.ok === 0 && bulkResult.ok === 1) {
+        bulkResult.ok = 0;
+        const writeError = {
+          index: 0,
+          code: result.code || 0,
+          errmsg: result.message,
+          errInfo: result.errInfo,
+          op: batch.operations[0]
+        };
+        bulkResult.writeErrors.push(new WriteError(writeError));
+        return;
+      } else if (result.ok === 0 && bulkResult.ok === 0) {
+        return;
+      }
+      if (isInsertBatch(batch) && result.n) {
+        bulkResult.nInserted = bulkResult.nInserted + result.n;
+      }
+      if (isDeleteBatch(batch) && result.n) {
+        bulkResult.nRemoved = bulkResult.nRemoved + result.n;
+      }
+      let nUpserted = 0;
+      if (Array.isArray(result.upserted)) {
+        nUpserted = result.upserted.length;
+        for (let i = 0; i < result.upserted.length; i++) {
+          bulkResult.upserted.push({
+            index: result.upserted[i].index + batch.originalZeroIndex,
+            _id: result.upserted[i]._id
+          });
+        }
+      } else if (result.upserted) {
+        nUpserted = 1;
+        bulkResult.upserted.push({
+          index: batch.originalZeroIndex,
+          _id: result.upserted
+        });
+      }
+      if (isUpdateBatch(batch) && result.n) {
+        const nModified = result.nModified;
+        bulkResult.nUpserted = bulkResult.nUpserted + nUpserted;
+        bulkResult.nMatched = bulkResult.nMatched + (result.n - nUpserted);
+        if (typeof nModified === "number") {
+          bulkResult.nModified = bulkResult.nModified + nModified;
+        } else {
+          bulkResult.nModified = 0;
+        }
+      }
+      if (Array.isArray(result.writeErrors)) {
+        for (let i = 0; i < result.writeErrors.length; i++) {
+          const writeError = {
+            index: batch.originalIndexes[result.writeErrors[i].index],
+            code: result.writeErrors[i].code,
+            errmsg: result.writeErrors[i].errmsg,
+            errInfo: result.writeErrors[i].errInfo,
+            op: batch.operations[result.writeErrors[i].index]
+          };
+          bulkResult.writeErrors.push(new WriteError(writeError));
+        }
+      }
+      if (result.writeConcernError) {
+        bulkResult.writeConcernErrors.push(new WriteConcernError(result.writeConcernError));
+      }
+    }
+    exports.mergeBatchResults = mergeBatchResults;
+    function executeCommands(bulkOperation, options, callback2) {
+      if (bulkOperation.s.batches.length === 0) {
+        return callback2(void 0, new BulkWriteResult(bulkOperation.s.bulkResult, bulkOperation.isOrdered));
+      }
+      const batch = bulkOperation.s.batches.shift();
+      function resultHandler(err, result) {
+        if (err && "message" in err && !(err instanceof error_1.MongoWriteConcernError)) {
+          return callback2(new MongoBulkWriteError(err, new BulkWriteResult(bulkOperation.s.bulkResult, bulkOperation.isOrdered)));
+        }
+        if (err instanceof error_1.MongoWriteConcernError) {
+          return handleMongoWriteConcernError(batch, bulkOperation.s.bulkResult, bulkOperation.isOrdered, err, callback2);
+        }
+        mergeBatchResults(batch, bulkOperation.s.bulkResult, err, result);
+        const writeResult = new BulkWriteResult(bulkOperation.s.bulkResult, bulkOperation.isOrdered);
+        if (bulkOperation.handleWriteError(callback2, writeResult))
+          return;
+        executeCommands(bulkOperation, options, callback2);
+      }
+      const finalOptions = (0, utils_2.resolveOptions)(bulkOperation, {
+        ...options,
+        ordered: bulkOperation.isOrdered
+      });
+      if (finalOptions.bypassDocumentValidation !== true) {
+        delete finalOptions.bypassDocumentValidation;
+      }
+      if (bulkOperation.operationId) {
+        resultHandler.operationId = bulkOperation.operationId;
+      }
+      if (bulkOperation.s.bypassDocumentValidation === true) {
+        finalOptions.bypassDocumentValidation = true;
+      }
+      if (bulkOperation.s.checkKeys === false) {
+        finalOptions.checkKeys = false;
+      }
+      if (finalOptions.retryWrites) {
+        if (isUpdateBatch(batch)) {
+          finalOptions.retryWrites = finalOptions.retryWrites && !batch.operations.some((op) => op.multi);
+        }
+        if (isDeleteBatch(batch)) {
+          finalOptions.retryWrites = finalOptions.retryWrites && !batch.operations.some((op) => op.limit === 0);
+        }
+      }
+      try {
+        const operation = isInsertBatch(batch) ? new insert_1.InsertOperation(bulkOperation.s.namespace, batch.operations, finalOptions) : isUpdateBatch(batch) ? new update_1.UpdateOperation(bulkOperation.s.namespace, batch.operations, finalOptions) : isDeleteBatch(batch) ? new delete_1.DeleteOperation(bulkOperation.s.namespace, batch.operations, finalOptions) : null;
+        if (operation != null) {
+          (0, execute_operation_1.executeOperation)(bulkOperation.s.collection.client, operation).then((result) => resultHandler(void 0, result), (error) => resultHandler(error));
+        }
+      } catch (err) {
+        err.ok = 0;
+        mergeBatchResults(batch, bulkOperation.s.bulkResult, err, void 0);
+        callback2();
+      }
+    }
+    function handleMongoWriteConcernError(batch, bulkResult, isOrdered, err, callback2) {
+      mergeBatchResults(batch, bulkResult, void 0, err.result);
+      callback2(new MongoBulkWriteError({
+        message: err.result?.writeConcernError.errmsg,
+        code: err.result?.writeConcernError.result
+      }, new BulkWriteResult(bulkResult, isOrdered)));
+    }
+    var MongoBulkWriteError = class extends error_1.MongoServerError {
+      constructor(error, result) {
+        super(error);
+        this.writeErrors = [];
+        if (error instanceof WriteConcernError)
+          this.err = error;
+        else if (!(error instanceof Error)) {
+          this.message = error.message;
+          this.code = error.code;
+          this.writeErrors = error.writeErrors ?? [];
+        }
+        this.result = result;
+        Object.assign(this, error);
+      }
+      get name() {
+        return "MongoBulkWriteError";
+      }
+      get insertedCount() {
+        return this.result.insertedCount;
+      }
+      get matchedCount() {
+        return this.result.matchedCount;
+      }
+      get modifiedCount() {
+        return this.result.modifiedCount;
+      }
+      get deletedCount() {
+        return this.result.deletedCount;
+      }
+      get upsertedCount() {
+        return this.result.upsertedCount;
+      }
+      get insertedIds() {
+        return this.result.insertedIds;
+      }
+      get upsertedIds() {
+        return this.result.upsertedIds;
+      }
+    };
+    exports.MongoBulkWriteError = MongoBulkWriteError;
+    var FindOperators = class {
+      constructor(bulkOperation) {
+        this.bulkOperation = bulkOperation;
+      }
+      update(updateDocument) {
+        const currentOp = buildCurrentOp(this.bulkOperation);
+        return this.bulkOperation.addToOperationsList(exports.BatchType.UPDATE, (0, update_1.makeUpdateStatement)(currentOp.selector, updateDocument, {
+          ...currentOp,
+          multi: true
+        }));
+      }
+      updateOne(updateDocument) {
+        if (!(0, utils_2.hasAtomicOperators)(updateDocument)) {
+          throw new error_1.MongoInvalidArgumentError("Update document requires atomic operators");
+        }
+        const currentOp = buildCurrentOp(this.bulkOperation);
+        return this.bulkOperation.addToOperationsList(exports.BatchType.UPDATE, (0, update_1.makeUpdateStatement)(currentOp.selector, updateDocument, { ...currentOp, multi: false }));
+      }
+      replaceOne(replacement) {
+        if ((0, utils_2.hasAtomicOperators)(replacement)) {
+          throw new error_1.MongoInvalidArgumentError("Replacement document must not use atomic operators");
+        }
+        const currentOp = buildCurrentOp(this.bulkOperation);
+        return this.bulkOperation.addToOperationsList(exports.BatchType.UPDATE, (0, update_1.makeUpdateStatement)(currentOp.selector, replacement, { ...currentOp, multi: false }));
+      }
+      deleteOne() {
+        const currentOp = buildCurrentOp(this.bulkOperation);
+        return this.bulkOperation.addToOperationsList(exports.BatchType.DELETE, (0, delete_1.makeDeleteStatement)(currentOp.selector, { ...currentOp, limit: 1 }));
+      }
+      delete() {
+        const currentOp = buildCurrentOp(this.bulkOperation);
+        return this.bulkOperation.addToOperationsList(exports.BatchType.DELETE, (0, delete_1.makeDeleteStatement)(currentOp.selector, { ...currentOp, limit: 0 }));
+      }
+      upsert() {
+        if (!this.bulkOperation.s.currentOp) {
+          this.bulkOperation.s.currentOp = {};
+        }
+        this.bulkOperation.s.currentOp.upsert = true;
+        return this;
+      }
+      collation(collation) {
+        if (!this.bulkOperation.s.currentOp) {
+          this.bulkOperation.s.currentOp = {};
+        }
+        this.bulkOperation.s.currentOp.collation = collation;
+        return this;
+      }
+      arrayFilters(arrayFilters) {
+        if (!this.bulkOperation.s.currentOp) {
+          this.bulkOperation.s.currentOp = {};
+        }
+        this.bulkOperation.s.currentOp.arrayFilters = arrayFilters;
+        return this;
+      }
+      hint(hint) {
+        if (!this.bulkOperation.s.currentOp) {
+          this.bulkOperation.s.currentOp = {};
+        }
+        this.bulkOperation.s.currentOp.hint = hint;
+        return this;
+      }
+    };
+    exports.FindOperators = FindOperators;
+    var executeCommandsAsync = (0, util_1.promisify)(executeCommands);
+    var BulkWriteShimOperation = class extends operation_1.AbstractOperation {
+      constructor(bulkOperation, options) {
+        super(options);
+        this.bulkOperation = bulkOperation;
+      }
+      get commandName() {
+        return "bulkWrite";
+      }
+      execute(_server, session) {
+        if (this.options.session == null) {
+          this.options.session = session;
+        }
+        return executeCommandsAsync(this.bulkOperation, this.options);
+      }
+    };
+    exports.BulkWriteShimOperation = BulkWriteShimOperation;
+    var BulkOperationBase = class {
+      constructor(collection, options, isOrdered) {
+        this.collection = collection;
+        this.isOrdered = isOrdered;
+        const topology = (0, utils_2.getTopology)(collection);
+        options = options == null ? {} : options;
+        const namespace = collection.s.namespace;
+        const executed = false;
+        const currentOp = void 0;
+        const hello = topology.lastHello();
+        const usingAutoEncryption = !!(topology.s.options && topology.s.options.autoEncrypter);
+        const maxBsonObjectSize = hello && hello.maxBsonObjectSize ? hello.maxBsonObjectSize : 1024 * 1024 * 16;
+        const maxBatchSizeBytes = usingAutoEncryption ? 1024 * 1024 * 2 : maxBsonObjectSize;
+        const maxWriteBatchSize = hello && hello.maxWriteBatchSize ? hello.maxWriteBatchSize : 1e3;
+        const maxKeySize = (maxWriteBatchSize - 1).toString(10).length + 2;
+        let finalOptions = Object.assign({}, options);
+        finalOptions = (0, utils_2.applyRetryableWrites)(finalOptions, collection.s.db);
+        const bulkResult = {
+          ok: 1,
+          writeErrors: [],
+          writeConcernErrors: [],
+          insertedIds: [],
+          nInserted: 0,
+          nUpserted: 0,
+          nMatched: 0,
+          nModified: 0,
+          nRemoved: 0,
+          upserted: []
+        };
+        this.s = {
+          bulkResult,
+          currentBatch: void 0,
+          currentIndex: 0,
+          currentBatchSize: 0,
+          currentBatchSizeBytes: 0,
+          currentInsertBatch: void 0,
+          currentUpdateBatch: void 0,
+          currentRemoveBatch: void 0,
+          batches: [],
+          writeConcern: write_concern_1.WriteConcern.fromOptions(options),
+          maxBsonObjectSize,
+          maxBatchSizeBytes,
+          maxWriteBatchSize,
+          maxKeySize,
+          namespace,
+          topology,
+          options: finalOptions,
+          bsonOptions: (0, bson_1.resolveBSONOptions)(options),
+          currentOp,
+          executed,
+          collection,
+          err: void 0,
+          checkKeys: typeof options.checkKeys === "boolean" ? options.checkKeys : false
+        };
+        if (options.bypassDocumentValidation === true) {
+          this.s.bypassDocumentValidation = true;
+        }
+      }
+      insert(document2) {
+        (0, utils_1.maybeAddIdToDocuments)(this.collection, document2, {
+          forceServerObjectId: this.shouldForceServerObjectId()
+        });
+        return this.addToOperationsList(exports.BatchType.INSERT, document2);
+      }
+      find(selector) {
+        if (!selector) {
+          throw new error_1.MongoInvalidArgumentError("Bulk find operation must specify a selector");
+        }
+        this.s.currentOp = {
+          selector
+        };
+        return new FindOperators(this);
+      }
+      raw(op) {
+        if (op == null || typeof op !== "object") {
+          throw new error_1.MongoInvalidArgumentError("Operation must be an object with an operation key");
+        }
+        if ("insertOne" in op) {
+          const forceServerObjectId = this.shouldForceServerObjectId();
+          const document2 = op.insertOne && op.insertOne.document == null ? op.insertOne : op.insertOne.document;
+          (0, utils_1.maybeAddIdToDocuments)(this.collection, document2, { forceServerObjectId });
+          return this.addToOperationsList(exports.BatchType.INSERT, document2);
+        }
+        if ("replaceOne" in op || "updateOne" in op || "updateMany" in op) {
+          if ("replaceOne" in op) {
+            if ("q" in op.replaceOne) {
+              throw new error_1.MongoInvalidArgumentError("Raw operations are not allowed");
+            }
+            const updateStatement = (0, update_1.makeUpdateStatement)(op.replaceOne.filter, op.replaceOne.replacement, { ...op.replaceOne, multi: false });
+            if ((0, utils_2.hasAtomicOperators)(updateStatement.u)) {
+              throw new error_1.MongoInvalidArgumentError("Replacement document must not use atomic operators");
+            }
+            return this.addToOperationsList(exports.BatchType.UPDATE, updateStatement);
+          }
+          if ("updateOne" in op) {
+            if ("q" in op.updateOne) {
+              throw new error_1.MongoInvalidArgumentError("Raw operations are not allowed");
+            }
+            const updateStatement = (0, update_1.makeUpdateStatement)(op.updateOne.filter, op.updateOne.update, {
+              ...op.updateOne,
+              multi: false
+            });
+            if (!(0, utils_2.hasAtomicOperators)(updateStatement.u)) {
+              throw new error_1.MongoInvalidArgumentError("Update document requires atomic operators");
+            }
+            return this.addToOperationsList(exports.BatchType.UPDATE, updateStatement);
+          }
+          if ("updateMany" in op) {
+            if ("q" in op.updateMany) {
+              throw new error_1.MongoInvalidArgumentError("Raw operations are not allowed");
+            }
+            const updateStatement = (0, update_1.makeUpdateStatement)(op.updateMany.filter, op.updateMany.update, {
+              ...op.updateMany,
+              multi: true
+            });
+            if (!(0, utils_2.hasAtomicOperators)(updateStatement.u)) {
+              throw new error_1.MongoInvalidArgumentError("Update document requires atomic operators");
+            }
+            return this.addToOperationsList(exports.BatchType.UPDATE, updateStatement);
+          }
+        }
+        if ("deleteOne" in op) {
+          if ("q" in op.deleteOne) {
+            throw new error_1.MongoInvalidArgumentError("Raw operations are not allowed");
+          }
+          return this.addToOperationsList(exports.BatchType.DELETE, (0, delete_1.makeDeleteStatement)(op.deleteOne.filter, { ...op.deleteOne, limit: 1 }));
+        }
+        if ("deleteMany" in op) {
+          if ("q" in op.deleteMany) {
+            throw new error_1.MongoInvalidArgumentError("Raw operations are not allowed");
+          }
+          return this.addToOperationsList(exports.BatchType.DELETE, (0, delete_1.makeDeleteStatement)(op.deleteMany.filter, { ...op.deleteMany, limit: 0 }));
+        }
+        throw new error_1.MongoInvalidArgumentError("bulkWrite only supports insertOne, updateOne, updateMany, deleteOne, deleteMany");
+      }
+      get bsonOptions() {
+        return this.s.bsonOptions;
+      }
+      get writeConcern() {
+        return this.s.writeConcern;
+      }
+      get batches() {
+        const batches = [...this.s.batches];
+        if (this.isOrdered) {
+          if (this.s.currentBatch)
+            batches.push(this.s.currentBatch);
+        } else {
+          if (this.s.currentInsertBatch)
+            batches.push(this.s.currentInsertBatch);
+          if (this.s.currentUpdateBatch)
+            batches.push(this.s.currentUpdateBatch);
+          if (this.s.currentRemoveBatch)
+            batches.push(this.s.currentRemoveBatch);
+        }
+        return batches;
+      }
+      async execute(options = {}) {
+        if (this.s.executed) {
+          throw new error_1.MongoBatchReExecutionError();
+        }
+        const writeConcern = write_concern_1.WriteConcern.fromOptions(options);
+        if (writeConcern) {
+          this.s.writeConcern = writeConcern;
+        }
+        if (this.isOrdered) {
+          if (this.s.currentBatch)
+            this.s.batches.push(this.s.currentBatch);
+        } else {
+          if (this.s.currentInsertBatch)
+            this.s.batches.push(this.s.currentInsertBatch);
+          if (this.s.currentUpdateBatch)
+            this.s.batches.push(this.s.currentUpdateBatch);
+          if (this.s.currentRemoveBatch)
+            this.s.batches.push(this.s.currentRemoveBatch);
+        }
+        if (this.s.batches.length === 0) {
+          throw new error_1.MongoInvalidArgumentError("Invalid BulkOperation, Batch cannot be empty");
+        }
+        this.s.executed = true;
+        const finalOptions = { ...this.s.options, ...options };
+        const operation = new BulkWriteShimOperation(this, finalOptions);
+        return await (0, execute_operation_1.executeOperation)(this.s.collection.client, operation);
+      }
+      handleWriteError(callback2, writeResult) {
+        if (this.s.bulkResult.writeErrors.length > 0) {
+          const msg = this.s.bulkResult.writeErrors[0].errmsg ? this.s.bulkResult.writeErrors[0].errmsg : "write operation failed";
+          callback2(new MongoBulkWriteError({
+            message: msg,
+            code: this.s.bulkResult.writeErrors[0].code,
+            writeErrors: this.s.bulkResult.writeErrors
+          }, writeResult));
+          return true;
+        }
+        const writeConcernError = writeResult.getWriteConcernError();
+        if (writeConcernError) {
+          callback2(new MongoBulkWriteError(writeConcernError, writeResult));
+          return true;
+        }
+        return false;
+      }
+      shouldForceServerObjectId() {
+        return this.s.options.forceServerObjectId === true || this.s.collection.s.db.options?.forceServerObjectId === true;
+      }
+    };
+    exports.BulkOperationBase = BulkOperationBase;
+    Object.defineProperty(BulkOperationBase.prototype, "length", {
+      enumerable: true,
+      get() {
+        return this.s.currentIndex;
+      }
+    });
+    function isInsertBatch(batch) {
+      return batch.batchType === exports.BatchType.INSERT;
+    }
+    function isUpdateBatch(batch) {
+      return batch.batchType === exports.BatchType.UPDATE;
+    }
+    function isDeleteBatch(batch) {
+      return batch.batchType === exports.BatchType.DELETE;
+    }
+    function buildCurrentOp(bulkOp) {
+      let { currentOp } = bulkOp.s;
+      bulkOp.s.currentOp = void 0;
+      if (!currentOp)
+        currentOp = {};
+      return currentOp;
+    }
+  }
+});
+
+// node_modules/mongodb/lib/bulk/ordered.js
+var require_ordered2 = __commonJS({
+  "node_modules/mongodb/lib/bulk/ordered.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.OrderedBulkOperation = void 0;
+    var BSON = require_bson3();
+    var error_1 = require_error3();
+    var common_1 = require_common6();
+    var OrderedBulkOperation = class extends common_1.BulkOperationBase {
+      constructor(collection, options) {
+        super(collection, options, true);
+      }
+      addToOperationsList(batchType, document2) {
+        const bsonSize = BSON.calculateObjectSize(document2, {
+          checkKeys: false,
+          ignoreUndefined: false
+        });
+        if (bsonSize >= this.s.maxBsonObjectSize)
+          throw new error_1.MongoInvalidArgumentError(`Document is larger than the maximum size ${this.s.maxBsonObjectSize}`);
+        if (this.s.currentBatch == null) {
+          this.s.currentBatch = new common_1.Batch(batchType, this.s.currentIndex);
+        }
+        const maxKeySize = this.s.maxKeySize;
+        if (this.s.currentBatchSize + 1 >= this.s.maxWriteBatchSize || this.s.currentBatchSize > 0 && this.s.currentBatchSizeBytes + maxKeySize + bsonSize >= this.s.maxBatchSizeBytes || this.s.currentBatch.batchType !== batchType) {
+          this.s.batches.push(this.s.currentBatch);
+          this.s.currentBatch = new common_1.Batch(batchType, this.s.currentIndex);
+          this.s.currentBatchSize = 0;
+          this.s.currentBatchSizeBytes = 0;
+        }
+        if (batchType === common_1.BatchType.INSERT) {
+          this.s.bulkResult.insertedIds.push({
+            index: this.s.currentIndex,
+            _id: document2._id
+          });
+        }
+        if (Array.isArray(document2)) {
+          throw new error_1.MongoInvalidArgumentError("Operation passed in cannot be an Array");
+        }
+        this.s.currentBatch.originalIndexes.push(this.s.currentIndex);
+        this.s.currentBatch.operations.push(document2);
+        this.s.currentBatchSize += 1;
+        this.s.currentBatchSizeBytes += maxKeySize + bsonSize;
+        this.s.currentIndex += 1;
+        return this;
+      }
+    };
+    exports.OrderedBulkOperation = OrderedBulkOperation;
+  }
+});
+
+// node_modules/mongodb/lib/bulk/unordered.js
+var require_unordered2 = __commonJS({
+  "node_modules/mongodb/lib/bulk/unordered.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.UnorderedBulkOperation = void 0;
+    var BSON = require_bson3();
+    var error_1 = require_error3();
+    var common_1 = require_common6();
+    var UnorderedBulkOperation = class extends common_1.BulkOperationBase {
+      constructor(collection, options) {
+        super(collection, options, false);
+      }
+      handleWriteError(callback2, writeResult) {
+        if (this.s.batches.length) {
+          return false;
+        }
+        return super.handleWriteError(callback2, writeResult);
+      }
+      addToOperationsList(batchType, document2) {
+        const bsonSize = BSON.calculateObjectSize(document2, {
+          checkKeys: false,
+          ignoreUndefined: false
+        });
+        if (bsonSize >= this.s.maxBsonObjectSize) {
+          throw new error_1.MongoInvalidArgumentError(`Document is larger than the maximum size ${this.s.maxBsonObjectSize}`);
+        }
+        this.s.currentBatch = void 0;
+        if (batchType === common_1.BatchType.INSERT) {
+          this.s.currentBatch = this.s.currentInsertBatch;
+        } else if (batchType === common_1.BatchType.UPDATE) {
+          this.s.currentBatch = this.s.currentUpdateBatch;
+        } else if (batchType === common_1.BatchType.DELETE) {
+          this.s.currentBatch = this.s.currentRemoveBatch;
+        }
+        const maxKeySize = this.s.maxKeySize;
+        if (this.s.currentBatch == null) {
+          this.s.currentBatch = new common_1.Batch(batchType, this.s.currentIndex);
+        }
+        if (this.s.currentBatch.size + 1 >= this.s.maxWriteBatchSize || this.s.currentBatch.size > 0 && this.s.currentBatch.sizeBytes + maxKeySize + bsonSize >= this.s.maxBatchSizeBytes || this.s.currentBatch.batchType !== batchType) {
+          this.s.batches.push(this.s.currentBatch);
+          this.s.currentBatch = new common_1.Batch(batchType, this.s.currentIndex);
+        }
+        if (Array.isArray(document2)) {
+          throw new error_1.MongoInvalidArgumentError("Operation passed in cannot be an Array");
+        }
+        this.s.currentBatch.operations.push(document2);
+        this.s.currentBatch.originalIndexes.push(this.s.currentIndex);
+        this.s.currentIndex = this.s.currentIndex + 1;
+        if (batchType === common_1.BatchType.INSERT) {
+          this.s.currentInsertBatch = this.s.currentBatch;
+          this.s.bulkResult.insertedIds.push({
+            index: this.s.bulkResult.insertedIds.length,
+            _id: document2._id
+          });
+        } else if (batchType === common_1.BatchType.UPDATE) {
+          this.s.currentUpdateBatch = this.s.currentBatch;
+        } else if (batchType === common_1.BatchType.DELETE) {
+          this.s.currentRemoveBatch = this.s.currentBatch;
+        }
+        this.s.currentBatch.size += 1;
+        this.s.currentBatch.sizeBytes += maxKeySize + bsonSize;
+        return this;
+      }
+    };
+    exports.UnorderedBulkOperation = UnorderedBulkOperation;
+  }
+});
+
+// node_modules/mongodb/lib/operations/aggregate.js
+var require_aggregate3 = __commonJS({
+  "node_modules/mongodb/lib/operations/aggregate.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AggregateOperation = exports.DB_AGGREGATE_COLLECTION = void 0;
+    var responses_1 = require_responses2();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var write_concern_1 = require_write_concern2();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    exports.DB_AGGREGATE_COLLECTION = 1;
+    var MIN_WIRE_VERSION_$OUT_READ_CONCERN_SUPPORT = 8;
+    var AggregateOperation = class extends command_1.CommandOperation {
+      constructor(ns, pipeline, options) {
+        super(void 0, { ...options, dbName: ns.db });
+        this.options = { ...options };
+        this.target = ns.collection || exports.DB_AGGREGATE_COLLECTION;
+        this.pipeline = pipeline;
+        this.hasWriteStage = false;
+        if (typeof options?.out === "string") {
+          this.pipeline = this.pipeline.concat({ $out: options.out });
+          this.hasWriteStage = true;
+        } else if (pipeline.length > 0) {
+          const finalStage = pipeline[pipeline.length - 1];
+          if (finalStage.$out || finalStage.$merge) {
+            this.hasWriteStage = true;
+          }
+        }
+        if (this.hasWriteStage) {
+          this.trySecondaryWrite = true;
+        } else {
+          delete this.options.writeConcern;
+        }
+        if (this.explain && this.writeConcern) {
+          throw new error_1.MongoInvalidArgumentError('Option "explain" cannot be used on an aggregate call with writeConcern');
+        }
+        if (options?.cursor != null && typeof options.cursor !== "object") {
+          throw new error_1.MongoInvalidArgumentError("Cursor options must be an object");
+        }
+      }
+      get commandName() {
+        return "aggregate";
+      }
+      get canRetryRead() {
+        return !this.hasWriteStage;
+      }
+      addToPipeline(stage) {
+        this.pipeline.push(stage);
+      }
+      async execute(server, session) {
+        const options = this.options;
+        const serverWireVersion = (0, utils_1.maxWireVersion)(server);
+        const command = { aggregate: this.target, pipeline: this.pipeline };
+        if (this.hasWriteStage && serverWireVersion < MIN_WIRE_VERSION_$OUT_READ_CONCERN_SUPPORT) {
+          this.readConcern = void 0;
+        }
+        if (this.hasWriteStage && this.writeConcern) {
+          write_concern_1.WriteConcern.apply(command, this.writeConcern);
+        }
+        if (options.bypassDocumentValidation === true) {
+          command.bypassDocumentValidation = options.bypassDocumentValidation;
+        }
+        if (typeof options.allowDiskUse === "boolean") {
+          command.allowDiskUse = options.allowDiskUse;
+        }
+        if (options.hint) {
+          command.hint = options.hint;
+        }
+        if (options.let) {
+          command.let = options.let;
+        }
+        if (options.comment !== void 0) {
+          command.comment = options.comment;
+        }
+        command.cursor = options.cursor || {};
+        if (options.batchSize && !this.hasWriteStage) {
+          command.cursor.batchSize = options.batchSize;
+        }
+        return await super.executeCommand(server, session, command, this.explain ? responses_1.ExplainedCursorResponse : responses_1.CursorResponse);
+      }
+    };
+    exports.AggregateOperation = AggregateOperation;
+    (0, operation_1.defineAspects)(AggregateOperation, [
+      operation_1.Aspect.READ_OPERATION,
+      operation_1.Aspect.RETRYABLE,
+      operation_1.Aspect.EXPLAINABLE,
+      operation_1.Aspect.CURSOR_CREATING
+    ]);
+  }
+});
+
+// node_modules/mongodb/lib/mongo_logger.js
+var require_mongo_logger2 = __commonJS({
+  "node_modules/mongodb/lib/mongo_logger.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MongoLogger = exports.defaultLogTransform = exports.stringifyWithMaxLen = exports.createStdioLogger = exports.parseSeverityFromString = exports.MongoLoggableComponent = exports.SEVERITY_LEVEL_MAP = exports.DEFAULT_MAX_DOCUMENT_LENGTH = exports.SeverityLevel = void 0;
+    var util_1 = require("util");
+    var bson_1 = require_bson3();
+    var constants_1 = require_constants5();
+    var utils_1 = require_utils5();
+    exports.SeverityLevel = Object.freeze({
+      EMERGENCY: "emergency",
+      ALERT: "alert",
+      CRITICAL: "critical",
+      ERROR: "error",
+      WARNING: "warn",
+      NOTICE: "notice",
+      INFORMATIONAL: "info",
+      DEBUG: "debug",
+      TRACE: "trace",
+      OFF: "off"
+    });
+    exports.DEFAULT_MAX_DOCUMENT_LENGTH = 1e3;
+    var SeverityLevelMap = class extends Map {
+      constructor(entries) {
+        const newEntries = [];
+        for (const [level, value] of entries) {
+          newEntries.push([value, level]);
+        }
+        newEntries.push(...entries);
+        super(newEntries);
+      }
+      getNumericSeverityLevel(severity) {
+        return this.get(severity);
+      }
+      getSeverityLevelName(level) {
+        return this.get(level);
+      }
+    };
+    exports.SEVERITY_LEVEL_MAP = new SeverityLevelMap([
+      [exports.SeverityLevel.OFF, -Infinity],
+      [exports.SeverityLevel.EMERGENCY, 0],
+      [exports.SeverityLevel.ALERT, 1],
+      [exports.SeverityLevel.CRITICAL, 2],
+      [exports.SeverityLevel.ERROR, 3],
+      [exports.SeverityLevel.WARNING, 4],
+      [exports.SeverityLevel.NOTICE, 5],
+      [exports.SeverityLevel.INFORMATIONAL, 6],
+      [exports.SeverityLevel.DEBUG, 7],
+      [exports.SeverityLevel.TRACE, 8]
+    ]);
+    exports.MongoLoggableComponent = Object.freeze({
+      COMMAND: "command",
+      TOPOLOGY: "topology",
+      SERVER_SELECTION: "serverSelection",
+      CONNECTION: "connection",
+      CLIENT: "client"
+    });
+    function parseSeverityFromString(s) {
+      const validSeverities = Object.values(exports.SeverityLevel);
+      const lowerSeverity = s?.toLowerCase();
+      if (lowerSeverity != null && validSeverities.includes(lowerSeverity)) {
+        return lowerSeverity;
+      }
+      return null;
+    }
+    exports.parseSeverityFromString = parseSeverityFromString;
+    function createStdioLogger(stream) {
+      return {
+        write: (0, util_1.promisify)((log, cb) => {
+          const logLine = (0, util_1.inspect)(log, { compact: true, breakLength: Infinity });
+          stream.write(`${logLine}
+`, "utf-8", cb);
+          return;
+        })
+      };
+    }
+    exports.createStdioLogger = createStdioLogger;
+    function resolveLogPath({ MONGODB_LOG_PATH }, { mongodbLogPath }) {
+      if (typeof mongodbLogPath === "string" && /^stderr$/i.test(mongodbLogPath)) {
+        return { mongodbLogPath: createStdioLogger(process.stderr), mongodbLogPathIsStdErr: true };
+      }
+      if (typeof mongodbLogPath === "string" && /^stdout$/i.test(mongodbLogPath)) {
+        return { mongodbLogPath: createStdioLogger(process.stdout), mongodbLogPathIsStdErr: false };
+      }
+      if (typeof mongodbLogPath === "object" && typeof mongodbLogPath?.write === "function") {
+        return { mongodbLogPath, mongodbLogPathIsStdErr: false };
+      }
+      if (MONGODB_LOG_PATH && /^stderr$/i.test(MONGODB_LOG_PATH)) {
+        return { mongodbLogPath: createStdioLogger(process.stderr), mongodbLogPathIsStdErr: true };
+      }
+      if (MONGODB_LOG_PATH && /^stdout$/i.test(MONGODB_LOG_PATH)) {
+        return { mongodbLogPath: createStdioLogger(process.stdout), mongodbLogPathIsStdErr: false };
+      }
+      return { mongodbLogPath: createStdioLogger(process.stderr), mongodbLogPathIsStdErr: true };
+    }
+    function resolveSeverityConfiguration(clientOption, environmentOption, defaultSeverity) {
+      return parseSeverityFromString(clientOption) ?? parseSeverityFromString(environmentOption) ?? defaultSeverity;
+    }
+    function compareSeverity(s0, s1) {
+      const s0Num = exports.SEVERITY_LEVEL_MAP.getNumericSeverityLevel(s0);
+      const s1Num = exports.SEVERITY_LEVEL_MAP.getNumericSeverityLevel(s1);
+      return s0Num < s1Num ? -1 : s0Num > s1Num ? 1 : 0;
+    }
+    function stringifyWithMaxLen(value, maxDocumentLength, options = {}) {
+      let strToTruncate = "";
+      if (typeof value === "string") {
+        strToTruncate = value;
+      } else if (typeof value === "function") {
+        strToTruncate = value.name;
+      } else {
+        try {
+          strToTruncate = bson_1.EJSON.stringify(value, options);
+        } catch (e) {
+          strToTruncate = `Extended JSON serialization failed with: ${e.message}`;
+        }
+      }
+      if (maxDocumentLength !== 0 && strToTruncate.length > maxDocumentLength && strToTruncate.charCodeAt(maxDocumentLength - 1) !== strToTruncate.codePointAt(maxDocumentLength - 1)) {
+        maxDocumentLength--;
+        if (maxDocumentLength === 0) {
+          return "";
+        }
+      }
+      return maxDocumentLength !== 0 && strToTruncate.length > maxDocumentLength ? `${strToTruncate.slice(0, maxDocumentLength)}...` : strToTruncate;
+    }
+    exports.stringifyWithMaxLen = stringifyWithMaxLen;
+    function isLogConvertible(obj) {
+      const objAsLogConvertible = obj;
+      return objAsLogConvertible.toLog !== void 0 && typeof objAsLogConvertible.toLog === "function";
+    }
+    function attachServerSelectionFields(log, serverSelectionEvent, maxDocumentLength = exports.DEFAULT_MAX_DOCUMENT_LENGTH) {
+      const { selector, operation, topologyDescription, message } = serverSelectionEvent;
+      log.selector = stringifyWithMaxLen(selector, maxDocumentLength);
+      log.operation = operation;
+      log.topologyDescription = stringifyWithMaxLen(topologyDescription, maxDocumentLength);
+      log.message = message;
+      return log;
+    }
+    function attachCommandFields(log, commandEvent) {
+      log.commandName = commandEvent.commandName;
+      log.requestId = commandEvent.requestId;
+      log.driverConnectionId = commandEvent.connectionId;
+      const { host, port } = utils_1.HostAddress.fromString(commandEvent.address).toHostPort();
+      log.serverHost = host;
+      log.serverPort = port;
+      if (commandEvent?.serviceId) {
+        log.serviceId = commandEvent.serviceId.toHexString();
+      }
+      log.databaseName = commandEvent.databaseName;
+      log.serverConnectionId = commandEvent.serverConnectionId;
+      return log;
+    }
+    function attachConnectionFields(log, event) {
+      const { host, port } = utils_1.HostAddress.fromString(event.address).toHostPort();
+      log.serverHost = host;
+      log.serverPort = port;
+      return log;
+    }
+    function attachSDAMFields(log, sdamEvent) {
+      log.topologyId = sdamEvent.topologyId;
+      return log;
+    }
+    function attachServerHeartbeatFields(log, serverHeartbeatEvent) {
+      const { awaited, connectionId } = serverHeartbeatEvent;
+      log.awaited = awaited;
+      log.driverConnectionId = serverHeartbeatEvent.connectionId;
+      const { host, port } = utils_1.HostAddress.fromString(connectionId).toHostPort();
+      log.serverHost = host;
+      log.serverPort = port;
+      return log;
+    }
+    function defaultLogTransform(logObject, maxDocumentLength = exports.DEFAULT_MAX_DOCUMENT_LENGTH) {
+      let log = /* @__PURE__ */ Object.create(null);
+      switch (logObject.name) {
+        case constants_1.SERVER_SELECTION_STARTED:
+          log = attachServerSelectionFields(log, logObject, maxDocumentLength);
+          return log;
+        case constants_1.SERVER_SELECTION_FAILED:
+          log = attachServerSelectionFields(log, logObject, maxDocumentLength);
+          log.failure = logObject.failure?.message;
+          return log;
+        case constants_1.SERVER_SELECTION_SUCCEEDED:
+          log = attachServerSelectionFields(log, logObject, maxDocumentLength);
+          log.serverHost = logObject.serverHost;
+          log.serverPort = logObject.serverPort;
+          return log;
+        case constants_1.WAITING_FOR_SUITABLE_SERVER:
+          log = attachServerSelectionFields(log, logObject, maxDocumentLength);
+          log.remainingTimeMS = logObject.remainingTimeMS;
+          return log;
+        case constants_1.COMMAND_STARTED:
+          log = attachCommandFields(log, logObject);
+          log.message = "Command started";
+          log.command = stringifyWithMaxLen(logObject.command, maxDocumentLength, { relaxed: true });
+          log.databaseName = logObject.databaseName;
+          return log;
+        case constants_1.COMMAND_SUCCEEDED:
+          log = attachCommandFields(log, logObject);
+          log.message = "Command succeeded";
+          log.durationMS = logObject.duration;
+          log.reply = stringifyWithMaxLen(logObject.reply, maxDocumentLength, { relaxed: true });
+          return log;
+        case constants_1.COMMAND_FAILED:
+          log = attachCommandFields(log, logObject);
+          log.message = "Command failed";
+          log.durationMS = logObject.duration;
+          log.failure = logObject.failure?.message ?? "(redacted)";
+          return log;
+        case constants_1.CONNECTION_POOL_CREATED:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection pool created";
+          if (logObject.options) {
+            const { maxIdleTimeMS, minPoolSize, maxPoolSize, maxConnecting, waitQueueTimeoutMS } = logObject.options;
+            log = {
+              ...log,
+              maxIdleTimeMS,
+              minPoolSize,
+              maxPoolSize,
+              maxConnecting,
+              waitQueueTimeoutMS
+            };
+          }
+          return log;
+        case constants_1.CONNECTION_POOL_READY:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection pool ready";
+          return log;
+        case constants_1.CONNECTION_POOL_CLEARED:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection pool cleared";
+          if (logObject.serviceId?._bsontype === "ObjectId") {
+            log.serviceId = logObject.serviceId?.toHexString();
+          }
+          return log;
+        case constants_1.CONNECTION_POOL_CLOSED:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection pool closed";
+          return log;
+        case constants_1.CONNECTION_CREATED:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection created";
+          log.driverConnectionId = logObject.connectionId;
+          return log;
+        case constants_1.CONNECTION_READY:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection ready";
+          log.driverConnectionId = logObject.connectionId;
+          return log;
+        case constants_1.CONNECTION_CLOSED:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection closed";
+          log.driverConnectionId = logObject.connectionId;
+          switch (logObject.reason) {
+            case "stale":
+              log.reason = "Connection became stale because the pool was cleared";
+              break;
+            case "idle":
+              log.reason = "Connection has been available but unused for longer than the configured max idle time";
+              break;
+            case "error":
+              log.reason = "An error occurred while using the connection";
+              if (logObject.error) {
+                log.error = logObject.error;
+              }
+              break;
+            case "poolClosed":
+              log.reason = "Connection pool was closed";
+              break;
+            default:
+              log.reason = `Unknown close reason: ${logObject.reason}`;
+          }
+          return log;
+        case constants_1.CONNECTION_CHECK_OUT_STARTED:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection checkout started";
+          return log;
+        case constants_1.CONNECTION_CHECK_OUT_FAILED:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection checkout failed";
+          switch (logObject.reason) {
+            case "poolClosed":
+              log.reason = "Connection pool was closed";
+              break;
+            case "timeout":
+              log.reason = "Wait queue timeout elapsed without a connection becoming available";
+              break;
+            case "connectionError":
+              log.reason = "An error occurred while trying to establish a new connection";
+              if (logObject.error) {
+                log.error = logObject.error;
+              }
+              break;
+            default:
+              log.reason = `Unknown close reason: ${logObject.reason}`;
+          }
+          return log;
+        case constants_1.CONNECTION_CHECKED_OUT:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection checked out";
+          log.driverConnectionId = logObject.connectionId;
+          return log;
+        case constants_1.CONNECTION_CHECKED_IN:
+          log = attachConnectionFields(log, logObject);
+          log.message = "Connection checked in";
+          log.driverConnectionId = logObject.connectionId;
+          return log;
+        case constants_1.SERVER_OPENING:
+          log = attachSDAMFields(log, logObject);
+          log = attachConnectionFields(log, logObject);
+          log.message = "Starting server monitoring";
+          return log;
+        case constants_1.SERVER_CLOSED:
+          log = attachSDAMFields(log, logObject);
+          log = attachConnectionFields(log, logObject);
+          log.message = "Stopped server monitoring";
+          return log;
+        case constants_1.SERVER_HEARTBEAT_STARTED:
+          log = attachSDAMFields(log, logObject);
+          log = attachServerHeartbeatFields(log, logObject);
+          log.message = "Server heartbeat started";
+          return log;
+        case constants_1.SERVER_HEARTBEAT_SUCCEEDED:
+          log = attachSDAMFields(log, logObject);
+          log = attachServerHeartbeatFields(log, logObject);
+          log.message = "Server heartbeat succeeded";
+          log.durationMS = logObject.duration;
+          log.serverConnectionId = logObject.serverConnectionId;
+          log.reply = stringifyWithMaxLen(logObject.reply, maxDocumentLength, { relaxed: true });
+          return log;
+        case constants_1.SERVER_HEARTBEAT_FAILED:
+          log = attachSDAMFields(log, logObject);
+          log = attachServerHeartbeatFields(log, logObject);
+          log.message = "Server heartbeat failed";
+          log.durationMS = logObject.duration;
+          log.failure = logObject.failure?.message;
+          return log;
+        case constants_1.TOPOLOGY_OPENING:
+          log = attachSDAMFields(log, logObject);
+          log.message = "Starting topology monitoring";
+          return log;
+        case constants_1.TOPOLOGY_CLOSED:
+          log = attachSDAMFields(log, logObject);
+          log.message = "Stopped topology monitoring";
+          return log;
+        case constants_1.TOPOLOGY_DESCRIPTION_CHANGED:
+          log = attachSDAMFields(log, logObject);
+          log.message = "Topology description changed";
+          log.previousDescription = log.reply = stringifyWithMaxLen(logObject.previousDescription, maxDocumentLength);
+          log.newDescription = log.reply = stringifyWithMaxLen(logObject.newDescription, maxDocumentLength);
+          return log;
+        default:
+          for (const [key, value] of Object.entries(logObject)) {
+            if (value != null)
+              log[key] = value;
+          }
+      }
+      return log;
+    }
+    exports.defaultLogTransform = defaultLogTransform;
+    var MongoLogger = class {
+      constructor(options) {
+        this.pendingLog = null;
+        this.error = this.log.bind(this, "error");
+        this.warn = this.log.bind(this, "warn");
+        this.info = this.log.bind(this, "info");
+        this.debug = this.log.bind(this, "debug");
+        this.trace = this.log.bind(this, "trace");
+        this.componentSeverities = options.componentSeverities;
+        this.maxDocumentLength = options.maxDocumentLength;
+        this.logDestination = options.logDestination;
+        this.logDestinationIsStdErr = options.logDestinationIsStdErr;
+        this.severities = this.createLoggingSeverities();
+      }
+      createLoggingSeverities() {
+        const severities = Object();
+        for (const component of Object.values(exports.MongoLoggableComponent)) {
+          severities[component] = {};
+          for (const severityLevel of Object.values(exports.SeverityLevel)) {
+            severities[component][severityLevel] = compareSeverity(severityLevel, this.componentSeverities[component]) <= 0;
+          }
+        }
+        return severities;
+      }
+      turnOffSeverities() {
+        for (const component of Object.values(exports.MongoLoggableComponent)) {
+          this.componentSeverities[component] = exports.SeverityLevel.OFF;
+          for (const severityLevel of Object.values(exports.SeverityLevel)) {
+            this.severities[component][severityLevel] = false;
+          }
+        }
+      }
+      logWriteFailureHandler(error) {
+        if (this.logDestinationIsStdErr) {
+          this.turnOffSeverities();
+          this.clearPendingLog();
+          return;
+        }
+        this.logDestination = createStdioLogger(process.stderr);
+        this.logDestinationIsStdErr = true;
+        this.clearPendingLog();
+        this.error(exports.MongoLoggableComponent.CLIENT, {
+          toLog: function() {
+            return {
+              message: "User input for mongodbLogPath is now invalid. Logging is halted.",
+              error: error.message
+            };
+          }
+        });
+        this.turnOffSeverities();
+        this.clearPendingLog();
+      }
+      clearPendingLog() {
+        this.pendingLog = null;
+      }
+      willLog(component, severity) {
+        if (severity === exports.SeverityLevel.OFF)
+          return false;
+        return this.severities[component][severity];
+      }
+      log(severity, component, message) {
+        if (!this.willLog(component, severity))
+          return;
+        let logMessage = { t: new Date(), c: component, s: severity };
+        if (typeof message === "string") {
+          logMessage.message = message;
+        } else if (typeof message === "object") {
+          if (isLogConvertible(message)) {
+            logMessage = { ...logMessage, ...message.toLog() };
+          } else {
+            logMessage = { ...logMessage, ...defaultLogTransform(message, this.maxDocumentLength) };
+          }
+        }
+        if ((0, utils_1.isPromiseLike)(this.pendingLog)) {
+          this.pendingLog = this.pendingLog.then(() => this.logDestination.write(logMessage)).then(this.clearPendingLog.bind(this), this.logWriteFailureHandler.bind(this));
+          return;
+        }
+        try {
+          const logResult = this.logDestination.write(logMessage);
+          if ((0, utils_1.isPromiseLike)(logResult)) {
+            this.pendingLog = logResult.then(this.clearPendingLog.bind(this), this.logWriteFailureHandler.bind(this));
+          }
+        } catch (error) {
+          this.logWriteFailureHandler(error);
+        }
+      }
+      static resolveOptions(envOptions, clientOptions) {
+        const resolvedLogPath = resolveLogPath(envOptions, clientOptions);
+        const combinedOptions = {
+          ...envOptions,
+          ...clientOptions,
+          mongodbLogPath: resolvedLogPath.mongodbLogPath,
+          mongodbLogPathIsStdErr: resolvedLogPath.mongodbLogPathIsStdErr
+        };
+        const defaultSeverity = resolveSeverityConfiguration(combinedOptions.mongodbLogComponentSeverities?.default, combinedOptions.MONGODB_LOG_ALL, exports.SeverityLevel.OFF);
+        return {
+          componentSeverities: {
+            command: resolveSeverityConfiguration(combinedOptions.mongodbLogComponentSeverities?.command, combinedOptions.MONGODB_LOG_COMMAND, defaultSeverity),
+            topology: resolveSeverityConfiguration(combinedOptions.mongodbLogComponentSeverities?.topology, combinedOptions.MONGODB_LOG_TOPOLOGY, defaultSeverity),
+            serverSelection: resolveSeverityConfiguration(combinedOptions.mongodbLogComponentSeverities?.serverSelection, combinedOptions.MONGODB_LOG_SERVER_SELECTION, defaultSeverity),
+            connection: resolveSeverityConfiguration(combinedOptions.mongodbLogComponentSeverities?.connection, combinedOptions.MONGODB_LOG_CONNECTION, defaultSeverity),
+            client: resolveSeverityConfiguration(combinedOptions.mongodbLogComponentSeverities?.client, combinedOptions.MONGODB_LOG_CLIENT, defaultSeverity),
+            default: defaultSeverity
+          },
+          maxDocumentLength: combinedOptions.mongodbLogMaxDocumentLength ?? (0, utils_1.parseUnsignedInteger)(combinedOptions.MONGODB_LOG_MAX_DOCUMENT_LENGTH) ?? 1e3,
+          logDestination: combinedOptions.mongodbLogPath,
+          logDestinationIsStdErr: combinedOptions.mongodbLogPathIsStdErr
+        };
+      }
+    };
+    exports.MongoLogger = MongoLogger;
+  }
+});
+
+// node_modules/mongodb/lib/mongo_types.js
+var require_mongo_types2 = __commonJS({
+  "node_modules/mongodb/lib/mongo_types.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.CancellationToken = exports.TypedEventEmitter = void 0;
+    var events_1 = require("events");
+    var mongo_logger_1 = require_mongo_logger2();
+    var TypedEventEmitter = class extends events_1.EventEmitter {
+      emitAndLog(event, ...args) {
+        this.emit(event, ...args);
+        if (this.component)
+          this.mongoLogger?.debug(this.component, args[0]);
+      }
+      emitAndLogHeartbeat(event, topologyId, serverConnectionId, ...args) {
+        this.emit(event, ...args);
+        if (this.component) {
+          const loggableHeartbeatEvent = {
+            topologyId,
+            serverConnectionId: serverConnectionId ?? null,
+            ...args[0]
+          };
+          this.mongoLogger?.debug(this.component, loggableHeartbeatEvent);
+        }
+      }
+      emitAndLogCommand(monitorCommands, event, databaseName, connectionEstablished, ...args) {
+        if (monitorCommands) {
+          this.emit(event, ...args);
+        }
+        if (connectionEstablished) {
+          const loggableCommandEvent = {
+            databaseName,
+            ...args[0]
+          };
+          this.mongoLogger?.debug(mongo_logger_1.MongoLoggableComponent.COMMAND, loggableCommandEvent);
+        }
+      }
+    };
+    exports.TypedEventEmitter = TypedEventEmitter;
+    var CancellationToken = class extends TypedEventEmitter {
+    };
+    exports.CancellationToken = CancellationToken;
+  }
+});
+
+// node_modules/mongodb/lib/operations/get_more.js
+var require_get_more2 = __commonJS({
+  "node_modules/mongodb/lib/operations/get_more.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.GetMoreOperation = void 0;
+    var responses_1 = require_responses2();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var operation_1 = require_operation2();
+    var GetMoreOperation = class extends operation_1.AbstractOperation {
+      constructor(ns, cursorId, server, options) {
+        super(options);
+        this.options = options;
+        this.ns = ns;
+        this.cursorId = cursorId;
+        this.server = server;
+      }
+      get commandName() {
+        return "getMore";
+      }
+      async execute(server, _session) {
+        if (server !== this.server) {
+          throw new error_1.MongoRuntimeError("Getmore must run on the same server operation began on");
+        }
+        if (this.cursorId == null || this.cursorId.isZero()) {
+          throw new error_1.MongoRuntimeError("Unable to iterate cursor with no id");
+        }
+        const collection = this.ns.collection;
+        if (collection == null) {
+          throw new error_1.MongoRuntimeError("A collection name must be determined before getMore");
+        }
+        const getMoreCmd = {
+          getMore: this.cursorId,
+          collection
+        };
+        if (typeof this.options.batchSize === "number") {
+          getMoreCmd.batchSize = Math.abs(this.options.batchSize);
+        }
+        if (typeof this.options.maxAwaitTimeMS === "number") {
+          getMoreCmd.maxTimeMS = this.options.maxAwaitTimeMS;
+        }
+        if (this.options.comment !== void 0 && (0, utils_1.maxWireVersion)(server) >= 9) {
+          getMoreCmd.comment = this.options.comment;
+        }
+        const commandOptions = {
+          returnFieldSelector: null,
+          documentsReturnedIn: "nextBatch",
+          ...this.options
+        };
+        return await server.command(this.ns, getMoreCmd, commandOptions, responses_1.CursorResponse);
+      }
+    };
+    exports.GetMoreOperation = GetMoreOperation;
+    (0, operation_1.defineAspects)(GetMoreOperation, [operation_1.Aspect.READ_OPERATION, operation_1.Aspect.MUST_SELECT_SAME_SERVER]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/kill_cursors.js
+var require_kill_cursors2 = __commonJS({
+  "node_modules/mongodb/lib/operations/kill_cursors.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.KillCursorsOperation = void 0;
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var operation_1 = require_operation2();
+    var KillCursorsOperation = class extends operation_1.AbstractOperation {
+      constructor(cursorId, ns, server, options) {
+        super(options);
+        this.ns = ns;
+        this.cursorId = cursorId;
+        this.server = server;
+      }
+      get commandName() {
+        return "killCursors";
+      }
+      async execute(server, session) {
+        if (server !== this.server) {
+          throw new error_1.MongoRuntimeError("Killcursor must run on the same server operation began on");
+        }
+        const killCursors = this.ns.collection;
+        if (killCursors == null) {
+          throw new error_1.MongoRuntimeError("A collection name must be determined before killCursors");
+        }
+        const killCursorsCommand = {
+          killCursors,
+          cursors: [this.cursorId]
+        };
+        try {
+          await server.command(this.ns, killCursorsCommand, { session });
+        } catch (error) {
+          (0, utils_1.squashError)(error);
+        }
+      }
+    };
+    exports.KillCursorsOperation = KillCursorsOperation;
+    (0, operation_1.defineAspects)(KillCursorsOperation, [operation_1.Aspect.MUST_SELECT_SAME_SERVER]);
+  }
+});
+
+// node_modules/mongodb/lib/cmap/metrics.js
+var require_metrics2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/metrics.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ConnectionPoolMetrics = void 0;
+    var ConnectionPoolMetrics = class {
+      constructor() {
+        this.txnConnections = 0;
+        this.cursorConnections = 0;
+        this.otherConnections = 0;
+      }
+      markPinned(pinType) {
+        if (pinType === ConnectionPoolMetrics.TXN) {
+          this.txnConnections += 1;
+        } else if (pinType === ConnectionPoolMetrics.CURSOR) {
+          this.cursorConnections += 1;
+        } else {
+          this.otherConnections += 1;
+        }
+      }
+      markUnpinned(pinType) {
+        if (pinType === ConnectionPoolMetrics.TXN) {
+          this.txnConnections -= 1;
+        } else if (pinType === ConnectionPoolMetrics.CURSOR) {
+          this.cursorConnections -= 1;
+        } else {
+          this.otherConnections -= 1;
+        }
+      }
+      info(maxPoolSize) {
+        return `Timed out while checking out a connection from connection pool: maxPoolSize: ${maxPoolSize}, connections in use by cursors: ${this.cursorConnections}, connections in use by transactions: ${this.txnConnections}, connections in use by other operations: ${this.otherConnections}`;
+      }
+      reset() {
+        this.txnConnections = 0;
+        this.cursorConnections = 0;
+        this.otherConnections = 0;
+      }
+    };
+    ConnectionPoolMetrics.TXN = "txn";
+    ConnectionPoolMetrics.CURSOR = "cursor";
+    ConnectionPoolMetrics.OTHER = "other";
+    exports.ConnectionPoolMetrics = ConnectionPoolMetrics;
+  }
+});
+
+// node_modules/mongodb/lib/sdam/server_description.js
+var require_server_description2 = __commonJS({
+  "node_modules/mongodb/lib/sdam/server_description.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.compareTopologyVersion = exports.parseServerType = exports.ServerDescription = void 0;
+    var bson_1 = require_bson3();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var common_1 = require_common5();
+    var WRITABLE_SERVER_TYPES = /* @__PURE__ */ new Set([
+      common_1.ServerType.RSPrimary,
+      common_1.ServerType.Standalone,
+      common_1.ServerType.Mongos,
+      common_1.ServerType.LoadBalancer
+    ]);
+    var DATA_BEARING_SERVER_TYPES = /* @__PURE__ */ new Set([
+      common_1.ServerType.RSPrimary,
+      common_1.ServerType.RSSecondary,
+      common_1.ServerType.Mongos,
+      common_1.ServerType.Standalone,
+      common_1.ServerType.LoadBalancer
+    ]);
+    var ServerDescription = class {
+      constructor(address, hello, options = {}) {
+        if (address == null || address === "") {
+          throw new error_1.MongoRuntimeError("ServerDescription must be provided with a non-empty address");
+        }
+        this.address = typeof address === "string" ? utils_1.HostAddress.fromString(address).toString() : address.toString();
+        this.type = parseServerType(hello, options);
+        this.hosts = hello?.hosts?.map((host) => host.toLowerCase()) ?? [];
+        this.passives = hello?.passives?.map((host) => host.toLowerCase()) ?? [];
+        this.arbiters = hello?.arbiters?.map((host) => host.toLowerCase()) ?? [];
+        this.tags = hello?.tags ?? {};
+        this.minWireVersion = hello?.minWireVersion ?? 0;
+        this.maxWireVersion = hello?.maxWireVersion ?? 0;
+        this.roundTripTime = options?.roundTripTime ?? -1;
+        this.minRoundTripTime = options?.minRoundTripTime ?? 0;
+        this.lastUpdateTime = (0, utils_1.now)();
+        this.lastWriteDate = hello?.lastWrite?.lastWriteDate ?? 0;
+        this.error = options.error ?? null;
+        this.topologyVersion = this.error?.topologyVersion ?? hello?.topologyVersion ?? null;
+        this.setName = hello?.setName ?? null;
+        this.setVersion = hello?.setVersion ?? null;
+        this.electionId = hello?.electionId ?? null;
+        this.logicalSessionTimeoutMinutes = hello?.logicalSessionTimeoutMinutes ?? null;
+        this.primary = hello?.primary ?? null;
+        this.me = hello?.me?.toLowerCase() ?? null;
+        this.$clusterTime = hello?.$clusterTime ?? null;
+      }
+      get hostAddress() {
+        return utils_1.HostAddress.fromString(this.address);
+      }
+      get allHosts() {
+        return this.hosts.concat(this.arbiters).concat(this.passives);
+      }
+      get isReadable() {
+        return this.type === common_1.ServerType.RSSecondary || this.isWritable;
+      }
+      get isDataBearing() {
+        return DATA_BEARING_SERVER_TYPES.has(this.type);
+      }
+      get isWritable() {
+        return WRITABLE_SERVER_TYPES.has(this.type);
+      }
+      get host() {
+        const chopLength = `:${this.port}`.length;
+        return this.address.slice(0, -chopLength);
+      }
+      get port() {
+        const port = this.address.split(":").pop();
+        return port ? Number.parseInt(port, 10) : 27017;
+      }
+      equals(other) {
+        const topologyVersionsEqual = this.topologyVersion === other?.topologyVersion || compareTopologyVersion(this.topologyVersion, other?.topologyVersion) === 0;
+        const electionIdsEqual = this.electionId != null && other?.electionId != null ? (0, utils_1.compareObjectId)(this.electionId, other.electionId) === 0 : this.electionId === other?.electionId;
+        return other != null && (0, utils_1.errorStrictEqual)(this.error, other.error) && this.type === other.type && this.minWireVersion === other.minWireVersion && (0, utils_1.arrayStrictEqual)(this.hosts, other.hosts) && tagsStrictEqual(this.tags, other.tags) && this.setName === other.setName && this.setVersion === other.setVersion && electionIdsEqual && this.primary === other.primary && this.logicalSessionTimeoutMinutes === other.logicalSessionTimeoutMinutes && topologyVersionsEqual;
+      }
+    };
+    exports.ServerDescription = ServerDescription;
+    function parseServerType(hello, options) {
+      if (options?.loadBalanced) {
+        return common_1.ServerType.LoadBalancer;
+      }
+      if (!hello || !hello.ok) {
+        return common_1.ServerType.Unknown;
+      }
+      if (hello.isreplicaset) {
+        return common_1.ServerType.RSGhost;
+      }
+      if (hello.msg && hello.msg === "isdbgrid") {
+        return common_1.ServerType.Mongos;
+      }
+      if (hello.setName) {
+        if (hello.hidden) {
+          return common_1.ServerType.RSOther;
+        } else if (hello.isWritablePrimary) {
+          return common_1.ServerType.RSPrimary;
+        } else if (hello.secondary) {
+          return common_1.ServerType.RSSecondary;
+        } else if (hello.arbiterOnly) {
+          return common_1.ServerType.RSArbiter;
+        } else {
+          return common_1.ServerType.RSOther;
+        }
+      }
+      return common_1.ServerType.Standalone;
+    }
+    exports.parseServerType = parseServerType;
+    function tagsStrictEqual(tags, tags2) {
+      const tagsKeys = Object.keys(tags);
+      const tags2Keys = Object.keys(tags2);
+      return tagsKeys.length === tags2Keys.length && tagsKeys.every((key) => tags2[key] === tags[key]);
+    }
+    function compareTopologyVersion(currentTv, newTv) {
+      if (currentTv == null || newTv == null) {
+        return -1;
+      }
+      if (!currentTv.processId.equals(newTv.processId)) {
+        return -1;
+      }
+      const currentCounter = typeof currentTv.counter === "bigint" ? bson_1.Long.fromBigInt(currentTv.counter) : bson_1.Long.isLong(currentTv.counter) ? currentTv.counter : bson_1.Long.fromNumber(currentTv.counter);
+      const newCounter = typeof newTv.counter === "bigint" ? bson_1.Long.fromBigInt(newTv.counter) : bson_1.Long.isLong(newTv.counter) ? newTv.counter : bson_1.Long.fromNumber(newTv.counter);
+      return currentCounter.compare(newCounter);
+    }
+    exports.compareTopologyVersion = compareTopologyVersion;
+  }
+});
+
+// node_modules/mongodb/lib/sdam/topology_description.js
+var require_topology_description2 = __commonJS({
+  "node_modules/mongodb/lib/sdam/topology_description.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.TopologyDescription = void 0;
+    var bson_1 = require_bson3();
+    var WIRE_CONSTANTS = require_constants4();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var common_1 = require_common5();
+    var server_description_1 = require_server_description2();
+    var MIN_SUPPORTED_SERVER_VERSION = WIRE_CONSTANTS.MIN_SUPPORTED_SERVER_VERSION;
+    var MAX_SUPPORTED_SERVER_VERSION = WIRE_CONSTANTS.MAX_SUPPORTED_SERVER_VERSION;
+    var MIN_SUPPORTED_WIRE_VERSION = WIRE_CONSTANTS.MIN_SUPPORTED_WIRE_VERSION;
+    var MAX_SUPPORTED_WIRE_VERSION = WIRE_CONSTANTS.MAX_SUPPORTED_WIRE_VERSION;
+    var MONGOS_OR_UNKNOWN = /* @__PURE__ */ new Set([common_1.ServerType.Mongos, common_1.ServerType.Unknown]);
+    var MONGOS_OR_STANDALONE = /* @__PURE__ */ new Set([common_1.ServerType.Mongos, common_1.ServerType.Standalone]);
+    var NON_PRIMARY_RS_MEMBERS = /* @__PURE__ */ new Set([
+      common_1.ServerType.RSSecondary,
+      common_1.ServerType.RSArbiter,
+      common_1.ServerType.RSOther
+    ]);
+    var TopologyDescription = class {
+      constructor(topologyType, serverDescriptions = null, setName = null, maxSetVersion = null, maxElectionId = null, commonWireVersion = null, options = null) {
+        options = options ?? {};
+        this.type = topologyType ?? common_1.TopologyType.Unknown;
+        this.servers = serverDescriptions ?? /* @__PURE__ */ new Map();
+        this.stale = false;
+        this.compatible = true;
+        this.heartbeatFrequencyMS = options.heartbeatFrequencyMS ?? 0;
+        this.localThresholdMS = options.localThresholdMS ?? 15;
+        this.setName = setName ?? null;
+        this.maxElectionId = maxElectionId ?? null;
+        this.maxSetVersion = maxSetVersion ?? null;
+        this.commonWireVersion = commonWireVersion ?? 0;
+        for (const serverDescription of this.servers.values()) {
+          if (serverDescription.type === common_1.ServerType.Unknown || serverDescription.type === common_1.ServerType.LoadBalancer) {
+            continue;
+          }
+          if (serverDescription.minWireVersion > MAX_SUPPORTED_WIRE_VERSION) {
+            this.compatible = false;
+            this.compatibilityError = `Server at ${serverDescription.address} requires wire version ${serverDescription.minWireVersion}, but this version of the driver only supports up to ${MAX_SUPPORTED_WIRE_VERSION} (MongoDB ${MAX_SUPPORTED_SERVER_VERSION})`;
+          }
+          if (serverDescription.maxWireVersion < MIN_SUPPORTED_WIRE_VERSION) {
+            this.compatible = false;
+            this.compatibilityError = `Server at ${serverDescription.address} reports wire version ${serverDescription.maxWireVersion}, but this version of the driver requires at least ${MIN_SUPPORTED_WIRE_VERSION} (MongoDB ${MIN_SUPPORTED_SERVER_VERSION}).`;
+            break;
+          }
+        }
+        this.logicalSessionTimeoutMinutes = null;
+        for (const [, server] of this.servers) {
+          if (server.isReadable) {
+            if (server.logicalSessionTimeoutMinutes == null) {
+              this.logicalSessionTimeoutMinutes = null;
+              break;
+            }
+            if (this.logicalSessionTimeoutMinutes == null) {
+              this.logicalSessionTimeoutMinutes = server.logicalSessionTimeoutMinutes;
+              continue;
+            }
+            this.logicalSessionTimeoutMinutes = Math.min(this.logicalSessionTimeoutMinutes, server.logicalSessionTimeoutMinutes);
+          }
+        }
+      }
+      updateFromSrvPollingEvent(ev, srvMaxHosts = 0) {
+        const incomingHostnames = ev.hostnames();
+        const currentHostnames = new Set(this.servers.keys());
+        const hostnamesToAdd = new Set(incomingHostnames);
+        const hostnamesToRemove = /* @__PURE__ */ new Set();
+        for (const hostname of currentHostnames) {
+          hostnamesToAdd.delete(hostname);
+          if (!incomingHostnames.has(hostname)) {
+            hostnamesToRemove.add(hostname);
+          }
+        }
+        if (hostnamesToAdd.size === 0 && hostnamesToRemove.size === 0) {
+          return this;
+        }
+        const serverDescriptions = new Map(this.servers);
+        for (const removedHost of hostnamesToRemove) {
+          serverDescriptions.delete(removedHost);
+        }
+        if (hostnamesToAdd.size > 0) {
+          if (srvMaxHosts === 0) {
+            for (const hostToAdd of hostnamesToAdd) {
+              serverDescriptions.set(hostToAdd, new server_description_1.ServerDescription(hostToAdd));
+            }
+          } else if (serverDescriptions.size < srvMaxHosts) {
+            const selectedHosts = (0, utils_1.shuffle)(hostnamesToAdd, srvMaxHosts - serverDescriptions.size);
+            for (const selectedHostToAdd of selectedHosts) {
+              serverDescriptions.set(selectedHostToAdd, new server_description_1.ServerDescription(selectedHostToAdd));
+            }
+          }
+        }
+        return new TopologyDescription(this.type, serverDescriptions, this.setName, this.maxSetVersion, this.maxElectionId, this.commonWireVersion, { heartbeatFrequencyMS: this.heartbeatFrequencyMS, localThresholdMS: this.localThresholdMS });
+      }
+      update(serverDescription) {
+        const address = serverDescription.address;
+        let { type: topologyType, setName, maxSetVersion, maxElectionId, commonWireVersion } = this;
+        const serverType = serverDescription.type;
+        const serverDescriptions = new Map(this.servers);
+        if (serverDescription.maxWireVersion !== 0) {
+          if (commonWireVersion == null) {
+            commonWireVersion = serverDescription.maxWireVersion;
+          } else {
+            commonWireVersion = Math.min(commonWireVersion, serverDescription.maxWireVersion);
+          }
+        }
+        if (typeof serverDescription.setName === "string" && typeof setName === "string" && serverDescription.setName !== setName) {
+          if (topologyType === common_1.TopologyType.Single) {
+            serverDescription = new server_description_1.ServerDescription(address);
+          } else {
+            serverDescriptions.delete(address);
+          }
+        }
+        serverDescriptions.set(address, serverDescription);
+        if (topologyType === common_1.TopologyType.Single) {
+          return new TopologyDescription(common_1.TopologyType.Single, serverDescriptions, setName, maxSetVersion, maxElectionId, commonWireVersion, { heartbeatFrequencyMS: this.heartbeatFrequencyMS, localThresholdMS: this.localThresholdMS });
+        }
+        if (topologyType === common_1.TopologyType.Unknown) {
+          if (serverType === common_1.ServerType.Standalone && this.servers.size !== 1) {
+            serverDescriptions.delete(address);
+          } else {
+            topologyType = topologyTypeForServerType(serverType);
+          }
+        }
+        if (topologyType === common_1.TopologyType.Sharded) {
+          if (!MONGOS_OR_UNKNOWN.has(serverType)) {
+            serverDescriptions.delete(address);
+          }
+        }
+        if (topologyType === common_1.TopologyType.ReplicaSetNoPrimary) {
+          if (MONGOS_OR_STANDALONE.has(serverType)) {
+            serverDescriptions.delete(address);
+          }
+          if (serverType === common_1.ServerType.RSPrimary) {
+            const result = updateRsFromPrimary(serverDescriptions, serverDescription, setName, maxSetVersion, maxElectionId);
+            topologyType = result[0];
+            setName = result[1];
+            maxSetVersion = result[2];
+            maxElectionId = result[3];
+          } else if (NON_PRIMARY_RS_MEMBERS.has(serverType)) {
+            const result = updateRsNoPrimaryFromMember(serverDescriptions, serverDescription, setName);
+            topologyType = result[0];
+            setName = result[1];
+          }
+        }
+        if (topologyType === common_1.TopologyType.ReplicaSetWithPrimary) {
+          if (MONGOS_OR_STANDALONE.has(serverType)) {
+            serverDescriptions.delete(address);
+            topologyType = checkHasPrimary(serverDescriptions);
+          } else if (serverType === common_1.ServerType.RSPrimary) {
+            const result = updateRsFromPrimary(serverDescriptions, serverDescription, setName, maxSetVersion, maxElectionId);
+            topologyType = result[0];
+            setName = result[1];
+            maxSetVersion = result[2];
+            maxElectionId = result[3];
+          } else if (NON_PRIMARY_RS_MEMBERS.has(serverType)) {
+            topologyType = updateRsWithPrimaryFromMember(serverDescriptions, serverDescription, setName);
+          } else {
+            topologyType = checkHasPrimary(serverDescriptions);
+          }
+        }
+        return new TopologyDescription(topologyType, serverDescriptions, setName, maxSetVersion, maxElectionId, commonWireVersion, { heartbeatFrequencyMS: this.heartbeatFrequencyMS, localThresholdMS: this.localThresholdMS });
+      }
+      get error() {
+        const descriptionsWithError = Array.from(this.servers.values()).filter((sd) => sd.error);
+        if (descriptionsWithError.length > 0) {
+          return descriptionsWithError[0].error;
+        }
+        return null;
+      }
+      get hasKnownServers() {
+        return Array.from(this.servers.values()).some((sd) => sd.type !== common_1.ServerType.Unknown);
+      }
+      get hasDataBearingServers() {
+        return Array.from(this.servers.values()).some((sd) => sd.isDataBearing);
+      }
+      hasServer(address) {
+        return this.servers.has(address);
+      }
+      toJSON() {
+        return bson_1.EJSON.serialize(this);
+      }
+    };
+    exports.TopologyDescription = TopologyDescription;
+    function topologyTypeForServerType(serverType) {
+      switch (serverType) {
+        case common_1.ServerType.Standalone:
+          return common_1.TopologyType.Single;
+        case common_1.ServerType.Mongos:
+          return common_1.TopologyType.Sharded;
+        case common_1.ServerType.RSPrimary:
+          return common_1.TopologyType.ReplicaSetWithPrimary;
+        case common_1.ServerType.RSOther:
+        case common_1.ServerType.RSSecondary:
+          return common_1.TopologyType.ReplicaSetNoPrimary;
+        default:
+          return common_1.TopologyType.Unknown;
+      }
+    }
+    function updateRsFromPrimary(serverDescriptions, serverDescription, setName = null, maxSetVersion = null, maxElectionId = null) {
+      setName = setName || serverDescription.setName;
+      if (setName !== serverDescription.setName) {
+        serverDescriptions.delete(serverDescription.address);
+        return [checkHasPrimary(serverDescriptions), setName, maxSetVersion, maxElectionId];
+      }
+      if (serverDescription.maxWireVersion >= 17) {
+        const electionIdComparison = (0, utils_1.compareObjectId)(maxElectionId, serverDescription.electionId);
+        const maxElectionIdIsEqual = electionIdComparison === 0;
+        const maxElectionIdIsLess = electionIdComparison === -1;
+        const maxSetVersionIsLessOrEqual = (maxSetVersion ?? -1) <= (serverDescription.setVersion ?? -1);
+        if (maxElectionIdIsLess || maxElectionIdIsEqual && maxSetVersionIsLessOrEqual) {
+          maxElectionId = serverDescription.electionId;
+          maxSetVersion = serverDescription.setVersion;
+        } else {
+          serverDescriptions.set(serverDescription.address, new server_description_1.ServerDescription(serverDescription.address));
+          return [checkHasPrimary(serverDescriptions), setName, maxSetVersion, maxElectionId];
+        }
+      } else {
+        const electionId = serverDescription.electionId ? serverDescription.electionId : null;
+        if (serverDescription.setVersion && electionId) {
+          if (maxSetVersion && maxElectionId) {
+            if (maxSetVersion > serverDescription.setVersion || (0, utils_1.compareObjectId)(maxElectionId, electionId) > 0) {
+              serverDescriptions.set(serverDescription.address, new server_description_1.ServerDescription(serverDescription.address));
+              return [checkHasPrimary(serverDescriptions), setName, maxSetVersion, maxElectionId];
+            }
+          }
+          maxElectionId = serverDescription.electionId;
+        }
+        if (serverDescription.setVersion != null && (maxSetVersion == null || serverDescription.setVersion > maxSetVersion)) {
+          maxSetVersion = serverDescription.setVersion;
+        }
+      }
+      for (const [address, server] of serverDescriptions) {
+        if (server.type === common_1.ServerType.RSPrimary && server.address !== serverDescription.address) {
+          serverDescriptions.set(address, new server_description_1.ServerDescription(server.address));
+          break;
+        }
+      }
+      serverDescription.allHosts.forEach((address) => {
+        if (!serverDescriptions.has(address)) {
+          serverDescriptions.set(address, new server_description_1.ServerDescription(address));
+        }
+      });
+      const currentAddresses = Array.from(serverDescriptions.keys());
+      const responseAddresses = serverDescription.allHosts;
+      currentAddresses.filter((addr) => responseAddresses.indexOf(addr) === -1).forEach((address) => {
+        serverDescriptions.delete(address);
+      });
+      return [checkHasPrimary(serverDescriptions), setName, maxSetVersion, maxElectionId];
+    }
+    function updateRsWithPrimaryFromMember(serverDescriptions, serverDescription, setName = null) {
+      if (setName == null) {
+        throw new error_1.MongoRuntimeError('Argument "setName" is required if connected to a replica set');
+      }
+      if (setName !== serverDescription.setName || serverDescription.me && serverDescription.address !== serverDescription.me) {
+        serverDescriptions.delete(serverDescription.address);
+      }
+      return checkHasPrimary(serverDescriptions);
+    }
+    function updateRsNoPrimaryFromMember(serverDescriptions, serverDescription, setName = null) {
+      const topologyType = common_1.TopologyType.ReplicaSetNoPrimary;
+      setName = setName ?? serverDescription.setName;
+      if (setName !== serverDescription.setName) {
+        serverDescriptions.delete(serverDescription.address);
+        return [topologyType, setName];
+      }
+      serverDescription.allHosts.forEach((address) => {
+        if (!serverDescriptions.has(address)) {
+          serverDescriptions.set(address, new server_description_1.ServerDescription(address));
+        }
+      });
+      if (serverDescription.me && serverDescription.address !== serverDescription.me) {
+        serverDescriptions.delete(serverDescription.address);
+      }
+      return [topologyType, setName];
+    }
+    function checkHasPrimary(serverDescriptions) {
+      for (const serverDescription of serverDescriptions.values()) {
+        if (serverDescription.type === common_1.ServerType.RSPrimary) {
+          return common_1.TopologyType.ReplicaSetWithPrimary;
+        }
+      }
+      return common_1.TopologyType.ReplicaSetNoPrimary;
+    }
+  }
+});
+
+// node_modules/mongodb/lib/cmap/wire_protocol/shared.js
+var require_shared2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/wire_protocol/shared.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.isSharded = exports.getReadPreference = void 0;
+    var error_1 = require_error3();
+    var read_preference_1 = require_read_preference2();
+    var common_1 = require_common5();
+    var topology_description_1 = require_topology_description2();
+    function getReadPreference(options) {
+      let readPreference = options?.readPreference ?? read_preference_1.ReadPreference.primary;
+      if (typeof readPreference === "string") {
+        readPreference = read_preference_1.ReadPreference.fromString(readPreference);
+      }
+      if (!(readPreference instanceof read_preference_1.ReadPreference)) {
+        throw new error_1.MongoInvalidArgumentError('Option "readPreference" must be a ReadPreference instance');
+      }
+      return readPreference;
+    }
+    exports.getReadPreference = getReadPreference;
+    function isSharded(topologyOrServer) {
+      if (topologyOrServer == null) {
+        return false;
+      }
+      if (topologyOrServer.description && topologyOrServer.description.type === common_1.ServerType.Mongos) {
+        return true;
+      }
+      if (topologyOrServer.description && topologyOrServer.description instanceof topology_description_1.TopologyDescription) {
+        const servers = Array.from(topologyOrServer.description.servers.values());
+        return servers.some((server) => server.type === common_1.ServerType.Mongos);
+      }
+      return false;
+    }
+    exports.isSharded = isSharded;
+  }
+});
+
+// node_modules/mongodb/lib/transactions.js
+var require_transactions2 = __commonJS({
+  "node_modules/mongodb/lib/transactions.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.isTransactionCommand = exports.Transaction = exports.TxnState = void 0;
+    var error_1 = require_error3();
+    var read_concern_1 = require_read_concern2();
+    var read_preference_1 = require_read_preference2();
+    var write_concern_1 = require_write_concern2();
+    exports.TxnState = Object.freeze({
+      NO_TRANSACTION: "NO_TRANSACTION",
+      STARTING_TRANSACTION: "STARTING_TRANSACTION",
+      TRANSACTION_IN_PROGRESS: "TRANSACTION_IN_PROGRESS",
+      TRANSACTION_COMMITTED: "TRANSACTION_COMMITTED",
+      TRANSACTION_COMMITTED_EMPTY: "TRANSACTION_COMMITTED_EMPTY",
+      TRANSACTION_ABORTED: "TRANSACTION_ABORTED"
+    });
+    var stateMachine = {
+      [exports.TxnState.NO_TRANSACTION]: [exports.TxnState.NO_TRANSACTION, exports.TxnState.STARTING_TRANSACTION],
+      [exports.TxnState.STARTING_TRANSACTION]: [
+        exports.TxnState.TRANSACTION_IN_PROGRESS,
+        exports.TxnState.TRANSACTION_COMMITTED,
+        exports.TxnState.TRANSACTION_COMMITTED_EMPTY,
+        exports.TxnState.TRANSACTION_ABORTED
+      ],
+      [exports.TxnState.TRANSACTION_IN_PROGRESS]: [
+        exports.TxnState.TRANSACTION_IN_PROGRESS,
+        exports.TxnState.TRANSACTION_COMMITTED,
+        exports.TxnState.TRANSACTION_ABORTED
+      ],
+      [exports.TxnState.TRANSACTION_COMMITTED]: [
+        exports.TxnState.TRANSACTION_COMMITTED,
+        exports.TxnState.TRANSACTION_COMMITTED_EMPTY,
+        exports.TxnState.STARTING_TRANSACTION,
+        exports.TxnState.NO_TRANSACTION
+      ],
+      [exports.TxnState.TRANSACTION_ABORTED]: [exports.TxnState.STARTING_TRANSACTION, exports.TxnState.NO_TRANSACTION],
+      [exports.TxnState.TRANSACTION_COMMITTED_EMPTY]: [
+        exports.TxnState.TRANSACTION_COMMITTED_EMPTY,
+        exports.TxnState.NO_TRANSACTION
+      ]
+    };
+    var ACTIVE_STATES = /* @__PURE__ */ new Set([
+      exports.TxnState.STARTING_TRANSACTION,
+      exports.TxnState.TRANSACTION_IN_PROGRESS
+    ]);
+    var COMMITTED_STATES = /* @__PURE__ */ new Set([
+      exports.TxnState.TRANSACTION_COMMITTED,
+      exports.TxnState.TRANSACTION_COMMITTED_EMPTY,
+      exports.TxnState.TRANSACTION_ABORTED
+    ]);
+    var Transaction = class {
+      constructor(options) {
+        options = options ?? {};
+        this.state = exports.TxnState.NO_TRANSACTION;
+        this.options = {};
+        const writeConcern = write_concern_1.WriteConcern.fromOptions(options);
+        if (writeConcern) {
+          if (writeConcern.w === 0) {
+            throw new error_1.MongoTransactionError("Transactions do not support unacknowledged write concern");
+          }
+          this.options.writeConcern = writeConcern;
+        }
+        if (options.readConcern) {
+          this.options.readConcern = read_concern_1.ReadConcern.fromOptions(options);
+        }
+        if (options.readPreference) {
+          this.options.readPreference = read_preference_1.ReadPreference.fromOptions(options);
+        }
+        if (options.maxCommitTimeMS) {
+          this.options.maxTimeMS = options.maxCommitTimeMS;
+        }
+        this._pinnedServer = void 0;
+        this._recoveryToken = void 0;
+      }
+      get server() {
+        return this._pinnedServer;
+      }
+      get recoveryToken() {
+        return this._recoveryToken;
+      }
+      get isPinned() {
+        return !!this.server;
+      }
+      get isStarting() {
+        return this.state === exports.TxnState.STARTING_TRANSACTION;
+      }
+      get isActive() {
+        return ACTIVE_STATES.has(this.state);
+      }
+      get isCommitted() {
+        return COMMITTED_STATES.has(this.state);
+      }
+      transition(nextState) {
+        const nextStates = stateMachine[this.state];
+        if (nextStates && nextStates.includes(nextState)) {
+          this.state = nextState;
+          if (this.state === exports.TxnState.NO_TRANSACTION || this.state === exports.TxnState.STARTING_TRANSACTION || this.state === exports.TxnState.TRANSACTION_ABORTED) {
+            this.unpinServer();
+          }
+          return;
+        }
+        throw new error_1.MongoRuntimeError(`Attempted illegal state transition from [${this.state}] to [${nextState}]`);
+      }
+      pinServer(server) {
+        if (this.isActive) {
+          this._pinnedServer = server;
+        }
+      }
+      unpinServer() {
+        this._pinnedServer = void 0;
+      }
+    };
+    exports.Transaction = Transaction;
+    function isTransactionCommand(command) {
+      return !!(command.commitTransaction || command.abortTransaction);
+    }
+    exports.isTransactionCommand = isTransactionCommand;
+  }
+});
+
+// node_modules/mongodb/lib/sessions.js
+var require_sessions2 = __commonJS({
+  "node_modules/mongodb/lib/sessions.js"(exports) {
+    "use strict";
+    var _a;
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.updateSessionFromResponse = exports.applySession = exports.ServerSessionPool = exports.ServerSession = exports.maybeClearPinnedConnection = exports.ClientSession = void 0;
+    var bson_1 = require_bson3();
+    var metrics_1 = require_metrics2();
+    var shared_1 = require_shared2();
+    var constants_1 = require_constants5();
+    var error_1 = require_error3();
+    var mongo_types_1 = require_mongo_types2();
+    var execute_operation_1 = require_execute_operation2();
+    var run_command_1 = require_run_command2();
+    var read_concern_1 = require_read_concern2();
+    var read_preference_1 = require_read_preference2();
+    var common_1 = require_common5();
+    var transactions_1 = require_transactions2();
+    var utils_1 = require_utils5();
+    var write_concern_1 = require_write_concern2();
+    var minWireVersionForShardedTransactions = 8;
+    var kServerSession = Symbol("serverSession");
+    var kSnapshotTime = Symbol("snapshotTime");
+    var kSnapshotEnabled = Symbol("snapshotEnabled");
+    var kPinnedConnection = Symbol("pinnedConnection");
+    var kTxnNumberIncrement = Symbol("txnNumberIncrement");
+    var ClientSession = class extends mongo_types_1.TypedEventEmitter {
+      constructor(client, sessionPool, options, clientOptions) {
+        super();
+        this[_a] = false;
+        if (client == null) {
+          throw new error_1.MongoRuntimeError("ClientSession requires a MongoClient");
+        }
+        if (sessionPool == null || !(sessionPool instanceof ServerSessionPool)) {
+          throw new error_1.MongoRuntimeError("ClientSession requires a ServerSessionPool");
+        }
+        options = options ?? {};
+        if (options.snapshot === true) {
+          this[kSnapshotEnabled] = true;
+          if (options.causalConsistency === true) {
+            throw new error_1.MongoInvalidArgumentError('Properties "causalConsistency" and "snapshot" are mutually exclusive');
+          }
+        }
+        this.client = client;
+        this.sessionPool = sessionPool;
+        this.hasEnded = false;
+        this.clientOptions = clientOptions;
+        this.timeoutMS = options.defaultTimeoutMS ?? client.s.options?.timeoutMS;
+        this.explicit = !!options.explicit;
+        this[kServerSession] = this.explicit ? this.sessionPool.acquire() : null;
+        this[kTxnNumberIncrement] = 0;
+        const defaultCausalConsistencyValue = this.explicit && options.snapshot !== true;
+        this.supports = {
+          causalConsistency: options.causalConsistency ?? defaultCausalConsistencyValue
+        };
+        this.clusterTime = options.initialClusterTime;
+        this.operationTime = void 0;
+        this.owner = options.owner;
+        this.defaultTransactionOptions = { ...options.defaultTransactionOptions };
+        this.transaction = new transactions_1.Transaction();
+      }
+      get id() {
+        return this[kServerSession]?.id;
+      }
+      get serverSession() {
+        let serverSession = this[kServerSession];
+        if (serverSession == null) {
+          if (this.explicit) {
+            throw new error_1.MongoRuntimeError("Unexpected null serverSession for an explicit session");
+          }
+          if (this.hasEnded) {
+            throw new error_1.MongoRuntimeError("Unexpected null serverSession for an ended implicit session");
+          }
+          serverSession = this.sessionPool.acquire();
+          this[kServerSession] = serverSession;
+        }
+        return serverSession;
+      }
+      get snapshotEnabled() {
+        return this[kSnapshotEnabled];
+      }
+      get loadBalanced() {
+        return this.client.topology?.description.type === common_1.TopologyType.LoadBalanced;
+      }
+      get pinnedConnection() {
+        return this[kPinnedConnection];
+      }
+      pin(conn) {
+        if (this[kPinnedConnection]) {
+          throw TypeError("Cannot pin multiple connections to the same session");
+        }
+        this[kPinnedConnection] = conn;
+        conn.emit(constants_1.PINNED, this.inTransaction() ? metrics_1.ConnectionPoolMetrics.TXN : metrics_1.ConnectionPoolMetrics.CURSOR);
+      }
+      unpin(options) {
+        if (this.loadBalanced) {
+          return maybeClearPinnedConnection(this, options);
+        }
+        this.transaction.unpinServer();
+      }
+      get isPinned() {
+        return this.loadBalanced ? !!this[kPinnedConnection] : this.transaction.isPinned;
+      }
+      async endSession(options) {
+        try {
+          if (this.inTransaction()) {
+            await this.abortTransaction();
+          }
+          if (!this.hasEnded) {
+            const serverSession = this[kServerSession];
+            if (serverSession != null) {
+              this.sessionPool.release(serverSession);
+              Object.defineProperty(this, kServerSession, {
+                value: ServerSession.clone(serverSession),
+                writable: false
+              });
+            }
+            this.hasEnded = true;
+            this.emit("ended", this);
+          }
+        } catch (error) {
+          (0, utils_1.squashError)(error);
+        } finally {
+          maybeClearPinnedConnection(this, { force: true, ...options });
+        }
+      }
+      advanceOperationTime(operationTime) {
+        if (this.operationTime == null) {
+          this.operationTime = operationTime;
+          return;
+        }
+        if (operationTime.greaterThan(this.operationTime)) {
+          this.operationTime = operationTime;
+        }
+      }
+      advanceClusterTime(clusterTime) {
+        if (!clusterTime || typeof clusterTime !== "object") {
+          throw new error_1.MongoInvalidArgumentError("input cluster time must be an object");
+        }
+        if (!clusterTime.clusterTime || clusterTime.clusterTime._bsontype !== "Timestamp") {
+          throw new error_1.MongoInvalidArgumentError('input cluster time "clusterTime" property must be a valid BSON Timestamp');
+        }
+        if (!clusterTime.signature || clusterTime.signature.hash?._bsontype !== "Binary" || typeof clusterTime.signature.keyId !== "bigint" && typeof clusterTime.signature.keyId !== "number" && clusterTime.signature.keyId?._bsontype !== "Long") {
+          throw new error_1.MongoInvalidArgumentError('input cluster time must have a valid "signature" property with BSON Binary hash and BSON Long keyId');
+        }
+        (0, common_1._advanceClusterTime)(this, clusterTime);
+      }
+      equals(session) {
+        if (!(session instanceof ClientSession)) {
+          return false;
+        }
+        if (this.id == null || session.id == null) {
+          return false;
+        }
+        return utils_1.ByteUtils.equals(this.id.id.buffer, session.id.id.buffer);
+      }
+      incrementTransactionNumber() {
+        this[kTxnNumberIncrement] += 1;
+      }
+      inTransaction() {
+        return this.transaction.isActive;
+      }
+      startTransaction(options) {
+        if (this[kSnapshotEnabled]) {
+          throw new error_1.MongoCompatibilityError("Transactions are not supported in snapshot sessions");
+        }
+        if (this.inTransaction()) {
+          throw new error_1.MongoTransactionError("Transaction already in progress");
+        }
+        if (this.isPinned && this.transaction.isCommitted) {
+          this.unpin();
+        }
+        const topologyMaxWireVersion = (0, utils_1.maxWireVersion)(this.client.topology);
+        if ((0, shared_1.isSharded)(this.client.topology) && topologyMaxWireVersion != null && topologyMaxWireVersion < minWireVersionForShardedTransactions) {
+          throw new error_1.MongoCompatibilityError("Transactions are not supported on sharded clusters in MongoDB < 4.2.");
+        }
+        this.incrementTransactionNumber();
+        this.transaction = new transactions_1.Transaction({
+          readConcern: options?.readConcern ?? this.defaultTransactionOptions.readConcern ?? this.clientOptions?.readConcern,
+          writeConcern: options?.writeConcern ?? this.defaultTransactionOptions.writeConcern ?? this.clientOptions?.writeConcern,
+          readPreference: options?.readPreference ?? this.defaultTransactionOptions.readPreference ?? this.clientOptions?.readPreference,
+          maxCommitTimeMS: options?.maxCommitTimeMS ?? this.defaultTransactionOptions.maxCommitTimeMS
+        });
+        this.transaction.transition(transactions_1.TxnState.STARTING_TRANSACTION);
+      }
+      async commitTransaction() {
+        return await endTransaction(this, "commitTransaction");
+      }
+      async abortTransaction() {
+        return await endTransaction(this, "abortTransaction");
+      }
+      toBSON() {
+        throw new error_1.MongoRuntimeError("ClientSession cannot be serialized to BSON.");
+      }
+      async withTransaction(fn, options) {
+        const startTime = (0, utils_1.now)();
+        return await attemptTransaction(this, startTime, fn, options);
+      }
+    };
+    exports.ClientSession = ClientSession;
+    _a = kSnapshotEnabled;
+    var MAX_WITH_TRANSACTION_TIMEOUT = 12e4;
+    var NON_DETERMINISTIC_WRITE_CONCERN_ERRORS = /* @__PURE__ */ new Set([
+      "CannotSatisfyWriteConcern",
+      "UnknownReplWriteConcern",
+      "UnsatisfiableWriteConcern"
+    ]);
+    function hasNotTimedOut(startTime, max) {
+      return (0, utils_1.calculateDurationInMs)(startTime) < max;
+    }
+    function isUnknownTransactionCommitResult(err) {
+      const isNonDeterministicWriteConcernError = err instanceof error_1.MongoServerError && err.codeName && NON_DETERMINISTIC_WRITE_CONCERN_ERRORS.has(err.codeName);
+      return isMaxTimeMSExpiredError(err) || !isNonDeterministicWriteConcernError && err.code !== error_1.MONGODB_ERROR_CODES.UnsatisfiableWriteConcern && err.code !== error_1.MONGODB_ERROR_CODES.UnknownReplWriteConcern;
+    }
+    function maybeClearPinnedConnection(session, options) {
+      const conn = session[kPinnedConnection];
+      const error = options?.error;
+      if (session.inTransaction() && error && error instanceof error_1.MongoError && error.hasErrorLabel(error_1.MongoErrorLabel.TransientTransactionError)) {
+        return;
+      }
+      const topology = session.client.topology;
+      if (conn && topology != null) {
+        const servers = Array.from(topology.s.servers.values());
+        const loadBalancer = servers[0];
+        if (options?.error == null || options?.force) {
+          loadBalancer.pool.checkIn(conn);
+          session[kPinnedConnection] = void 0;
+          conn.emit(constants_1.UNPINNED, session.transaction.state !== transactions_1.TxnState.NO_TRANSACTION ? metrics_1.ConnectionPoolMetrics.TXN : metrics_1.ConnectionPoolMetrics.CURSOR);
+          if (options?.forceClear) {
+            loadBalancer.pool.clear({ serviceId: conn.serviceId });
+          }
+        }
+      }
+    }
+    exports.maybeClearPinnedConnection = maybeClearPinnedConnection;
+    function isMaxTimeMSExpiredError(err) {
+      if (err == null || !(err instanceof error_1.MongoServerError)) {
+        return false;
+      }
+      return err.code === error_1.MONGODB_ERROR_CODES.MaxTimeMSExpired || err.writeConcernError && err.writeConcernError.code === error_1.MONGODB_ERROR_CODES.MaxTimeMSExpired;
+    }
+    async function attemptTransactionCommit(session, startTime, fn, result, options) {
+      try {
+        await session.commitTransaction();
+        return result;
+      } catch (commitErr) {
+        if (commitErr instanceof error_1.MongoError && hasNotTimedOut(startTime, MAX_WITH_TRANSACTION_TIMEOUT) && !isMaxTimeMSExpiredError(commitErr)) {
+          if (commitErr.hasErrorLabel(error_1.MongoErrorLabel.UnknownTransactionCommitResult)) {
+            return await attemptTransactionCommit(session, startTime, fn, result, options);
+          }
+          if (commitErr.hasErrorLabel(error_1.MongoErrorLabel.TransientTransactionError)) {
+            return await attemptTransaction(session, startTime, fn, options);
+          }
+        }
+        throw commitErr;
+      }
+    }
+    var USER_EXPLICIT_TXN_END_STATES = /* @__PURE__ */ new Set([
+      transactions_1.TxnState.NO_TRANSACTION,
+      transactions_1.TxnState.TRANSACTION_COMMITTED,
+      transactions_1.TxnState.TRANSACTION_ABORTED
+    ]);
+    function userExplicitlyEndedTransaction(session) {
+      return USER_EXPLICIT_TXN_END_STATES.has(session.transaction.state);
+    }
+    async function attemptTransaction(session, startTime, fn, options = {}) {
+      session.startTransaction(options);
+      let promise;
+      try {
+        promise = fn(session);
+      } catch (err) {
+        promise = Promise.reject(err);
+      }
+      if (!(0, utils_1.isPromiseLike)(promise)) {
+        try {
+          await session.abortTransaction();
+        } catch (error) {
+          (0, utils_1.squashError)(error);
+        }
+        throw new error_1.MongoInvalidArgumentError("Function provided to `withTransaction` must return a Promise");
+      }
+      try {
+        const result = await promise;
+        if (userExplicitlyEndedTransaction(session)) {
+          return result;
+        }
+        return await attemptTransactionCommit(session, startTime, fn, result, options);
+      } catch (err) {
+        if (session.inTransaction()) {
+          await session.abortTransaction();
+        }
+        if (err instanceof error_1.MongoError && err.hasErrorLabel(error_1.MongoErrorLabel.TransientTransactionError) && hasNotTimedOut(startTime, MAX_WITH_TRANSACTION_TIMEOUT)) {
+          return await attemptTransaction(session, startTime, fn, options);
+        }
+        if (isMaxTimeMSExpiredError(err)) {
+          err.addErrorLabel(error_1.MongoErrorLabel.UnknownTransactionCommitResult);
+        }
+        throw err;
+      }
+    }
+    async function endTransaction(session, commandName) {
+      const txnState = session.transaction.state;
+      if (txnState === transactions_1.TxnState.NO_TRANSACTION) {
+        throw new error_1.MongoTransactionError("No transaction started");
+      }
+      if (commandName === "commitTransaction") {
+        if (txnState === transactions_1.TxnState.STARTING_TRANSACTION || txnState === transactions_1.TxnState.TRANSACTION_COMMITTED_EMPTY) {
+          session.transaction.transition(transactions_1.TxnState.TRANSACTION_COMMITTED_EMPTY);
+          return;
+        }
+        if (txnState === transactions_1.TxnState.TRANSACTION_ABORTED) {
+          throw new error_1.MongoTransactionError("Cannot call commitTransaction after calling abortTransaction");
+        }
+      } else {
+        if (txnState === transactions_1.TxnState.STARTING_TRANSACTION) {
+          session.transaction.transition(transactions_1.TxnState.TRANSACTION_ABORTED);
+          return;
+        }
+        if (txnState === transactions_1.TxnState.TRANSACTION_ABORTED) {
+          throw new error_1.MongoTransactionError("Cannot call abortTransaction twice");
+        }
+        if (txnState === transactions_1.TxnState.TRANSACTION_COMMITTED || txnState === transactions_1.TxnState.TRANSACTION_COMMITTED_EMPTY) {
+          throw new error_1.MongoTransactionError("Cannot call abortTransaction after calling commitTransaction");
+        }
+      }
+      const command = { [commandName]: 1 };
+      let writeConcern;
+      if (session.transaction.options.writeConcern) {
+        writeConcern = Object.assign({}, session.transaction.options.writeConcern);
+      } else if (session.clientOptions && session.clientOptions.writeConcern) {
+        writeConcern = { w: session.clientOptions.writeConcern.w };
+      }
+      if (txnState === transactions_1.TxnState.TRANSACTION_COMMITTED) {
+        writeConcern = Object.assign({ wtimeoutMS: 1e4 }, writeConcern, { w: "majority" });
+      }
+      if (writeConcern) {
+        write_concern_1.WriteConcern.apply(command, writeConcern);
+      }
+      if (commandName === "commitTransaction" && session.transaction.options.maxTimeMS) {
+        Object.assign(command, { maxTimeMS: session.transaction.options.maxTimeMS });
+      }
+      if (session.transaction.recoveryToken) {
+        command.recoveryToken = session.transaction.recoveryToken;
+      }
+      try {
+        await (0, execute_operation_1.executeOperation)(session.client, new run_command_1.RunAdminCommandOperation(command, {
+          session,
+          readPreference: read_preference_1.ReadPreference.primary,
+          bypassPinningCheck: true
+        }));
+        if (command.abortTransaction) {
+          session.unpin();
+        }
+        if (commandName !== "commitTransaction") {
+          session.transaction.transition(transactions_1.TxnState.TRANSACTION_ABORTED);
+          if (session.loadBalanced) {
+            maybeClearPinnedConnection(session, { force: false });
+          }
+        } else {
+          session.transaction.transition(transactions_1.TxnState.TRANSACTION_COMMITTED);
+        }
+      } catch (firstAttemptErr) {
+        if (command.abortTransaction) {
+          session.unpin();
+        }
+        if (firstAttemptErr instanceof error_1.MongoError && (0, error_1.isRetryableWriteError)(firstAttemptErr)) {
+          if (command.commitTransaction) {
+            session.unpin({ force: true });
+            command.writeConcern = Object.assign({ wtimeout: 1e4 }, command.writeConcern, {
+              w: "majority"
+            });
+          }
+          try {
+            await (0, execute_operation_1.executeOperation)(session.client, new run_command_1.RunAdminCommandOperation(command, {
+              session,
+              readPreference: read_preference_1.ReadPreference.primary,
+              bypassPinningCheck: true
+            }));
+            if (commandName !== "commitTransaction") {
+              session.transaction.transition(transactions_1.TxnState.TRANSACTION_ABORTED);
+              if (session.loadBalanced) {
+                maybeClearPinnedConnection(session, { force: false });
+              }
+            } else {
+              session.transaction.transition(transactions_1.TxnState.TRANSACTION_COMMITTED);
+            }
+          } catch (secondAttemptErr) {
+            handleEndTransactionError(session, commandName, secondAttemptErr);
+          }
+        } else {
+          handleEndTransactionError(session, commandName, firstAttemptErr);
+        }
+      }
+    }
+    function handleEndTransactionError(session, commandName, error) {
+      if (commandName !== "commitTransaction") {
+        session.transaction.transition(transactions_1.TxnState.TRANSACTION_ABORTED);
+        if (session.loadBalanced) {
+          maybeClearPinnedConnection(session, { force: false });
+        }
+        return;
+      }
+      session.transaction.transition(transactions_1.TxnState.TRANSACTION_COMMITTED);
+      if (error instanceof error_1.MongoError) {
+        if ((0, error_1.isRetryableWriteError)(error) || error instanceof error_1.MongoWriteConcernError || isMaxTimeMSExpiredError(error)) {
+          if (isUnknownTransactionCommitResult(error)) {
+            error.addErrorLabel(error_1.MongoErrorLabel.UnknownTransactionCommitResult);
+            session.unpin({ error });
+          }
+        } else if (error.hasErrorLabel(error_1.MongoErrorLabel.TransientTransactionError)) {
+          session.unpin({ error });
+        }
+      }
+      throw error;
+    }
+    var ServerSession = class {
+      constructor() {
+        this.id = { id: new bson_1.Binary((0, utils_1.uuidV4)(), bson_1.Binary.SUBTYPE_UUID) };
+        this.lastUse = (0, utils_1.now)();
+        this.txnNumber = 0;
+        this.isDirty = false;
+      }
+      hasTimedOut(sessionTimeoutMinutes) {
+        const idleTimeMinutes = Math.round((0, utils_1.calculateDurationInMs)(this.lastUse) % 864e5 % 36e5 / 6e4);
+        return idleTimeMinutes > sessionTimeoutMinutes - 1;
+      }
+      static clone(serverSession) {
+        const arrayBuffer = new ArrayBuffer(16);
+        const idBytes = Buffer.from(arrayBuffer);
+        idBytes.set(serverSession.id.id.buffer);
+        const id = new bson_1.Binary(idBytes, serverSession.id.id.sub_type);
+        return Object.setPrototypeOf({
+          id: { id },
+          lastUse: serverSession.lastUse,
+          txnNumber: serverSession.txnNumber,
+          isDirty: serverSession.isDirty
+        }, ServerSession.prototype);
+      }
+    };
+    exports.ServerSession = ServerSession;
+    var ServerSessionPool = class {
+      constructor(client) {
+        if (client == null) {
+          throw new error_1.MongoRuntimeError("ServerSessionPool requires a MongoClient");
+        }
+        this.client = client;
+        this.sessions = new utils_1.List();
+      }
+      acquire() {
+        const sessionTimeoutMinutes = this.client.topology?.logicalSessionTimeoutMinutes ?? 10;
+        let session = null;
+        while (this.sessions.length > 0) {
+          const potentialSession = this.sessions.shift();
+          if (potentialSession != null && (!!this.client.topology?.loadBalanced || !potentialSession.hasTimedOut(sessionTimeoutMinutes))) {
+            session = potentialSession;
+            break;
+          }
+        }
+        if (session == null) {
+          session = new ServerSession();
+        }
+        return session;
+      }
+      release(session) {
+        const sessionTimeoutMinutes = this.client.topology?.logicalSessionTimeoutMinutes ?? 10;
+        if (this.client.topology?.loadBalanced && !sessionTimeoutMinutes) {
+          this.sessions.unshift(session);
+        }
+        if (!sessionTimeoutMinutes) {
+          return;
+        }
+        this.sessions.prune((session2) => session2.hasTimedOut(sessionTimeoutMinutes));
+        if (!session.hasTimedOut(sessionTimeoutMinutes)) {
+          if (session.isDirty) {
+            return;
+          }
+          this.sessions.unshift(session);
+        }
+      }
+    };
+    exports.ServerSessionPool = ServerSessionPool;
+    function applySession(session, command, options) {
+      if (session.hasEnded) {
+        return new error_1.MongoExpiredSessionError();
+      }
+      const serverSession = session.serverSession;
+      if (serverSession == null) {
+        return new error_1.MongoRuntimeError("Unable to acquire server session");
+      }
+      if (options.writeConcern?.w === 0) {
+        if (session && session.explicit) {
+          return new error_1.MongoAPIError("Cannot have explicit session with unacknowledged writes");
+        }
+        return;
+      }
+      serverSession.lastUse = (0, utils_1.now)();
+      command.lsid = serverSession.id;
+      const inTxnOrTxnCommand = session.inTransaction() || (0, transactions_1.isTransactionCommand)(command);
+      const isRetryableWrite = !!options.willRetryWrite;
+      if (isRetryableWrite || inTxnOrTxnCommand) {
+        serverSession.txnNumber += session[kTxnNumberIncrement];
+        session[kTxnNumberIncrement] = 0;
+        command.txnNumber = bson_1.Long.fromNumber(serverSession.txnNumber);
+      }
+      if (!inTxnOrTxnCommand) {
+        if (session.transaction.state !== transactions_1.TxnState.NO_TRANSACTION) {
+          session.transaction.transition(transactions_1.TxnState.NO_TRANSACTION);
+        }
+        if (session.supports.causalConsistency && session.operationTime && (0, utils_1.commandSupportsReadConcern)(command)) {
+          command.readConcern = command.readConcern || {};
+          Object.assign(command.readConcern, { afterClusterTime: session.operationTime });
+        } else if (session[kSnapshotEnabled]) {
+          command.readConcern = command.readConcern || { level: read_concern_1.ReadConcernLevel.snapshot };
+          if (session[kSnapshotTime] != null) {
+            Object.assign(command.readConcern, { atClusterTime: session[kSnapshotTime] });
+          }
+        }
+        return;
+      }
+      command.autocommit = false;
+      if (session.transaction.state === transactions_1.TxnState.STARTING_TRANSACTION) {
+        session.transaction.transition(transactions_1.TxnState.TRANSACTION_IN_PROGRESS);
+        command.startTransaction = true;
+        const readConcern = session.transaction.options.readConcern || session?.clientOptions?.readConcern;
+        if (readConcern) {
+          command.readConcern = readConcern;
+        }
+        if (session.supports.causalConsistency && session.operationTime) {
+          command.readConcern = command.readConcern || {};
+          Object.assign(command.readConcern, { afterClusterTime: session.operationTime });
+        }
+      }
+      return;
+    }
+    exports.applySession = applySession;
+    function updateSessionFromResponse(session, document2) {
+      if (document2.$clusterTime) {
+        (0, common_1._advanceClusterTime)(session, document2.$clusterTime);
+      }
+      if (document2.operationTime && session && session.supports.causalConsistency) {
+        session.advanceOperationTime(document2.operationTime);
+      }
+      if (document2.recoveryToken && session && session.inTransaction()) {
+        session.transaction._recoveryToken = document2.recoveryToken;
+      }
+      if (session?.[kSnapshotEnabled] && session[kSnapshotTime] == null) {
+        const atClusterTime = document2.atClusterTime;
+        if (atClusterTime) {
+          session[kSnapshotTime] = atClusterTime;
+        }
+      }
+    }
+    exports.updateSessionFromResponse = updateSessionFromResponse;
+  }
+});
+
+// node_modules/mongodb/lib/cursor/abstract_cursor.js
+var require_abstract_cursor2 = __commonJS({
+  "node_modules/mongodb/lib/cursor/abstract_cursor.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AbstractCursor = exports.CURSOR_FLAGS = void 0;
+    var stream_1 = require("stream");
+    var bson_1 = require_bson3();
+    var error_1 = require_error3();
+    var mongo_types_1 = require_mongo_types2();
+    var execute_operation_1 = require_execute_operation2();
+    var get_more_1 = require_get_more2();
+    var kill_cursors_1 = require_kill_cursors2();
+    var read_concern_1 = require_read_concern2();
+    var read_preference_1 = require_read_preference2();
+    var sessions_1 = require_sessions2();
+    var utils_1 = require_utils5();
+    exports.CURSOR_FLAGS = [
+      "tailable",
+      "oplogReplay",
+      "noCursorTimeout",
+      "awaitData",
+      "exhaust",
+      "partial"
+    ];
+    var AbstractCursor = class extends mongo_types_1.TypedEventEmitter {
+      constructor(client, namespace, options = {}) {
+        super();
+        this.documents = null;
+        this.hasEmittedClose = false;
+        if (!client.s.isMongoClient) {
+          throw new error_1.MongoRuntimeError("Cursor must be constructed with MongoClient");
+        }
+        this.cursorClient = client;
+        this.cursorNamespace = namespace;
+        this.cursorId = null;
+        this.initialized = false;
+        this.isClosed = false;
+        this.isKilled = false;
+        this.cursorOptions = {
+          readPreference: options.readPreference && options.readPreference instanceof read_preference_1.ReadPreference ? options.readPreference : read_preference_1.ReadPreference.primary,
+          ...(0, bson_1.pluckBSONSerializeOptions)(options)
+        };
+        this.cursorOptions.timeoutMS = options.timeoutMS;
+        const readConcern = read_concern_1.ReadConcern.fromOptions(options);
+        if (readConcern) {
+          this.cursorOptions.readConcern = readConcern;
+        }
+        if (typeof options.batchSize === "number") {
+          this.cursorOptions.batchSize = options.batchSize;
+        }
+        if (options.comment !== void 0) {
+          this.cursorOptions.comment = options.comment;
+        }
+        if (typeof options.maxTimeMS === "number") {
+          this.cursorOptions.maxTimeMS = options.maxTimeMS;
+        }
+        if (typeof options.maxAwaitTimeMS === "number") {
+          this.cursorOptions.maxAwaitTimeMS = options.maxAwaitTimeMS;
+        }
+        if (options.session instanceof sessions_1.ClientSession) {
+          this.cursorSession = options.session;
+        } else {
+          this.cursorSession = this.cursorClient.startSession({ owner: this, explicit: false });
+        }
+      }
+      get id() {
+        return this.cursorId ?? void 0;
+      }
+      get isDead() {
+        return (this.cursorId?.isZero() ?? false) || this.isClosed || this.isKilled;
+      }
+      get client() {
+        return this.cursorClient;
+      }
+      get server() {
+        return this.selectedServer;
+      }
+      get namespace() {
+        return this.cursorNamespace;
+      }
+      get readPreference() {
+        return this.cursorOptions.readPreference;
+      }
+      get readConcern() {
+        return this.cursorOptions.readConcern;
+      }
+      get session() {
+        return this.cursorSession;
+      }
+      set session(clientSession) {
+        this.cursorSession = clientSession;
+      }
+      get closed() {
+        return this.isClosed && (this.documents?.length ?? 0) === 0;
+      }
+      get killed() {
+        return this.isKilled;
+      }
+      get loadBalanced() {
+        return !!this.cursorClient.topology?.loadBalanced;
+      }
+      bufferedCount() {
+        return this.documents?.length ?? 0;
+      }
+      readBufferedDocuments(number) {
+        const bufferedDocs = [];
+        const documentsToRead = Math.min(number ?? this.documents?.length ?? 0, this.documents?.length ?? 0);
+        for (let count = 0; count < documentsToRead; count++) {
+          const document2 = this.documents?.shift(this.cursorOptions);
+          if (document2 != null) {
+            bufferedDocs.push(document2);
+          }
+        }
+        return bufferedDocs;
+      }
+      async *[Symbol.asyncIterator]() {
+        if (this.isClosed) {
+          return;
+        }
+        try {
+          while (true) {
+            if (this.isKilled) {
+              return;
+            }
+            if (this.closed) {
+              return;
+            }
+            if (this.cursorId != null && this.isDead && (this.documents?.length ?? 0) === 0) {
+              return;
+            }
+            const document2 = await this.next();
+            if (document2 === null) {
+              return;
+            }
+            yield document2;
+          }
+        } finally {
+          if (!this.isClosed) {
+            try {
+              await this.close();
+            } catch (error) {
+              (0, utils_1.squashError)(error);
+            }
+          }
+        }
+      }
+      stream(options) {
+        if (options?.transform) {
+          const transform = options.transform;
+          const readable = new ReadableCursorStream(this);
+          const transformedStream = readable.pipe(new stream_1.Transform({
+            objectMode: true,
+            highWaterMark: 1,
+            transform(chunk, _, callback2) {
+              try {
+                const transformed = transform(chunk);
+                callback2(void 0, transformed);
+              } catch (err) {
+                callback2(err);
+              }
+            }
+          }));
+          readable.on("error", (err) => transformedStream.emit("error", err));
+          return transformedStream;
+        }
+        return new ReadableCursorStream(this);
+      }
+      async hasNext() {
+        if (this.cursorId === bson_1.Long.ZERO) {
+          return false;
+        }
+        do {
+          if ((this.documents?.length ?? 0) !== 0) {
+            return true;
+          }
+          await this.fetchBatch();
+        } while (!this.isDead || (this.documents?.length ?? 0) !== 0);
+        return false;
+      }
+      async next() {
+        if (this.cursorId === bson_1.Long.ZERO) {
+          throw new error_1.MongoCursorExhaustedError();
+        }
+        do {
+          const doc = this.documents?.shift(this.cursorOptions);
+          if (doc != null) {
+            if (this.transform != null)
+              return await this.transformDocument(doc);
+            return doc;
+          }
+          await this.fetchBatch();
+        } while (!this.isDead || (this.documents?.length ?? 0) !== 0);
+        return null;
+      }
+      async tryNext() {
+        if (this.cursorId === bson_1.Long.ZERO) {
+          throw new error_1.MongoCursorExhaustedError();
+        }
+        let doc = this.documents?.shift(this.cursorOptions);
+        if (doc != null) {
+          if (this.transform != null)
+            return await this.transformDocument(doc);
+          return doc;
+        }
+        await this.fetchBatch();
+        doc = this.documents?.shift(this.cursorOptions);
+        if (doc != null) {
+          if (this.transform != null)
+            return await this.transformDocument(doc);
+          return doc;
+        }
+        return null;
+      }
+      async forEach(iterator) {
+        if (typeof iterator !== "function") {
+          throw new error_1.MongoInvalidArgumentError('Argument "iterator" must be a function');
+        }
+        for await (const document2 of this) {
+          const result = iterator(document2);
+          if (result === false) {
+            break;
+          }
+        }
+      }
+      async close() {
+        await this.cleanup();
+      }
+      async toArray() {
+        const array = [];
+        for await (const document2 of this) {
+          array.push(document2);
+        }
+        return array;
+      }
+      addCursorFlag(flag, value) {
+        this.throwIfInitialized();
+        if (!exports.CURSOR_FLAGS.includes(flag)) {
+          throw new error_1.MongoInvalidArgumentError(`Flag ${flag} is not one of ${exports.CURSOR_FLAGS}`);
+        }
+        if (typeof value !== "boolean") {
+          throw new error_1.MongoInvalidArgumentError(`Flag ${flag} must be a boolean value`);
+        }
+        this.cursorOptions[flag] = value;
+        return this;
+      }
+      map(transform) {
+        this.throwIfInitialized();
+        const oldTransform = this.transform;
+        if (oldTransform) {
+          this.transform = (doc) => {
+            return transform(oldTransform(doc));
+          };
+        } else {
+          this.transform = transform;
+        }
+        return this;
+      }
+      withReadPreference(readPreference) {
+        this.throwIfInitialized();
+        if (readPreference instanceof read_preference_1.ReadPreference) {
+          this.cursorOptions.readPreference = readPreference;
+        } else if (typeof readPreference === "string") {
+          this.cursorOptions.readPreference = read_preference_1.ReadPreference.fromString(readPreference);
+        } else {
+          throw new error_1.MongoInvalidArgumentError(`Invalid read preference: ${readPreference}`);
+        }
+        return this;
+      }
+      withReadConcern(readConcern) {
+        this.throwIfInitialized();
+        const resolvedReadConcern = read_concern_1.ReadConcern.fromOptions({ readConcern });
+        if (resolvedReadConcern) {
+          this.cursorOptions.readConcern = resolvedReadConcern;
+        }
+        return this;
+      }
+      maxTimeMS(value) {
+        this.throwIfInitialized();
+        if (typeof value !== "number") {
+          throw new error_1.MongoInvalidArgumentError("Argument for maxTimeMS must be a number");
+        }
+        this.cursorOptions.maxTimeMS = value;
+        return this;
+      }
+      batchSize(value) {
+        this.throwIfInitialized();
+        if (this.cursorOptions.tailable) {
+          throw new error_1.MongoTailableCursorError("Tailable cursor does not support batchSize");
+        }
+        if (typeof value !== "number") {
+          throw new error_1.MongoInvalidArgumentError('Operation "batchSize" requires an integer');
+        }
+        this.cursorOptions.batchSize = value;
+        return this;
+      }
+      rewind() {
+        if (!this.initialized) {
+          return;
+        }
+        this.cursorId = null;
+        this.documents?.clear();
+        this.isClosed = false;
+        this.isKilled = false;
+        this.initialized = false;
+        const session = this.cursorSession;
+        if (session) {
+          if (session.explicit === false) {
+            if (!session.hasEnded) {
+              session.endSession().then(void 0, utils_1.squashError);
+            }
+            this.cursorSession = this.cursorClient.startSession({ owner: this, explicit: false });
+          }
+        }
+      }
+      async getMore(batchSize) {
+        if (this.cursorId == null) {
+          throw new error_1.MongoRuntimeError("Unexpected null cursor id. A cursor creating command should have set this");
+        }
+        if (this.selectedServer == null) {
+          throw new error_1.MongoRuntimeError("Unexpected null selectedServer. A cursor creating command should have set this");
+        }
+        const getMoreOperation = new get_more_1.GetMoreOperation(this.cursorNamespace, this.cursorId, this.selectedServer, {
+          ...this.cursorOptions,
+          session: this.cursorSession,
+          batchSize
+        });
+        return await (0, execute_operation_1.executeOperation)(this.cursorClient, getMoreOperation);
+      }
+      async cursorInit() {
+        try {
+          const state = await this._initialize(this.cursorSession);
+          const response = state.response;
+          this.selectedServer = state.server;
+          this.cursorId = response.id;
+          this.cursorNamespace = response.ns ?? this.namespace;
+          this.documents = response;
+          this.initialized = true;
+        } catch (error) {
+          this.initialized = true;
+          await this.cleanup(error);
+          throw error;
+        }
+        if (this.isDead) {
+          await this.cleanup();
+        }
+        return;
+      }
+      async fetchBatch() {
+        if (this.isClosed) {
+          return;
+        }
+        if (this.isDead) {
+          await this.cleanup();
+          return;
+        }
+        if (this.cursorId == null) {
+          await this.cursorInit();
+          if ((this.documents?.length ?? 0) !== 0 || this.isDead)
+            return;
+        }
+        const batchSize = this.cursorOptions.batchSize || 1e3;
+        try {
+          const response = await this.getMore(batchSize);
+          this.cursorId = response.id;
+          this.documents = response;
+        } catch (error) {
+          try {
+            await this.cleanup(error);
+          } catch (error2) {
+            (0, utils_1.squashError)(error2);
+          }
+          throw error;
+        }
+        if (this.isDead) {
+          await this.cleanup();
+        }
+      }
+      async cleanup(error) {
+        this.isClosed = true;
+        const session = this.cursorSession;
+        try {
+          if (!this.isKilled && this.cursorId && !this.cursorId.isZero() && this.cursorNamespace && this.selectedServer && !session.hasEnded) {
+            this.isKilled = true;
+            const cursorId = this.cursorId;
+            this.cursorId = bson_1.Long.ZERO;
+            await (0, execute_operation_1.executeOperation)(this.cursorClient, new kill_cursors_1.KillCursorsOperation(cursorId, this.cursorNamespace, this.selectedServer, {
+              session
+            }));
+          }
+        } catch (error2) {
+          (0, utils_1.squashError)(error2);
+        } finally {
+          if (session?.owner === this) {
+            await session.endSession({ error });
+          }
+          if (!session?.inTransaction()) {
+            (0, sessions_1.maybeClearPinnedConnection)(session, { error });
+          }
+          this.emitClose();
+        }
+      }
+      emitClose() {
+        try {
+          if (!this.hasEmittedClose && ((this.documents?.length ?? 0) === 0 || this.isClosed)) {
+            this.emit("close");
+          }
+        } finally {
+          this.hasEmittedClose = true;
+        }
+      }
+      async transformDocument(document2) {
+        if (this.transform == null)
+          return document2;
+        try {
+          const transformedDocument = this.transform(document2);
+          if (transformedDocument === null) {
+            const TRANSFORM_TO_NULL_ERROR = "Cursor returned a `null` document, but the cursor is not exhausted.  Mapping documents to `null` is not supported in the cursor transform.";
+            throw new error_1.MongoAPIError(TRANSFORM_TO_NULL_ERROR);
+          }
+          return transformedDocument;
+        } catch (transformError) {
+          try {
+            await this.close();
+          } catch (closeError) {
+            (0, utils_1.squashError)(closeError);
+          }
+          throw transformError;
+        }
+      }
+      throwIfInitialized() {
+        if (this.initialized)
+          throw new error_1.MongoCursorInUseError();
+      }
+    };
+    AbstractCursor.CLOSE = "close";
+    exports.AbstractCursor = AbstractCursor;
+    var ReadableCursorStream = class extends stream_1.Readable {
+      constructor(cursor) {
+        super({
+          objectMode: true,
+          autoDestroy: false,
+          highWaterMark: 1
+        });
+        this._readInProgress = false;
+        this._cursor = cursor;
+      }
+      _read(size) {
+        if (!this._readInProgress) {
+          this._readInProgress = true;
+          this._readNext();
+        }
+      }
+      _destroy(error, callback2) {
+        this._cursor.close().then(() => callback2(error), (closeError) => callback2(closeError));
+      }
+      _readNext() {
+        if (this._cursor.id === bson_1.Long.ZERO) {
+          this.push(null);
+          return;
+        }
+        this._cursor.next().then((result) => {
+          if (result == null) {
+            this.push(null);
+          } else if (this.destroyed) {
+            this._cursor.close().then(void 0, utils_1.squashError);
+          } else {
+            if (this.push(result)) {
+              return this._readNext();
+            }
+            this._readInProgress = false;
+          }
+        }, (err) => {
+          if (err.message.match(/server is closed/)) {
+            this._cursor.close().then(void 0, utils_1.squashError);
+            return this.push(null);
+          }
+          if (err.message.match(/operation was interrupted/)) {
+            return this.push(null);
+          }
+          return this.destroy(err);
+        });
+      }
+    };
+  }
+});
+
+// node_modules/mongodb/lib/cursor/aggregation_cursor.js
+var require_aggregation_cursor2 = __commonJS({
+  "node_modules/mongodb/lib/cursor/aggregation_cursor.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AggregationCursor = void 0;
+    var aggregate_1 = require_aggregate3();
+    var execute_operation_1 = require_execute_operation2();
+    var utils_1 = require_utils5();
+    var abstract_cursor_1 = require_abstract_cursor2();
+    var AggregationCursor = class extends abstract_cursor_1.AbstractCursor {
+      constructor(client, namespace, pipeline = [], options = {}) {
+        super(client, namespace, options);
+        this.pipeline = pipeline;
+        this.aggregateOptions = options;
+      }
+      clone() {
+        const clonedOptions = (0, utils_1.mergeOptions)({}, this.aggregateOptions);
+        delete clonedOptions.session;
+        return new AggregationCursor(this.client, this.namespace, this.pipeline, {
+          ...clonedOptions
+        });
+      }
+      map(transform) {
+        return super.map(transform);
+      }
+      async _initialize(session) {
+        const aggregateOperation = new aggregate_1.AggregateOperation(this.namespace, this.pipeline, {
+          ...this.aggregateOptions,
+          ...this.cursorOptions,
+          session
+        });
+        const response = await (0, execute_operation_1.executeOperation)(this.client, aggregateOperation);
+        return { server: aggregateOperation.server, session, response };
+      }
+      async explain(verbosity) {
+        return (await (0, execute_operation_1.executeOperation)(this.client, new aggregate_1.AggregateOperation(this.namespace, this.pipeline, {
+          ...this.aggregateOptions,
+          ...this.cursorOptions,
+          explain: verbosity ?? true
+        }))).shift(this.aggregateOptions);
+      }
+      addStage(stage) {
+        this.throwIfInitialized();
+        this.pipeline.push(stage);
+        return this;
+      }
+      group($group) {
+        return this.addStage({ $group });
+      }
+      limit($limit) {
+        return this.addStage({ $limit });
+      }
+      match($match) {
+        return this.addStage({ $match });
+      }
+      out($out) {
+        return this.addStage({ $out });
+      }
+      project($project) {
+        return this.addStage({ $project });
+      }
+      lookup($lookup) {
+        return this.addStage({ $lookup });
+      }
+      redact($redact) {
+        return this.addStage({ $redact });
+      }
+      skip($skip) {
+        return this.addStage({ $skip });
+      }
+      sort($sort) {
+        return this.addStage({ $sort });
+      }
+      unwind($unwind) {
+        return this.addStage({ $unwind });
+      }
+      geoNear($geoNear) {
+        return this.addStage({ $geoNear });
+      }
+    };
+    exports.AggregationCursor = AggregationCursor;
+  }
+});
+
+// node_modules/mongodb/lib/operations/count.js
+var require_count2 = __commonJS({
+  "node_modules/mongodb/lib/operations/count.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.CountOperation = void 0;
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var CountOperation = class extends command_1.CommandOperation {
+      constructor(namespace, filter, options) {
+        super({ s: { namespace } }, options);
+        this.options = options;
+        this.collectionName = namespace.collection;
+        this.query = filter;
+      }
+      get commandName() {
+        return "count";
+      }
+      async execute(server, session) {
+        const options = this.options;
+        const cmd = {
+          count: this.collectionName,
+          query: this.query
+        };
+        if (typeof options.limit === "number") {
+          cmd.limit = options.limit;
+        }
+        if (typeof options.skip === "number") {
+          cmd.skip = options.skip;
+        }
+        if (options.hint != null) {
+          cmd.hint = options.hint;
+        }
+        if (typeof options.maxTimeMS === "number") {
+          cmd.maxTimeMS = options.maxTimeMS;
+        }
+        const result = await super.executeCommand(server, session, cmd);
+        return result ? result.n : 0;
+      }
+    };
+    exports.CountOperation = CountOperation;
+    (0, operation_1.defineAspects)(CountOperation, [operation_1.Aspect.READ_OPERATION, operation_1.Aspect.RETRYABLE]);
+  }
+});
+
+// node_modules/mongodb/lib/sort.js
+var require_sort2 = __commonJS({
+  "node_modules/mongodb/lib/sort.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.formatSort = void 0;
+    var error_1 = require_error3();
+    function prepareDirection(direction = 1) {
+      const value = `${direction}`.toLowerCase();
+      if (isMeta(direction))
+        return direction;
+      switch (value) {
+        case "ascending":
+        case "asc":
+        case "1":
+          return 1;
+        case "descending":
+        case "desc":
+        case "-1":
+          return -1;
+        default:
+          throw new error_1.MongoInvalidArgumentError(`Invalid sort direction: ${JSON.stringify(direction)}`);
+      }
+    }
+    function isMeta(t) {
+      return typeof t === "object" && t != null && "$meta" in t && typeof t.$meta === "string";
+    }
+    function isPair(t) {
+      if (Array.isArray(t) && t.length === 2) {
+        try {
+          prepareDirection(t[1]);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }
+      return false;
+    }
+    function isDeep(t) {
+      return Array.isArray(t) && Array.isArray(t[0]);
+    }
+    function isMap(t) {
+      return t instanceof Map && t.size > 0;
+    }
+    function pairToMap(v) {
+      return /* @__PURE__ */ new Map([[`${v[0]}`, prepareDirection([v[1]])]]);
+    }
+    function deepToMap(t) {
+      const sortEntries = t.map(([k, v]) => [`${k}`, prepareDirection(v)]);
+      return new Map(sortEntries);
+    }
+    function stringsToMap(t) {
+      const sortEntries = t.map((key) => [`${key}`, 1]);
+      return new Map(sortEntries);
+    }
+    function objectToMap(t) {
+      const sortEntries = Object.entries(t).map(([k, v]) => [
+        `${k}`,
+        prepareDirection(v)
+      ]);
+      return new Map(sortEntries);
+    }
+    function mapToMap(t) {
+      const sortEntries = Array.from(t).map(([k, v]) => [
+        `${k}`,
+        prepareDirection(v)
+      ]);
+      return new Map(sortEntries);
+    }
+    function formatSort(sort, direction) {
+      if (sort == null)
+        return void 0;
+      if (typeof sort === "string")
+        return /* @__PURE__ */ new Map([[sort, prepareDirection(direction)]]);
+      if (typeof sort !== "object") {
+        throw new error_1.MongoInvalidArgumentError(`Invalid sort format: ${JSON.stringify(sort)} Sort must be a valid object`);
+      }
+      if (!Array.isArray(sort)) {
+        return isMap(sort) ? mapToMap(sort) : Object.keys(sort).length ? objectToMap(sort) : void 0;
+      }
+      if (!sort.length)
+        return void 0;
+      if (isDeep(sort))
+        return deepToMap(sort);
+      if (isPair(sort))
+        return pairToMap(sort);
+      return stringsToMap(sort);
+    }
+    exports.formatSort = formatSort;
+  }
+});
+
+// node_modules/mongodb/lib/operations/find.js
+var require_find2 = __commonJS({
+  "node_modules/mongodb/lib/operations/find.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.FindOperation = void 0;
+    var responses_1 = require_responses2();
+    var error_1 = require_error3();
+    var read_concern_1 = require_read_concern2();
+    var sort_1 = require_sort2();
+    var utils_1 = require_utils5();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var FindOperation = class extends command_1.CommandOperation {
+      constructor(ns, filter = {}, options = {}) {
+        super(void 0, options);
+        this.options = { ...options };
+        delete this.options.writeConcern;
+        this.ns = ns;
+        if (typeof filter !== "object" || Array.isArray(filter)) {
+          throw new error_1.MongoInvalidArgumentError("Query filter must be a plain object or ObjectId");
+        }
+        this.filter = filter != null && filter._bsontype === "ObjectId" ? { _id: filter } : filter;
+      }
+      get commandName() {
+        return "find";
+      }
+      async execute(server, session) {
+        this.server = server;
+        const options = this.options;
+        let findCommand = makeFindCommand(this.ns, this.filter, options);
+        if (this.explain) {
+          findCommand = (0, utils_1.decorateWithExplain)(findCommand, this.explain);
+        }
+        return await server.command(this.ns, findCommand, {
+          ...this.options,
+          ...this.bsonOptions,
+          documentsReturnedIn: "firstBatch",
+          session
+        }, this.explain ? responses_1.ExplainedCursorResponse : responses_1.CursorResponse);
+      }
+    };
+    exports.FindOperation = FindOperation;
+    function makeFindCommand(ns, filter, options) {
+      const findCommand = {
+        find: ns.collection,
+        filter
+      };
+      if (options.sort) {
+        findCommand.sort = (0, sort_1.formatSort)(options.sort);
+      }
+      if (options.projection) {
+        let projection = options.projection;
+        if (projection && Array.isArray(projection)) {
+          projection = projection.length ? projection.reduce((result, field) => {
+            result[field] = 1;
+            return result;
+          }, {}) : { _id: 1 };
+        }
+        findCommand.projection = projection;
+      }
+      if (options.hint) {
+        findCommand.hint = (0, utils_1.normalizeHintField)(options.hint);
+      }
+      if (typeof options.skip === "number") {
+        findCommand.skip = options.skip;
+      }
+      if (typeof options.limit === "number") {
+        if (options.limit < 0) {
+          findCommand.limit = -options.limit;
+          findCommand.singleBatch = true;
+        } else {
+          findCommand.limit = options.limit;
+        }
+      }
+      if (typeof options.batchSize === "number") {
+        if (options.batchSize < 0) {
+          if (options.limit && options.limit !== 0 && Math.abs(options.batchSize) < Math.abs(options.limit)) {
+            findCommand.limit = -options.batchSize;
+          }
+          findCommand.singleBatch = true;
+        } else {
+          findCommand.batchSize = options.batchSize;
+        }
+      }
+      if (typeof options.singleBatch === "boolean") {
+        findCommand.singleBatch = options.singleBatch;
+      }
+      if (options.comment !== void 0) {
+        findCommand.comment = options.comment;
+      }
+      if (typeof options.maxTimeMS === "number") {
+        findCommand.maxTimeMS = options.maxTimeMS;
+      }
+      const readConcern = read_concern_1.ReadConcern.fromOptions(options);
+      if (readConcern) {
+        findCommand.readConcern = readConcern.toJSON();
+      }
+      if (options.max) {
+        findCommand.max = options.max;
+      }
+      if (options.min) {
+        findCommand.min = options.min;
+      }
+      if (typeof options.returnKey === "boolean") {
+        findCommand.returnKey = options.returnKey;
+      }
+      if (typeof options.showRecordId === "boolean") {
+        findCommand.showRecordId = options.showRecordId;
+      }
+      if (typeof options.tailable === "boolean") {
+        findCommand.tailable = options.tailable;
+      }
+      if (typeof options.oplogReplay === "boolean") {
+        findCommand.oplogReplay = options.oplogReplay;
+      }
+      if (typeof options.timeout === "boolean") {
+        findCommand.noCursorTimeout = !options.timeout;
+      } else if (typeof options.noCursorTimeout === "boolean") {
+        findCommand.noCursorTimeout = options.noCursorTimeout;
+      }
+      if (typeof options.awaitData === "boolean") {
+        findCommand.awaitData = options.awaitData;
+      }
+      if (typeof options.allowPartialResults === "boolean") {
+        findCommand.allowPartialResults = options.allowPartialResults;
+      }
+      if (options.collation) {
+        findCommand.collation = options.collation;
+      }
+      if (typeof options.allowDiskUse === "boolean") {
+        findCommand.allowDiskUse = options.allowDiskUse;
+      }
+      if (options.let) {
+        findCommand.let = options.let;
+      }
+      return findCommand;
+    }
+    (0, operation_1.defineAspects)(FindOperation, [
+      operation_1.Aspect.READ_OPERATION,
+      operation_1.Aspect.RETRYABLE,
+      operation_1.Aspect.EXPLAINABLE,
+      operation_1.Aspect.CURSOR_CREATING
+    ]);
+  }
+});
+
+// node_modules/mongodb/lib/cursor/find_cursor.js
+var require_find_cursor2 = __commonJS({
+  "node_modules/mongodb/lib/cursor/find_cursor.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.FindCursor = exports.FLAGS = void 0;
+    var responses_1 = require_responses2();
+    var error_1 = require_error3();
+    var count_1 = require_count2();
+    var execute_operation_1 = require_execute_operation2();
+    var find_1 = require_find2();
+    var sort_1 = require_sort2();
+    var utils_1 = require_utils5();
+    var abstract_cursor_1 = require_abstract_cursor2();
+    exports.FLAGS = [
+      "tailable",
+      "oplogReplay",
+      "noCursorTimeout",
+      "awaitData",
+      "exhaust",
+      "partial"
+    ];
+    var FindCursor = class extends abstract_cursor_1.AbstractCursor {
+      constructor(client, namespace, filter = {}, options = {}) {
+        super(client, namespace, options);
+        this.numReturned = 0;
+        this.cursorFilter = filter;
+        this.findOptions = options;
+        if (options.sort != null) {
+          this.findOptions.sort = (0, sort_1.formatSort)(options.sort);
+        }
+      }
+      clone() {
+        const clonedOptions = (0, utils_1.mergeOptions)({}, this.findOptions);
+        delete clonedOptions.session;
+        return new FindCursor(this.client, this.namespace, this.cursorFilter, {
+          ...clonedOptions
+        });
+      }
+      map(transform) {
+        return super.map(transform);
+      }
+      async _initialize(session) {
+        const findOperation = new find_1.FindOperation(this.namespace, this.cursorFilter, {
+          ...this.findOptions,
+          ...this.cursorOptions,
+          session
+        });
+        const response = await (0, execute_operation_1.executeOperation)(this.client, findOperation);
+        this.numReturned = response.batchSize;
+        return { server: findOperation.server, session, response };
+      }
+      async getMore(batchSize) {
+        const numReturned = this.numReturned;
+        if (numReturned) {
+          const limit = this.findOptions.limit;
+          batchSize = limit && limit > 0 && numReturned + batchSize > limit ? limit - numReturned : batchSize;
+          if (batchSize <= 0) {
+            try {
+              await this.close();
+            } catch (error) {
+              (0, utils_1.squashError)(error);
+            }
+            return responses_1.CursorResponse.emptyGetMore;
+          }
+        }
+        const response = await super.getMore(batchSize);
+        this.numReturned = this.numReturned + response.batchSize;
+        return response;
+      }
+      async count(options) {
+        (0, utils_1.emitWarningOnce)("cursor.count is deprecated and will be removed in the next major version, please use `collection.estimatedDocumentCount` or `collection.countDocuments` instead ");
+        if (typeof options === "boolean") {
+          throw new error_1.MongoInvalidArgumentError("Invalid first parameter to count");
+        }
+        return await (0, execute_operation_1.executeOperation)(this.client, new count_1.CountOperation(this.namespace, this.cursorFilter, {
+          ...this.findOptions,
+          ...this.cursorOptions,
+          ...options
+        }));
+      }
+      async explain(verbosity) {
+        return (await (0, execute_operation_1.executeOperation)(this.client, new find_1.FindOperation(this.namespace, this.cursorFilter, {
+          ...this.findOptions,
+          ...this.cursorOptions,
+          explain: verbosity ?? true
+        }))).shift(this.findOptions);
+      }
+      filter(filter) {
+        this.throwIfInitialized();
+        this.cursorFilter = filter;
+        return this;
+      }
+      hint(hint) {
+        this.throwIfInitialized();
+        this.findOptions.hint = hint;
+        return this;
+      }
+      min(min) {
+        this.throwIfInitialized();
+        this.findOptions.min = min;
+        return this;
+      }
+      max(max) {
+        this.throwIfInitialized();
+        this.findOptions.max = max;
+        return this;
+      }
+      returnKey(value) {
+        this.throwIfInitialized();
+        this.findOptions.returnKey = value;
+        return this;
+      }
+      showRecordId(value) {
+        this.throwIfInitialized();
+        this.findOptions.showRecordId = value;
+        return this;
+      }
+      addQueryModifier(name, value) {
+        this.throwIfInitialized();
+        if (name[0] !== "$") {
+          throw new error_1.MongoInvalidArgumentError(`${name} is not a valid query modifier`);
+        }
+        const field = name.substr(1);
+        switch (field) {
+          case "comment":
+            this.findOptions.comment = value;
+            break;
+          case "explain":
+            this.findOptions.explain = value;
+            break;
+          case "hint":
+            this.findOptions.hint = value;
+            break;
+          case "max":
+            this.findOptions.max = value;
+            break;
+          case "maxTimeMS":
+            this.findOptions.maxTimeMS = value;
+            break;
+          case "min":
+            this.findOptions.min = value;
+            break;
+          case "orderby":
+            this.findOptions.sort = (0, sort_1.formatSort)(value);
+            break;
+          case "query":
+            this.cursorFilter = value;
+            break;
+          case "returnKey":
+            this.findOptions.returnKey = value;
+            break;
+          case "showDiskLoc":
+            this.findOptions.showRecordId = value;
+            break;
+          default:
+            throw new error_1.MongoInvalidArgumentError(`Invalid query modifier: ${name}`);
+        }
+        return this;
+      }
+      comment(value) {
+        this.throwIfInitialized();
+        this.findOptions.comment = value;
+        return this;
+      }
+      maxAwaitTimeMS(value) {
+        this.throwIfInitialized();
+        if (typeof value !== "number") {
+          throw new error_1.MongoInvalidArgumentError("Argument for maxAwaitTimeMS must be a number");
+        }
+        this.findOptions.maxAwaitTimeMS = value;
+        return this;
+      }
+      maxTimeMS(value) {
+        this.throwIfInitialized();
+        if (typeof value !== "number") {
+          throw new error_1.MongoInvalidArgumentError("Argument for maxTimeMS must be a number");
+        }
+        this.findOptions.maxTimeMS = value;
+        return this;
+      }
+      project(value) {
+        this.throwIfInitialized();
+        this.findOptions.projection = value;
+        return this;
+      }
+      sort(sort, direction) {
+        this.throwIfInitialized();
+        if (this.findOptions.tailable) {
+          throw new error_1.MongoTailableCursorError("Tailable cursor does not support sorting");
+        }
+        this.findOptions.sort = (0, sort_1.formatSort)(sort, direction);
+        return this;
+      }
+      allowDiskUse(allow = true) {
+        this.throwIfInitialized();
+        if (!this.findOptions.sort) {
+          throw new error_1.MongoInvalidArgumentError('Option "allowDiskUse" requires a sort specification');
+        }
+        if (!allow) {
+          this.findOptions.allowDiskUse = false;
+          return this;
+        }
+        this.findOptions.allowDiskUse = true;
+        return this;
+      }
+      collation(value) {
+        this.throwIfInitialized();
+        this.findOptions.collation = value;
+        return this;
+      }
+      limit(value) {
+        this.throwIfInitialized();
+        if (this.findOptions.tailable) {
+          throw new error_1.MongoTailableCursorError("Tailable cursor does not support limit");
+        }
+        if (typeof value !== "number") {
+          throw new error_1.MongoInvalidArgumentError('Operation "limit" requires an integer');
+        }
+        this.findOptions.limit = value;
+        return this;
+      }
+      skip(value) {
+        this.throwIfInitialized();
+        if (this.findOptions.tailable) {
+          throw new error_1.MongoTailableCursorError("Tailable cursor does not support skip");
+        }
+        if (typeof value !== "number") {
+          throw new error_1.MongoInvalidArgumentError('Operation "skip" requires an integer');
+        }
+        this.findOptions.skip = value;
+        return this;
+      }
+    };
+    exports.FindCursor = FindCursor;
+  }
+});
+
+// node_modules/mongodb/lib/operations/indexes.js
+var require_indexes2 = __commonJS({
+  "node_modules/mongodb/lib/operations/indexes.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ListIndexesOperation = exports.DropIndexOperation = exports.CreateIndexesOperation = void 0;
+    var responses_1 = require_responses2();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var VALID_INDEX_OPTIONS = /* @__PURE__ */ new Set([
+      "background",
+      "unique",
+      "name",
+      "partialFilterExpression",
+      "sparse",
+      "hidden",
+      "expireAfterSeconds",
+      "storageEngine",
+      "collation",
+      "version",
+      "weights",
+      "default_language",
+      "language_override",
+      "textIndexVersion",
+      "2dsphereIndexVersion",
+      "bits",
+      "min",
+      "max",
+      "bucketSize",
+      "wildcardProjection"
+    ]);
+    function isIndexDirection(x) {
+      return typeof x === "number" || x === "2d" || x === "2dsphere" || x === "text" || x === "geoHaystack";
+    }
+    function isSingleIndexTuple(t) {
+      return Array.isArray(t) && t.length === 2 && isIndexDirection(t[1]);
+    }
+    function constructIndexDescriptionMap(indexSpec) {
+      const key = /* @__PURE__ */ new Map();
+      const indexSpecs = !Array.isArray(indexSpec) || isSingleIndexTuple(indexSpec) ? [indexSpec] : indexSpec;
+      for (const spec of indexSpecs) {
+        if (typeof spec === "string") {
+          key.set(spec, 1);
+        } else if (Array.isArray(spec)) {
+          key.set(spec[0], spec[1] ?? 1);
+        } else if (spec instanceof Map) {
+          for (const [property, value] of spec) {
+            key.set(property, value);
+          }
+        } else if ((0, utils_1.isObject)(spec)) {
+          for (const [property, value] of Object.entries(spec)) {
+            key.set(property, value);
+          }
+        }
+      }
+      return key;
+    }
+    function resolveIndexDescription(description) {
+      const validProvidedOptions = Object.entries(description).filter(([optionName]) => VALID_INDEX_OPTIONS.has(optionName));
+      return Object.fromEntries(
+        validProvidedOptions.map(([name, value]) => name === "version" ? ["v", value] : [name, value])
+      );
+    }
+    var CreateIndexesOperation = class extends command_1.CommandOperation {
+      constructor(parent, collectionName, indexes, options) {
+        super(parent, options);
+        this.options = options ?? {};
+        this.collectionName = collectionName;
+        this.indexes = indexes.map((userIndex) => {
+          const key = userIndex.key instanceof Map ? userIndex.key : new Map(Object.entries(userIndex.key));
+          const name = userIndex.name ?? Array.from(key).flat().join("_");
+          const validIndexOptions = resolveIndexDescription(userIndex);
+          return {
+            ...validIndexOptions,
+            name,
+            key
+          };
+        });
+      }
+      static fromIndexDescriptionArray(parent, collectionName, indexes, options) {
+        return new CreateIndexesOperation(parent, collectionName, indexes, options);
+      }
+      static fromIndexSpecification(parent, collectionName, indexSpec, options = {}) {
+        const key = constructIndexDescriptionMap(indexSpec);
+        const description = { ...options, key };
+        return new CreateIndexesOperation(parent, collectionName, [description], options);
+      }
+      get commandName() {
+        return "createIndexes";
+      }
+      async execute(server, session) {
+        const options = this.options;
+        const indexes = this.indexes;
+        const serverWireVersion = (0, utils_1.maxWireVersion)(server);
+        const cmd = { createIndexes: this.collectionName, indexes };
+        if (options.commitQuorum != null) {
+          if (serverWireVersion < 9) {
+            throw new error_1.MongoCompatibilityError("Option `commitQuorum` for `createIndexes` not supported on servers < 4.4");
+          }
+          cmd.commitQuorum = options.commitQuorum;
+        }
+        this.options.collation = void 0;
+        await super.executeCommand(server, session, cmd);
+        const indexNames = indexes.map((index) => index.name || "");
+        return indexNames;
+      }
+    };
+    exports.CreateIndexesOperation = CreateIndexesOperation;
+    var DropIndexOperation = class extends command_1.CommandOperation {
+      constructor(collection, indexName, options) {
+        super(collection, options);
+        this.options = options ?? {};
+        this.collection = collection;
+        this.indexName = indexName;
+      }
+      get commandName() {
+        return "dropIndexes";
+      }
+      async execute(server, session) {
+        const cmd = { dropIndexes: this.collection.collectionName, index: this.indexName };
+        return await super.executeCommand(server, session, cmd);
+      }
+    };
+    exports.DropIndexOperation = DropIndexOperation;
+    var ListIndexesOperation = class extends command_1.CommandOperation {
+      constructor(collection, options) {
+        super(collection, options);
+        this.options = { ...options };
+        delete this.options.writeConcern;
+        this.collectionNamespace = collection.s.namespace;
+      }
+      get commandName() {
+        return "listIndexes";
+      }
+      async execute(server, session) {
+        const serverWireVersion = (0, utils_1.maxWireVersion)(server);
+        const cursor = this.options.batchSize ? { batchSize: this.options.batchSize } : {};
+        const command = { listIndexes: this.collectionNamespace.collection, cursor };
+        if (serverWireVersion >= 9 && this.options.comment !== void 0) {
+          command.comment = this.options.comment;
+        }
+        return await super.executeCommand(server, session, command, responses_1.CursorResponse);
+      }
+    };
+    exports.ListIndexesOperation = ListIndexesOperation;
+    (0, operation_1.defineAspects)(ListIndexesOperation, [
+      operation_1.Aspect.READ_OPERATION,
+      operation_1.Aspect.RETRYABLE,
+      operation_1.Aspect.CURSOR_CREATING
+    ]);
+    (0, operation_1.defineAspects)(CreateIndexesOperation, [operation_1.Aspect.WRITE_OPERATION]);
+    (0, operation_1.defineAspects)(DropIndexOperation, [operation_1.Aspect.WRITE_OPERATION]);
+  }
+});
+
+// node_modules/mongodb/lib/cursor/list_indexes_cursor.js
+var require_list_indexes_cursor2 = __commonJS({
+  "node_modules/mongodb/lib/cursor/list_indexes_cursor.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ListIndexesCursor = void 0;
+    var execute_operation_1 = require_execute_operation2();
+    var indexes_1 = require_indexes2();
+    var abstract_cursor_1 = require_abstract_cursor2();
+    var ListIndexesCursor = class extends abstract_cursor_1.AbstractCursor {
+      constructor(collection, options) {
+        super(collection.client, collection.s.namespace, options);
+        this.parent = collection;
+        this.options = options;
+      }
+      clone() {
+        return new ListIndexesCursor(this.parent, {
+          ...this.options,
+          ...this.cursorOptions
+        });
+      }
+      async _initialize(session) {
+        const operation = new indexes_1.ListIndexesOperation(this.parent, {
+          ...this.cursorOptions,
+          ...this.options,
+          session
+        });
+        const response = await (0, execute_operation_1.executeOperation)(this.parent.client, operation);
+        return { server: operation.server, session, response };
+      }
+    };
+    exports.ListIndexesCursor = ListIndexesCursor;
+  }
+});
+
+// node_modules/mongodb/lib/cursor/list_search_indexes_cursor.js
+var require_list_search_indexes_cursor2 = __commonJS({
+  "node_modules/mongodb/lib/cursor/list_search_indexes_cursor.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ListSearchIndexesCursor = void 0;
+    var aggregation_cursor_1 = require_aggregation_cursor2();
+    var ListSearchIndexesCursor = class extends aggregation_cursor_1.AggregationCursor {
+      constructor({ fullNamespace: ns, client }, name, options = {}) {
+        const pipeline = name == null ? [{ $listSearchIndexes: {} }] : [{ $listSearchIndexes: { name } }];
+        super(client, ns, pipeline, options);
+      }
+    };
+    exports.ListSearchIndexesCursor = ListSearchIndexesCursor;
+  }
+});
+
+// node_modules/mongodb/lib/operations/distinct.js
+var require_distinct2 = __commonJS({
+  "node_modules/mongodb/lib/operations/distinct.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.DistinctOperation = void 0;
+    var utils_1 = require_utils5();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var DistinctOperation = class extends command_1.CommandOperation {
+      constructor(collection, key, query, options) {
+        super(collection, options);
+        this.options = options ?? {};
+        this.collection = collection;
+        this.key = key;
+        this.query = query;
+      }
+      get commandName() {
+        return "distinct";
+      }
+      async execute(server, session) {
+        const coll = this.collection;
+        const key = this.key;
+        const query = this.query;
+        const options = this.options;
+        const cmd = {
+          distinct: coll.collectionName,
+          key,
+          query
+        };
+        if (typeof options.maxTimeMS === "number") {
+          cmd.maxTimeMS = options.maxTimeMS;
+        }
+        if (typeof options.comment !== "undefined") {
+          cmd.comment = options.comment;
+        }
+        (0, utils_1.decorateWithReadConcern)(cmd, coll, options);
+        (0, utils_1.decorateWithCollation)(cmd, coll, options);
+        const result = await super.executeCommand(server, session, cmd);
+        return this.explain ? result : result.values;
+      }
+    };
+    exports.DistinctOperation = DistinctOperation;
+    (0, operation_1.defineAspects)(DistinctOperation, [operation_1.Aspect.READ_OPERATION, operation_1.Aspect.RETRYABLE, operation_1.Aspect.EXPLAINABLE]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/drop.js
+var require_drop3 = __commonJS({
+  "node_modules/mongodb/lib/operations/drop.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.DropDatabaseOperation = exports.DropCollectionOperation = void 0;
+    var error_1 = require_error3();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var DropCollectionOperation = class extends command_1.CommandOperation {
+      constructor(db, name, options = {}) {
+        super(db, options);
+        this.db = db;
+        this.options = options;
+        this.name = name;
+      }
+      get commandName() {
+        return "drop";
+      }
+      async execute(server, session) {
+        const db = this.db;
+        const options = this.options;
+        const name = this.name;
+        const encryptedFieldsMap = db.client.options.autoEncryption?.encryptedFieldsMap;
+        let encryptedFields = options.encryptedFields ?? encryptedFieldsMap?.[`${db.databaseName}.${name}`];
+        if (!encryptedFields && encryptedFieldsMap) {
+          const listCollectionsResult = await db.listCollections({ name }, { nameOnly: false }).toArray();
+          encryptedFields = listCollectionsResult?.[0]?.options?.encryptedFields;
+        }
+        if (encryptedFields) {
+          const escCollection = encryptedFields.escCollection || `enxcol_.${name}.esc`;
+          const ecocCollection = encryptedFields.ecocCollection || `enxcol_.${name}.ecoc`;
+          for (const collectionName of [escCollection, ecocCollection]) {
+            const dropOp = new DropCollectionOperation(db, collectionName);
+            try {
+              await dropOp.executeWithoutEncryptedFieldsCheck(server, session);
+            } catch (err) {
+              if (!(err instanceof error_1.MongoServerError) || err.code !== error_1.MONGODB_ERROR_CODES.NamespaceNotFound) {
+                throw err;
+              }
+            }
+          }
+        }
+        return await this.executeWithoutEncryptedFieldsCheck(server, session);
+      }
+      async executeWithoutEncryptedFieldsCheck(server, session) {
+        await super.executeCommand(server, session, { drop: this.name });
+        return true;
+      }
+    };
+    exports.DropCollectionOperation = DropCollectionOperation;
+    var DropDatabaseOperation = class extends command_1.CommandOperation {
+      constructor(db, options) {
+        super(db, options);
+        this.options = options;
+      }
+      get commandName() {
+        return "dropDatabase";
+      }
+      async execute(server, session) {
+        await super.executeCommand(server, session, { dropDatabase: 1 });
+        return true;
+      }
+    };
+    exports.DropDatabaseOperation = DropDatabaseOperation;
+    (0, operation_1.defineAspects)(DropCollectionOperation, [operation_1.Aspect.WRITE_OPERATION]);
+    (0, operation_1.defineAspects)(DropDatabaseOperation, [operation_1.Aspect.WRITE_OPERATION]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/estimated_document_count.js
+var require_estimated_document_count2 = __commonJS({
+  "node_modules/mongodb/lib/operations/estimated_document_count.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.EstimatedDocumentCountOperation = void 0;
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var EstimatedDocumentCountOperation = class extends command_1.CommandOperation {
+      constructor(collection, options = {}) {
+        super(collection, options);
+        this.options = options;
+        this.collectionName = collection.collectionName;
+      }
+      get commandName() {
+        return "count";
+      }
+      async execute(server, session) {
+        const cmd = { count: this.collectionName };
+        if (typeof this.options.maxTimeMS === "number") {
+          cmd.maxTimeMS = this.options.maxTimeMS;
+        }
+        if (this.options.comment !== void 0) {
+          cmd.comment = this.options.comment;
+        }
+        const response = await super.executeCommand(server, session, cmd);
+        return response?.n || 0;
+      }
+    };
+    exports.EstimatedDocumentCountOperation = EstimatedDocumentCountOperation;
+    (0, operation_1.defineAspects)(EstimatedDocumentCountOperation, [
+      operation_1.Aspect.READ_OPERATION,
+      operation_1.Aspect.RETRYABLE,
+      operation_1.Aspect.CURSOR_CREATING
+    ]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/find_and_modify.js
+var require_find_and_modify2 = __commonJS({
+  "node_modules/mongodb/lib/operations/find_and_modify.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.FindOneAndUpdateOperation = exports.FindOneAndReplaceOperation = exports.FindOneAndDeleteOperation = exports.FindAndModifyOperation = exports.ReturnDocument = void 0;
+    var error_1 = require_error3();
+    var read_preference_1 = require_read_preference2();
+    var sort_1 = require_sort2();
+    var utils_1 = require_utils5();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    exports.ReturnDocument = Object.freeze({
+      BEFORE: "before",
+      AFTER: "after"
+    });
+    function configureFindAndModifyCmdBaseUpdateOpts(cmdBase, options) {
+      cmdBase.new = options.returnDocument === exports.ReturnDocument.AFTER;
+      cmdBase.upsert = options.upsert === true;
+      if (options.bypassDocumentValidation === true) {
+        cmdBase.bypassDocumentValidation = options.bypassDocumentValidation;
+      }
+      return cmdBase;
+    }
+    var FindAndModifyOperation = class extends command_1.CommandOperation {
+      constructor(collection, query, options) {
+        super(collection, options);
+        this.options = options ?? {};
+        this.cmdBase = {
+          remove: false,
+          new: false,
+          upsert: false
+        };
+        options.includeResultMetadata ??= false;
+        const sort = (0, sort_1.formatSort)(options.sort);
+        if (sort) {
+          this.cmdBase.sort = sort;
+        }
+        if (options.projection) {
+          this.cmdBase.fields = options.projection;
+        }
+        if (options.maxTimeMS) {
+          this.cmdBase.maxTimeMS = options.maxTimeMS;
+        }
+        if (options.writeConcern) {
+          this.cmdBase.writeConcern = options.writeConcern;
+        }
+        if (options.let) {
+          this.cmdBase.let = options.let;
+        }
+        if (options.comment !== void 0) {
+          this.cmdBase.comment = options.comment;
+        }
+        this.readPreference = read_preference_1.ReadPreference.primary;
+        this.collection = collection;
+        this.query = query;
+      }
+      get commandName() {
+        return "findAndModify";
+      }
+      async execute(server, session) {
+        const coll = this.collection;
+        const query = this.query;
+        const options = { ...this.options, ...this.bsonOptions };
+        const cmd = {
+          findAndModify: coll.collectionName,
+          query,
+          ...this.cmdBase
+        };
+        try {
+          (0, utils_1.decorateWithCollation)(cmd, coll, options);
+        } catch (err) {
+          return err;
+        }
+        if (options.hint) {
+          const unacknowledgedWrite = this.writeConcern?.w === 0;
+          if (unacknowledgedWrite || (0, utils_1.maxWireVersion)(server) < 8) {
+            throw new error_1.MongoCompatibilityError("The current topology does not support a hint on findAndModify commands");
+          }
+          cmd.hint = options.hint;
+        }
+        const result = await super.executeCommand(server, session, cmd);
+        return options.includeResultMetadata ? result : result.value ?? null;
+      }
+    };
+    exports.FindAndModifyOperation = FindAndModifyOperation;
+    var FindOneAndDeleteOperation = class extends FindAndModifyOperation {
+      constructor(collection, filter, options) {
+        if (filter == null || typeof filter !== "object") {
+          throw new error_1.MongoInvalidArgumentError('Argument "filter" must be an object');
+        }
+        super(collection, filter, options);
+        this.cmdBase.remove = true;
+      }
+    };
+    exports.FindOneAndDeleteOperation = FindOneAndDeleteOperation;
+    var FindOneAndReplaceOperation = class extends FindAndModifyOperation {
+      constructor(collection, filter, replacement, options) {
+        if (filter == null || typeof filter !== "object") {
+          throw new error_1.MongoInvalidArgumentError('Argument "filter" must be an object');
+        }
+        if (replacement == null || typeof replacement !== "object") {
+          throw new error_1.MongoInvalidArgumentError('Argument "replacement" must be an object');
+        }
+        if ((0, utils_1.hasAtomicOperators)(replacement)) {
+          throw new error_1.MongoInvalidArgumentError("Replacement document must not contain atomic operators");
+        }
+        super(collection, filter, options);
+        this.cmdBase.update = replacement;
+        configureFindAndModifyCmdBaseUpdateOpts(this.cmdBase, options);
+      }
+    };
+    exports.FindOneAndReplaceOperation = FindOneAndReplaceOperation;
+    var FindOneAndUpdateOperation = class extends FindAndModifyOperation {
+      constructor(collection, filter, update, options) {
+        if (filter == null || typeof filter !== "object") {
+          throw new error_1.MongoInvalidArgumentError('Argument "filter" must be an object');
+        }
+        if (update == null || typeof update !== "object") {
+          throw new error_1.MongoInvalidArgumentError('Argument "update" must be an object');
+        }
+        if (!(0, utils_1.hasAtomicOperators)(update)) {
+          throw new error_1.MongoInvalidArgumentError("Update document requires atomic operators");
+        }
+        super(collection, filter, options);
+        this.cmdBase.update = update;
+        configureFindAndModifyCmdBaseUpdateOpts(this.cmdBase, options);
+        if (options.arrayFilters) {
+          this.cmdBase.arrayFilters = options.arrayFilters;
+        }
+      }
+    };
+    exports.FindOneAndUpdateOperation = FindOneAndUpdateOperation;
+    (0, operation_1.defineAspects)(FindAndModifyOperation, [
+      operation_1.Aspect.WRITE_OPERATION,
+      operation_1.Aspect.RETRYABLE,
+      operation_1.Aspect.EXPLAINABLE
+    ]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/is_capped.js
+var require_is_capped2 = __commonJS({
+  "node_modules/mongodb/lib/operations/is_capped.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.IsCappedOperation = void 0;
+    var error_1 = require_error3();
+    var operation_1 = require_operation2();
+    var IsCappedOperation = class extends operation_1.AbstractOperation {
+      constructor(collection, options) {
+        super(options);
+        this.options = options;
+        this.collection = collection;
+      }
+      get commandName() {
+        return "listCollections";
+      }
+      async execute(server, session) {
+        const coll = this.collection;
+        const [collection] = await coll.s.db.listCollections({ name: coll.collectionName }, { ...this.options, nameOnly: false, readPreference: this.readPreference, session }).toArray();
+        if (collection == null || collection.options == null) {
+          throw new error_1.MongoAPIError(`collection ${coll.namespace} not found`);
+        }
+        return !!collection.options?.capped;
+      }
+    };
+    exports.IsCappedOperation = IsCappedOperation;
+  }
+});
+
+// node_modules/mongodb/lib/operations/options_operation.js
+var require_options_operation2 = __commonJS({
+  "node_modules/mongodb/lib/operations/options_operation.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.OptionsOperation = void 0;
+    var error_1 = require_error3();
+    var operation_1 = require_operation2();
+    var OptionsOperation = class extends operation_1.AbstractOperation {
+      constructor(collection, options) {
+        super(options);
+        this.options = options;
+        this.collection = collection;
+      }
+      get commandName() {
+        return "listCollections";
+      }
+      async execute(server, session) {
+        const coll = this.collection;
+        const [collection] = await coll.s.db.listCollections({ name: coll.collectionName }, { ...this.options, nameOnly: false, readPreference: this.readPreference, session }).toArray();
+        if (collection == null || collection.options == null) {
+          throw new error_1.MongoAPIError(`collection ${coll.namespace} not found`);
+        }
+        return collection.options;
+      }
+    };
+    exports.OptionsOperation = OptionsOperation;
+  }
+});
+
+// node_modules/mongodb/lib/operations/rename.js
+var require_rename2 = __commonJS({
+  "node_modules/mongodb/lib/operations/rename.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.RenameOperation = void 0;
+    var collection_1 = require_collection6();
+    var utils_1 = require_utils5();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var RenameOperation = class extends command_1.CommandOperation {
+      constructor(collection, newName, options) {
+        super(collection, options);
+        this.collection = collection;
+        this.newName = newName;
+        this.options = options;
+        this.ns = new utils_1.MongoDBNamespace("admin", "$cmd");
+      }
+      get commandName() {
+        return "renameCollection";
+      }
+      async execute(server, session) {
+        const renameCollection = this.collection.namespace;
+        const toCollection = this.collection.s.namespace.withCollection(this.newName).toString();
+        const dropTarget = typeof this.options.dropTarget === "boolean" ? this.options.dropTarget : false;
+        const command = {
+          renameCollection,
+          to: toCollection,
+          dropTarget
+        };
+        await super.executeCommand(server, session, command);
+        return new collection_1.Collection(this.collection.s.db, this.newName, this.collection.s.options);
+      }
+    };
+    exports.RenameOperation = RenameOperation;
+    (0, operation_1.defineAspects)(RenameOperation, [operation_1.Aspect.WRITE_OPERATION]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/search_indexes/create.js
+var require_create2 = __commonJS({
+  "node_modules/mongodb/lib/operations/search_indexes/create.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.CreateSearchIndexesOperation = void 0;
+    var operation_1 = require_operation2();
+    var CreateSearchIndexesOperation = class extends operation_1.AbstractOperation {
+      constructor(collection, descriptions) {
+        super();
+        this.collection = collection;
+        this.descriptions = descriptions;
+      }
+      get commandName() {
+        return "createSearchIndexes";
+      }
+      async execute(server, session) {
+        const namespace = this.collection.fullNamespace;
+        const command = {
+          createSearchIndexes: namespace.collection,
+          indexes: this.descriptions
+        };
+        const res = await server.command(namespace, command, { session });
+        const indexesCreated = res?.indexesCreated ?? [];
+        return indexesCreated.map(({ name }) => name);
+      }
+    };
+    exports.CreateSearchIndexesOperation = CreateSearchIndexesOperation;
+  }
+});
+
+// node_modules/mongodb/lib/operations/search_indexes/drop.js
+var require_drop4 = __commonJS({
+  "node_modules/mongodb/lib/operations/search_indexes/drop.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.DropSearchIndexOperation = void 0;
+    var error_1 = require_error3();
+    var operation_1 = require_operation2();
+    var DropSearchIndexOperation = class extends operation_1.AbstractOperation {
+      constructor(collection, name) {
+        super();
+        this.collection = collection;
+        this.name = name;
+      }
+      get commandName() {
+        return "dropSearchIndex";
+      }
+      async execute(server, session) {
+        const namespace = this.collection.fullNamespace;
+        const command = {
+          dropSearchIndex: namespace.collection
+        };
+        if (typeof this.name === "string") {
+          command.name = this.name;
+        }
+        try {
+          await server.command(namespace, command, { session });
+        } catch (error) {
+          const isNamespaceNotFoundError = error instanceof error_1.MongoServerError && error.code === error_1.MONGODB_ERROR_CODES.NamespaceNotFound;
+          if (!isNamespaceNotFoundError) {
+            throw error;
+          }
+        }
+      }
+    };
+    exports.DropSearchIndexOperation = DropSearchIndexOperation;
+  }
+});
+
+// node_modules/mongodb/lib/operations/search_indexes/update.js
+var require_update4 = __commonJS({
+  "node_modules/mongodb/lib/operations/search_indexes/update.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.UpdateSearchIndexOperation = void 0;
+    var operation_1 = require_operation2();
+    var UpdateSearchIndexOperation = class extends operation_1.AbstractOperation {
+      constructor(collection, name, definition) {
+        super();
+        this.collection = collection;
+        this.name = name;
+        this.definition = definition;
+      }
+      get commandName() {
+        return "updateSearchIndex";
+      }
+      async execute(server, session) {
+        const namespace = this.collection.fullNamespace;
+        const command = {
+          updateSearchIndex: namespace.collection,
+          name: this.name,
+          definition: this.definition
+        };
+        await server.command(namespace, command, { session });
+        return;
+      }
+    };
+    exports.UpdateSearchIndexOperation = UpdateSearchIndexOperation;
+  }
+});
+
+// node_modules/mongodb/lib/collection.js
+var require_collection6 = __commonJS({
+  "node_modules/mongodb/lib/collection.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Collection = void 0;
+    var bson_1 = require_bson3();
+    var ordered_1 = require_ordered2();
+    var unordered_1 = require_unordered2();
+    var change_stream_1 = require_change_stream2();
+    var aggregation_cursor_1 = require_aggregation_cursor2();
+    var find_cursor_1 = require_find_cursor2();
+    var list_indexes_cursor_1 = require_list_indexes_cursor2();
+    var list_search_indexes_cursor_1 = require_list_search_indexes_cursor2();
+    var error_1 = require_error3();
+    var bulk_write_1 = require_bulk_write2();
+    var count_1 = require_count2();
+    var delete_1 = require_delete2();
+    var distinct_1 = require_distinct2();
+    var drop_1 = require_drop3();
+    var estimated_document_count_1 = require_estimated_document_count2();
+    var execute_operation_1 = require_execute_operation2();
+    var find_and_modify_1 = require_find_and_modify2();
+    var indexes_1 = require_indexes2();
+    var insert_1 = require_insert2();
+    var is_capped_1 = require_is_capped2();
+    var options_operation_1 = require_options_operation2();
+    var rename_1 = require_rename2();
+    var create_1 = require_create2();
+    var drop_2 = require_drop4();
+    var update_1 = require_update4();
+    var update_2 = require_update3();
+    var read_concern_1 = require_read_concern2();
+    var read_preference_1 = require_read_preference2();
+    var utils_1 = require_utils5();
+    var write_concern_1 = require_write_concern2();
+    var Collection = class {
+      constructor(db, name, options) {
+        this.s = {
+          db,
+          options,
+          namespace: new utils_1.MongoDBCollectionNamespace(db.databaseName, name),
+          pkFactory: db.options?.pkFactory ?? utils_1.DEFAULT_PK_FACTORY,
+          readPreference: read_preference_1.ReadPreference.fromOptions(options),
+          bsonOptions: (0, bson_1.resolveBSONOptions)(options, db),
+          readConcern: read_concern_1.ReadConcern.fromOptions(options),
+          writeConcern: write_concern_1.WriteConcern.fromOptions(options)
+        };
+        this.client = db.client;
+      }
+      get dbName() {
+        return this.s.namespace.db;
+      }
+      get collectionName() {
+        return this.s.namespace.collection;
+      }
+      get namespace() {
+        return this.fullNamespace.toString();
+      }
+      get fullNamespace() {
+        return this.s.namespace;
+      }
+      get readConcern() {
+        if (this.s.readConcern == null) {
+          return this.s.db.readConcern;
+        }
+        return this.s.readConcern;
+      }
+      get readPreference() {
+        if (this.s.readPreference == null) {
+          return this.s.db.readPreference;
+        }
+        return this.s.readPreference;
+      }
+      get bsonOptions() {
+        return this.s.bsonOptions;
+      }
+      get writeConcern() {
+        if (this.s.writeConcern == null) {
+          return this.s.db.writeConcern;
+        }
+        return this.s.writeConcern;
+      }
+      get hint() {
+        return this.s.collectionHint;
+      }
+      set hint(v) {
+        this.s.collectionHint = (0, utils_1.normalizeHintField)(v);
+      }
+      async insertOne(doc, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new insert_1.InsertOneOperation(this, doc, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async insertMany(docs, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new insert_1.InsertManyOperation(this, docs, (0, utils_1.resolveOptions)(this, options ?? { ordered: true })));
+      }
+      async bulkWrite(operations, options) {
+        if (!Array.isArray(operations)) {
+          throw new error_1.MongoInvalidArgumentError('Argument "operations" must be an array of documents');
+        }
+        return await (0, execute_operation_1.executeOperation)(this.client, new bulk_write_1.BulkWriteOperation(this, operations, (0, utils_1.resolveOptions)(this, options ?? { ordered: true })));
+      }
+      async updateOne(filter, update, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new update_2.UpdateOneOperation(this, filter, update, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async replaceOne(filter, replacement, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new update_2.ReplaceOneOperation(this, filter, replacement, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async updateMany(filter, update, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new update_2.UpdateManyOperation(this, filter, update, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async deleteOne(filter = {}, options = {}) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new delete_1.DeleteOneOperation(this, filter, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async deleteMany(filter = {}, options = {}) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new delete_1.DeleteManyOperation(this, filter, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async rename(newName, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new rename_1.RenameOperation(this, newName, {
+          ...options,
+          readPreference: read_preference_1.ReadPreference.PRIMARY
+        }));
+      }
+      async drop(options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new drop_1.DropCollectionOperation(this.s.db, this.collectionName, options));
+      }
+      async findOne(filter = {}, options = {}) {
+        const cursor = this.find(filter, options).limit(-1).batchSize(1);
+        const res = await cursor.next();
+        await cursor.close();
+        return res;
+      }
+      find(filter = {}, options = {}) {
+        return new find_cursor_1.FindCursor(this.client, this.s.namespace, filter, (0, utils_1.resolveOptions)(this, options));
+      }
+      async options(options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new options_operation_1.OptionsOperation(this, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async isCapped(options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new is_capped_1.IsCappedOperation(this, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async createIndex(indexSpec, options) {
+        const indexes = await (0, execute_operation_1.executeOperation)(this.client, indexes_1.CreateIndexesOperation.fromIndexSpecification(this, this.collectionName, indexSpec, (0, utils_1.resolveOptions)(this, options)));
+        return indexes[0];
+      }
+      async createIndexes(indexSpecs, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, indexes_1.CreateIndexesOperation.fromIndexDescriptionArray(this, this.collectionName, indexSpecs, (0, utils_1.resolveOptions)(this, { ...options, maxTimeMS: void 0 })));
+      }
+      async dropIndex(indexName, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new indexes_1.DropIndexOperation(this, indexName, {
+          ...(0, utils_1.resolveOptions)(this, options),
+          readPreference: read_preference_1.ReadPreference.primary
+        }));
+      }
+      async dropIndexes(options) {
+        try {
+          await (0, execute_operation_1.executeOperation)(this.client, new indexes_1.DropIndexOperation(this, "*", (0, utils_1.resolveOptions)(this, options)));
+          return true;
+        } catch {
+          return false;
+        }
+      }
+      listIndexes(options) {
+        return new list_indexes_cursor_1.ListIndexesCursor(this, (0, utils_1.resolveOptions)(this, options));
+      }
+      async indexExists(indexes, options) {
+        const indexNames = Array.isArray(indexes) ? indexes : [indexes];
+        const allIndexes = new Set(await this.listIndexes(options).map(({ name }) => name).toArray());
+        return indexNames.every((name) => allIndexes.has(name));
+      }
+      async indexInformation(options) {
+        return await this.indexes({
+          ...options,
+          full: options?.full ?? false
+        });
+      }
+      async estimatedDocumentCount(options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new estimated_document_count_1.EstimatedDocumentCountOperation(this, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async countDocuments(filter = {}, options = {}) {
+        const pipeline = [];
+        pipeline.push({ $match: filter });
+        if (typeof options.skip === "number") {
+          pipeline.push({ $skip: options.skip });
+        }
+        if (typeof options.limit === "number") {
+          pipeline.push({ $limit: options.limit });
+        }
+        pipeline.push({ $group: { _id: 1, n: { $sum: 1 } } });
+        const cursor = this.aggregate(pipeline, options);
+        const doc = await cursor.next();
+        await cursor.close();
+        return doc?.n ?? 0;
+      }
+      async distinct(key, filter = {}, options = {}) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new distinct_1.DistinctOperation(this, key, filter, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async indexes(options) {
+        const indexes = await this.listIndexes(options).toArray();
+        const full = options?.full ?? true;
+        if (full) {
+          return indexes;
+        }
+        const object = Object.fromEntries(indexes.map(({ name, key }) => [name, Object.entries(key)]));
+        return object;
+      }
+      async findOneAndDelete(filter, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new find_and_modify_1.FindOneAndDeleteOperation(this, filter, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async findOneAndReplace(filter, replacement, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new find_and_modify_1.FindOneAndReplaceOperation(this, filter, replacement, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async findOneAndUpdate(filter, update, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new find_and_modify_1.FindOneAndUpdateOperation(this, filter, update, (0, utils_1.resolveOptions)(this, options)));
+      }
+      aggregate(pipeline = [], options) {
+        if (!Array.isArray(pipeline)) {
+          throw new error_1.MongoInvalidArgumentError('Argument "pipeline" must be an array of aggregation stages');
+        }
+        return new aggregation_cursor_1.AggregationCursor(this.client, this.s.namespace, pipeline, (0, utils_1.resolveOptions)(this, options));
+      }
+      watch(pipeline = [], options = {}) {
+        if (!Array.isArray(pipeline)) {
+          options = pipeline;
+          pipeline = [];
+        }
+        return new change_stream_1.ChangeStream(this, pipeline, (0, utils_1.resolveOptions)(this, options));
+      }
+      initializeUnorderedBulkOp(options) {
+        return new unordered_1.UnorderedBulkOperation(this, (0, utils_1.resolveOptions)(this, options));
+      }
+      initializeOrderedBulkOp(options) {
+        return new ordered_1.OrderedBulkOperation(this, (0, utils_1.resolveOptions)(this, options));
+      }
+      async count(filter = {}, options = {}) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new count_1.CountOperation(this.fullNamespace, filter, (0, utils_1.resolveOptions)(this, options)));
+      }
+      listSearchIndexes(indexNameOrOptions, options) {
+        options = typeof indexNameOrOptions === "object" ? indexNameOrOptions : options == null ? {} : options;
+        const indexName = indexNameOrOptions == null ? null : typeof indexNameOrOptions === "object" ? null : indexNameOrOptions;
+        return new list_search_indexes_cursor_1.ListSearchIndexesCursor(this, indexName, options);
+      }
+      async createSearchIndex(description) {
+        const [index] = await this.createSearchIndexes([description]);
+        return index;
+      }
+      async createSearchIndexes(descriptions) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new create_1.CreateSearchIndexesOperation(this, descriptions));
+      }
+      async dropSearchIndex(name) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new drop_2.DropSearchIndexOperation(this, name));
+      }
+      async updateSearchIndex(name, definition) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new update_1.UpdateSearchIndexOperation(this, name, definition));
+      }
+    };
+    exports.Collection = Collection;
+  }
+});
+
+// node_modules/mongodb/lib/cursor/change_stream_cursor.js
+var require_change_stream_cursor2 = __commonJS({
+  "node_modules/mongodb/lib/cursor/change_stream_cursor.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ChangeStreamCursor = void 0;
+    var change_stream_1 = require_change_stream2();
+    var constants_1 = require_constants5();
+    var aggregate_1 = require_aggregate3();
+    var execute_operation_1 = require_execute_operation2();
+    var utils_1 = require_utils5();
+    var abstract_cursor_1 = require_abstract_cursor2();
+    var ChangeStreamCursor = class extends abstract_cursor_1.AbstractCursor {
+      constructor(client, namespace, pipeline = [], options = {}) {
+        super(client, namespace, options);
+        this.pipeline = pipeline;
+        this.changeStreamCursorOptions = options;
+        this._resumeToken = null;
+        this.startAtOperationTime = options.startAtOperationTime ?? null;
+        if (options.startAfter) {
+          this.resumeToken = options.startAfter;
+        } else if (options.resumeAfter) {
+          this.resumeToken = options.resumeAfter;
+        }
+      }
+      set resumeToken(token) {
+        this._resumeToken = token;
+        this.emit(change_stream_1.ChangeStream.RESUME_TOKEN_CHANGED, token);
+      }
+      get resumeToken() {
+        return this._resumeToken;
+      }
+      get resumeOptions() {
+        const options = {
+          ...this.changeStreamCursorOptions
+        };
+        for (const key of ["resumeAfter", "startAfter", "startAtOperationTime"]) {
+          delete options[key];
+        }
+        if (this.resumeToken != null) {
+          if (this.changeStreamCursorOptions.startAfter && !this.hasReceived) {
+            options.startAfter = this.resumeToken;
+          } else {
+            options.resumeAfter = this.resumeToken;
+          }
+        } else if (this.startAtOperationTime != null && (0, utils_1.maxWireVersion)(this.server) >= 7) {
+          options.startAtOperationTime = this.startAtOperationTime;
+        }
+        return options;
+      }
+      cacheResumeToken(resumeToken) {
+        if (this.bufferedCount() === 0 && this.postBatchResumeToken) {
+          this.resumeToken = this.postBatchResumeToken;
+        } else {
+          this.resumeToken = resumeToken;
+        }
+        this.hasReceived = true;
+      }
+      _processBatch(response) {
+        const { postBatchResumeToken } = response;
+        if (postBatchResumeToken) {
+          this.postBatchResumeToken = postBatchResumeToken;
+          if (response.batchSize === 0) {
+            this.resumeToken = postBatchResumeToken;
+          }
+        }
+      }
+      clone() {
+        return new ChangeStreamCursor(this.client, this.namespace, this.pipeline, {
+          ...this.cursorOptions
+        });
+      }
+      async _initialize(session) {
+        const aggregateOperation = new aggregate_1.AggregateOperation(this.namespace, this.pipeline, {
+          ...this.cursorOptions,
+          ...this.changeStreamCursorOptions,
+          session
+        });
+        const response = await (0, execute_operation_1.executeOperation)(session.client, aggregateOperation);
+        const server = aggregateOperation.server;
+        this.maxWireVersion = (0, utils_1.maxWireVersion)(server);
+        if (this.startAtOperationTime == null && this.changeStreamCursorOptions.resumeAfter == null && this.changeStreamCursorOptions.startAfter == null && this.maxWireVersion >= 7) {
+          this.startAtOperationTime = response.operationTime;
+        }
+        this._processBatch(response);
+        this.emit(constants_1.INIT, response);
+        this.emit(constants_1.RESPONSE);
+        return { server, session, response };
+      }
+      async getMore(batchSize) {
+        const response = await super.getMore(batchSize);
+        this.maxWireVersion = (0, utils_1.maxWireVersion)(this.server);
+        this._processBatch(response);
+        this.emit(change_stream_1.ChangeStream.MORE, response);
+        this.emit(change_stream_1.ChangeStream.RESPONSE);
+        return response;
+      }
+    };
+    exports.ChangeStreamCursor = ChangeStreamCursor;
+  }
+});
+
+// node_modules/mongodb/lib/operations/list_collections.js
+var require_list_collections2 = __commonJS({
+  "node_modules/mongodb/lib/operations/list_collections.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ListCollectionsOperation = void 0;
+    var responses_1 = require_responses2();
+    var utils_1 = require_utils5();
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var ListCollectionsOperation = class extends command_1.CommandOperation {
+      constructor(db, filter, options) {
+        super(db, options);
+        this.options = { ...options };
+        delete this.options.writeConcern;
+        this.db = db;
+        this.filter = filter;
+        this.nameOnly = !!this.options.nameOnly;
+        this.authorizedCollections = !!this.options.authorizedCollections;
+        if (typeof this.options.batchSize === "number") {
+          this.batchSize = this.options.batchSize;
+        }
+      }
+      get commandName() {
+        return "listCollections";
+      }
+      async execute(server, session) {
+        return await super.executeCommand(server, session, this.generateCommand((0, utils_1.maxWireVersion)(server)), responses_1.CursorResponse);
+      }
+      generateCommand(wireVersion) {
+        const command = {
+          listCollections: 1,
+          filter: this.filter,
+          cursor: this.batchSize ? { batchSize: this.batchSize } : {},
+          nameOnly: this.nameOnly,
+          authorizedCollections: this.authorizedCollections
+        };
+        if (wireVersion >= 9 && this.options.comment !== void 0) {
+          command.comment = this.options.comment;
+        }
+        return command;
+      }
+    };
+    exports.ListCollectionsOperation = ListCollectionsOperation;
+    (0, operation_1.defineAspects)(ListCollectionsOperation, [
+      operation_1.Aspect.READ_OPERATION,
+      operation_1.Aspect.RETRYABLE,
+      operation_1.Aspect.CURSOR_CREATING
+    ]);
+  }
+});
+
+// node_modules/mongodb/lib/cursor/list_collections_cursor.js
+var require_list_collections_cursor2 = __commonJS({
+  "node_modules/mongodb/lib/cursor/list_collections_cursor.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ListCollectionsCursor = void 0;
+    var execute_operation_1 = require_execute_operation2();
+    var list_collections_1 = require_list_collections2();
+    var abstract_cursor_1 = require_abstract_cursor2();
+    var ListCollectionsCursor = class extends abstract_cursor_1.AbstractCursor {
+      constructor(db, filter, options) {
+        super(db.client, db.s.namespace, options);
+        this.parent = db;
+        this.filter = filter;
+        this.options = options;
+      }
+      clone() {
+        return new ListCollectionsCursor(this.parent, this.filter, {
+          ...this.options,
+          ...this.cursorOptions
+        });
+      }
+      async _initialize(session) {
+        const operation = new list_collections_1.ListCollectionsOperation(this.parent, this.filter, {
+          ...this.cursorOptions,
+          ...this.options,
+          session
+        });
+        const response = await (0, execute_operation_1.executeOperation)(this.parent.client, operation);
+        return { server: operation.server, session, response };
+      }
+    };
+    exports.ListCollectionsCursor = ListCollectionsCursor;
+  }
+});
+
+// node_modules/mongodb/lib/cursor/run_command_cursor.js
+var require_run_command_cursor2 = __commonJS({
+  "node_modules/mongodb/lib/cursor/run_command_cursor.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.RunCommandCursor = void 0;
+    var responses_1 = require_responses2();
+    var error_1 = require_error3();
+    var execute_operation_1 = require_execute_operation2();
+    var get_more_1 = require_get_more2();
+    var run_command_1 = require_run_command2();
+    var utils_1 = require_utils5();
+    var abstract_cursor_1 = require_abstract_cursor2();
+    var RunCommandCursor = class extends abstract_cursor_1.AbstractCursor {
+      setComment(comment) {
+        this.getMoreOptions.comment = comment;
+        return this;
+      }
+      setMaxTimeMS(maxTimeMS) {
+        this.getMoreOptions.maxAwaitTimeMS = maxTimeMS;
+        return this;
+      }
+      setBatchSize(batchSize) {
+        this.getMoreOptions.batchSize = batchSize;
+        return this;
+      }
+      clone() {
+        throw new error_1.MongoAPIError("Clone not supported, create a new cursor with db.runCursorCommand");
+      }
+      withReadConcern(_) {
+        throw new error_1.MongoAPIError("RunCommandCursor does not support readConcern it must be attached to the command being run");
+      }
+      addCursorFlag(_, __) {
+        throw new error_1.MongoAPIError("RunCommandCursor does not support cursor flags, they must be attached to the command being run");
+      }
+      maxTimeMS(_) {
+        throw new error_1.MongoAPIError("maxTimeMS must be configured on the command document directly, to configure getMore.maxTimeMS use cursor.setMaxTimeMS()");
+      }
+      batchSize(_) {
+        throw new error_1.MongoAPIError("batchSize must be configured on the command document directly, to configure getMore.batchSize use cursor.setBatchSize()");
+      }
+      constructor(db, command, options = {}) {
+        super(db.client, (0, utils_1.ns)(db.namespace), options);
+        this.getMoreOptions = {};
+        this.db = db;
+        this.command = Object.freeze({ ...command });
+      }
+      async _initialize(session) {
+        const operation = new run_command_1.RunCommandOperation(this.db, this.command, {
+          ...this.cursorOptions,
+          session,
+          readPreference: this.cursorOptions.readPreference,
+          responseType: responses_1.CursorResponse
+        });
+        const response = await (0, execute_operation_1.executeOperation)(this.client, operation);
+        return {
+          server: operation.server,
+          session,
+          response
+        };
+      }
+      async getMore(_batchSize) {
+        const getMoreOperation = new get_more_1.GetMoreOperation(this.namespace, this.id, this.server, {
+          ...this.cursorOptions,
+          session: this.session,
+          ...this.getMoreOptions
+        });
+        return await (0, execute_operation_1.executeOperation)(this.client, getMoreOperation);
+      }
+    };
+    exports.RunCommandCursor = RunCommandCursor;
+  }
+});
+
+// node_modules/mongodb/lib/operations/collections.js
+var require_collections2 = __commonJS({
+  "node_modules/mongodb/lib/operations/collections.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.CollectionsOperation = void 0;
+    var collection_1 = require_collection6();
+    var operation_1 = require_operation2();
+    var CollectionsOperation = class extends operation_1.AbstractOperation {
+      constructor(db, options) {
+        super(options);
+        this.options = options;
+        this.db = db;
+      }
+      get commandName() {
+        return "listCollections";
+      }
+      async execute(server, session) {
+        const documents = await this.db.listCollections({}, { ...this.options, nameOnly: true, readPreference: this.readPreference, session }).toArray();
+        const collections = [];
+        for (const { name } of documents) {
+          if (!name.includes("$")) {
+            collections.push(new collection_1.Collection(this.db, name, this.db.s.options));
+          }
+        }
+        return collections;
+      }
+    };
+    exports.CollectionsOperation = CollectionsOperation;
+  }
+});
+
+// node_modules/mongodb/lib/operations/create_collection.js
+var require_create_collection2 = __commonJS({
+  "node_modules/mongodb/lib/operations/create_collection.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.CreateCollectionOperation = void 0;
+    var constants_1 = require_constants4();
+    var collection_1 = require_collection6();
+    var error_1 = require_error3();
+    var command_1 = require_command2();
+    var indexes_1 = require_indexes2();
+    var operation_1 = require_operation2();
+    var ILLEGAL_COMMAND_FIELDS = /* @__PURE__ */ new Set([
+      "w",
+      "wtimeout",
+      "j",
+      "fsync",
+      "autoIndexId",
+      "pkFactory",
+      "raw",
+      "readPreference",
+      "session",
+      "readConcern",
+      "writeConcern",
+      "raw",
+      "fieldsAsRaw",
+      "useBigInt64",
+      "promoteLongs",
+      "promoteValues",
+      "promoteBuffers",
+      "bsonRegExp",
+      "serializeFunctions",
+      "ignoreUndefined",
+      "enableUtf8Validation"
+    ]);
+    var INVALID_QE_VERSION = "Driver support of Queryable Encryption is incompatible with server. Upgrade server to use Queryable Encryption.";
+    var CreateCollectionOperation = class extends command_1.CommandOperation {
+      constructor(db, name, options = {}) {
+        super(db, options);
+        this.options = options;
+        this.db = db;
+        this.name = name;
+      }
+      get commandName() {
+        return "create";
+      }
+      async execute(server, session) {
+        const db = this.db;
+        const name = this.name;
+        const options = this.options;
+        const encryptedFields = options.encryptedFields ?? db.client.options.autoEncryption?.encryptedFieldsMap?.[`${db.databaseName}.${name}`];
+        if (encryptedFields) {
+          if (!server.loadBalanced && server.description.maxWireVersion < constants_1.MIN_SUPPORTED_QE_WIRE_VERSION) {
+            throw new error_1.MongoCompatibilityError(`${INVALID_QE_VERSION} The minimum server version required is ${constants_1.MIN_SUPPORTED_QE_SERVER_VERSION}`);
+          }
+          const escCollection = encryptedFields.escCollection ?? `enxcol_.${name}.esc`;
+          const ecocCollection = encryptedFields.ecocCollection ?? `enxcol_.${name}.ecoc`;
+          for (const collectionName of [escCollection, ecocCollection]) {
+            const createOp = new CreateCollectionOperation(db, collectionName, {
+              clusteredIndex: {
+                key: { _id: 1 },
+                unique: true
+              }
+            });
+            await createOp.executeWithoutEncryptedFieldsCheck(server, session);
+          }
+          if (!options.encryptedFields) {
+            this.options = { ...this.options, encryptedFields };
+          }
+        }
+        const coll = await this.executeWithoutEncryptedFieldsCheck(server, session);
+        if (encryptedFields) {
+          const createIndexOp = indexes_1.CreateIndexesOperation.fromIndexSpecification(db, name, { __safeContent__: 1 }, {});
+          await createIndexOp.execute(server, session);
+        }
+        return coll;
+      }
+      async executeWithoutEncryptedFieldsCheck(server, session) {
+        const db = this.db;
+        const name = this.name;
+        const options = this.options;
+        const cmd = { create: name };
+        for (const n in options) {
+          if (options[n] != null && typeof options[n] !== "function" && !ILLEGAL_COMMAND_FIELDS.has(n)) {
+            cmd[n] = options[n];
+          }
+        }
+        await super.executeCommand(server, session, cmd);
+        return new collection_1.Collection(db, name, options);
+      }
+    };
+    exports.CreateCollectionOperation = CreateCollectionOperation;
+    (0, operation_1.defineAspects)(CreateCollectionOperation, [operation_1.Aspect.WRITE_OPERATION]);
+  }
+});
+
+// node_modules/mongodb/lib/operations/profiling_level.js
+var require_profiling_level2 = __commonJS({
+  "node_modules/mongodb/lib/operations/profiling_level.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ProfilingLevelOperation = void 0;
+    var error_1 = require_error3();
+    var command_1 = require_command2();
+    var ProfilingLevelOperation = class extends command_1.CommandOperation {
+      constructor(db, options) {
+        super(db, options);
+        this.options = options;
+      }
+      get commandName() {
+        return "profile";
+      }
+      async execute(server, session) {
+        const doc = await super.executeCommand(server, session, { profile: -1 });
+        if (doc.ok === 1) {
+          const was = doc.was;
+          if (was === 0)
+            return "off";
+          if (was === 1)
+            return "slow_only";
+          if (was === 2)
+            return "all";
+          throw new error_1.MongoUnexpectedServerResponseError(`Illegal profiling level value ${was}`);
+        } else {
+          throw new error_1.MongoUnexpectedServerResponseError("Error with profile command");
+        }
+      }
+    };
+    exports.ProfilingLevelOperation = ProfilingLevelOperation;
+  }
+});
+
+// node_modules/mongodb/lib/operations/set_profiling_level.js
+var require_set_profiling_level2 = __commonJS({
+  "node_modules/mongodb/lib/operations/set_profiling_level.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.SetProfilingLevelOperation = exports.ProfilingLevel = void 0;
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var command_1 = require_command2();
+    var levelValues = /* @__PURE__ */ new Set(["off", "slow_only", "all"]);
+    exports.ProfilingLevel = Object.freeze({
+      off: "off",
+      slowOnly: "slow_only",
+      all: "all"
+    });
+    var SetProfilingLevelOperation = class extends command_1.CommandOperation {
+      constructor(db, level, options) {
+        super(db, options);
+        this.options = options;
+        switch (level) {
+          case exports.ProfilingLevel.off:
+            this.profile = 0;
+            break;
+          case exports.ProfilingLevel.slowOnly:
+            this.profile = 1;
+            break;
+          case exports.ProfilingLevel.all:
+            this.profile = 2;
+            break;
+          default:
+            this.profile = 0;
+            break;
+        }
+        this.level = level;
+      }
+      get commandName() {
+        return "profile";
+      }
+      async execute(server, session) {
+        const level = this.level;
+        if (!levelValues.has(level)) {
+          throw new error_1.MongoInvalidArgumentError(`Profiling level must be one of "${(0, utils_1.enumToString)(exports.ProfilingLevel)}"`);
+        }
+        await super.executeCommand(server, session, { profile: this.profile });
+        return level;
+      }
+    };
+    exports.SetProfilingLevelOperation = SetProfilingLevelOperation;
+  }
+});
+
+// node_modules/mongodb/lib/operations/stats.js
+var require_stats2 = __commonJS({
+  "node_modules/mongodb/lib/operations/stats.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.DbStatsOperation = void 0;
+    var command_1 = require_command2();
+    var operation_1 = require_operation2();
+    var DbStatsOperation = class extends command_1.CommandOperation {
+      constructor(db, options) {
+        super(db, options);
+        this.options = options;
+      }
+      get commandName() {
+        return "dbStats";
+      }
+      async execute(server, session) {
+        const command = { dbStats: true };
+        if (this.options.scale != null) {
+          command.scale = this.options.scale;
+        }
+        return await super.executeCommand(server, session, command);
+      }
+    };
+    exports.DbStatsOperation = DbStatsOperation;
+    (0, operation_1.defineAspects)(DbStatsOperation, [operation_1.Aspect.READ_OPERATION]);
+  }
+});
+
+// node_modules/mongodb/lib/db.js
+var require_db2 = __commonJS({
+  "node_modules/mongodb/lib/db.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Db = void 0;
+    var admin_1 = require_admin2();
+    var bson_1 = require_bson3();
+    var change_stream_1 = require_change_stream2();
+    var collection_1 = require_collection6();
+    var CONSTANTS = require_constants5();
+    var aggregation_cursor_1 = require_aggregation_cursor2();
+    var list_collections_cursor_1 = require_list_collections_cursor2();
+    var run_command_cursor_1 = require_run_command_cursor2();
+    var error_1 = require_error3();
+    var collections_1 = require_collections2();
+    var create_collection_1 = require_create_collection2();
+    var drop_1 = require_drop3();
+    var execute_operation_1 = require_execute_operation2();
+    var indexes_1 = require_indexes2();
+    var profiling_level_1 = require_profiling_level2();
+    var remove_user_1 = require_remove_user2();
+    var rename_1 = require_rename2();
+    var run_command_1 = require_run_command2();
+    var set_profiling_level_1 = require_set_profiling_level2();
+    var stats_1 = require_stats2();
+    var read_concern_1 = require_read_concern2();
+    var read_preference_1 = require_read_preference2();
+    var utils_1 = require_utils5();
+    var write_concern_1 = require_write_concern2();
+    var DB_OPTIONS_ALLOW_LIST = [
+      "writeConcern",
+      "readPreference",
+      "readPreferenceTags",
+      "native_parser",
+      "forceServerObjectId",
+      "pkFactory",
+      "serializeFunctions",
+      "raw",
+      "authSource",
+      "ignoreUndefined",
+      "readConcern",
+      "retryMiliSeconds",
+      "numberOfRetries",
+      "useBigInt64",
+      "promoteBuffers",
+      "promoteLongs",
+      "bsonRegExp",
+      "enableUtf8Validation",
+      "promoteValues",
+      "compression",
+      "retryWrites",
+      "timeoutMS"
+    ];
+    var Db = class {
+      constructor(client, databaseName, options) {
+        options = options ?? {};
+        options = (0, utils_1.filterOptions)(options, DB_OPTIONS_ALLOW_LIST);
+        if (typeof databaseName === "string" && databaseName.includes(".")) {
+          throw new error_1.MongoInvalidArgumentError(`Database names cannot contain the character '.'`);
+        }
+        this.s = {
+          options,
+          readPreference: read_preference_1.ReadPreference.fromOptions(options),
+          bsonOptions: (0, bson_1.resolveBSONOptions)(options, client),
+          pkFactory: options?.pkFactory ?? utils_1.DEFAULT_PK_FACTORY,
+          readConcern: read_concern_1.ReadConcern.fromOptions(options),
+          writeConcern: write_concern_1.WriteConcern.fromOptions(options),
+          namespace: new utils_1.MongoDBNamespace(databaseName)
+        };
+        this.client = client;
+      }
+      get databaseName() {
+        return this.s.namespace.db;
+      }
+      get options() {
+        return this.s.options;
+      }
+      get secondaryOk() {
+        return this.s.readPreference?.preference !== "primary" || false;
+      }
+      get readConcern() {
+        return this.s.readConcern;
+      }
+      get readPreference() {
+        if (this.s.readPreference == null) {
+          return this.client.readPreference;
+        }
+        return this.s.readPreference;
+      }
+      get bsonOptions() {
+        return this.s.bsonOptions;
+      }
+      get writeConcern() {
+        return this.s.writeConcern;
+      }
+      get namespace() {
+        return this.s.namespace.toString();
+      }
+      async createCollection(name, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new create_collection_1.CreateCollectionOperation(this, name, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async command(command, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new run_command_1.RunCommandOperation(this, command, {
+          ...(0, bson_1.resolveBSONOptions)(options),
+          session: options?.session,
+          readPreference: options?.readPreference
+        }));
+      }
+      aggregate(pipeline = [], options) {
+        return new aggregation_cursor_1.AggregationCursor(this.client, this.s.namespace, pipeline, (0, utils_1.resolveOptions)(this, options));
+      }
+      admin() {
+        return new admin_1.Admin(this);
+      }
+      collection(name, options = {}) {
+        if (typeof options === "function") {
+          throw new error_1.MongoInvalidArgumentError("The callback form of this helper has been removed.");
+        }
+        return new collection_1.Collection(this, name, (0, utils_1.resolveOptions)(this, options));
+      }
+      async stats(options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new stats_1.DbStatsOperation(this, (0, utils_1.resolveOptions)(this, options)));
+      }
+      listCollections(filter = {}, options = {}) {
+        return new list_collections_cursor_1.ListCollectionsCursor(this, filter, (0, utils_1.resolveOptions)(this, options));
+      }
+      async renameCollection(fromCollection, toCollection, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new rename_1.RenameOperation(this.collection(fromCollection), toCollection, { ...options, new_collection: true, readPreference: read_preference_1.ReadPreference.primary }));
+      }
+      async dropCollection(name, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new drop_1.DropCollectionOperation(this, name, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async dropDatabase(options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new drop_1.DropDatabaseOperation(this, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async collections(options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new collections_1.CollectionsOperation(this, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async createIndex(name, indexSpec, options) {
+        const indexes = await (0, execute_operation_1.executeOperation)(this.client, indexes_1.CreateIndexesOperation.fromIndexSpecification(this, name, indexSpec, options));
+        return indexes[0];
+      }
+      async removeUser(username, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new remove_user_1.RemoveUserOperation(this, username, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async setProfilingLevel(level, options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new set_profiling_level_1.SetProfilingLevelOperation(this, level, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async profilingLevel(options) {
+        return await (0, execute_operation_1.executeOperation)(this.client, new profiling_level_1.ProfilingLevelOperation(this, (0, utils_1.resolveOptions)(this, options)));
+      }
+      async indexInformation(name, options) {
+        return await this.collection(name).indexInformation((0, utils_1.resolveOptions)(this, options));
+      }
+      watch(pipeline = [], options = {}) {
+        if (!Array.isArray(pipeline)) {
+          options = pipeline;
+          pipeline = [];
+        }
+        return new change_stream_1.ChangeStream(this, pipeline, (0, utils_1.resolveOptions)(this, options));
+      }
+      runCursorCommand(command, options) {
+        return new run_command_cursor_1.RunCommandCursor(this, command, options);
+      }
+    };
+    Db.SYSTEM_NAMESPACE_COLLECTION = CONSTANTS.SYSTEM_NAMESPACE_COLLECTION;
+    Db.SYSTEM_INDEX_COLLECTION = CONSTANTS.SYSTEM_INDEX_COLLECTION;
+    Db.SYSTEM_PROFILE_COLLECTION = CONSTANTS.SYSTEM_PROFILE_COLLECTION;
+    Db.SYSTEM_USER_COLLECTION = CONSTANTS.SYSTEM_USER_COLLECTION;
+    Db.SYSTEM_COMMAND_COLLECTION = CONSTANTS.SYSTEM_COMMAND_COLLECTION;
+    Db.SYSTEM_JS_COLLECTION = CONSTANTS.SYSTEM_JS_COLLECTION;
+    exports.Db = Db;
+  }
+});
+
+// node_modules/mongodb/lib/deps.js
+var require_deps2 = __commonJS({
+  "node_modules/mongodb/lib/deps.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.getMongoDBClientEncryption = exports.aws4 = exports.getSocks = exports.getSnappy = exports.getGcpMetadata = exports.getAwsCredentialProvider = exports.getZstdLibrary = exports.getKerberos = void 0;
+    var error_1 = require_error3();
+    function makeErrorModule(error) {
+      const props = error ? { kModuleError: error } : {};
+      return new Proxy(props, {
+        get: (_, key) => {
+          if (key === "kModuleError") {
+            return error;
+          }
+          throw error;
+        },
+        set: () => {
+          throw error;
+        }
+      });
+    }
+    function getKerberos() {
+      let kerberos;
+      try {
+        kerberos = require("kerberos");
+      } catch (error) {
+        kerberos = makeErrorModule(new error_1.MongoMissingDependencyError("Optional module `kerberos` not found. Please install it to enable kerberos authentication", { cause: error, dependencyName: "kerberos" }));
+      }
+      return kerberos;
+    }
+    exports.getKerberos = getKerberos;
+    function getZstdLibrary() {
+      let ZStandard;
+      try {
+        ZStandard = require("@mongodb-js/zstd");
+      } catch (error) {
+        ZStandard = makeErrorModule(new error_1.MongoMissingDependencyError("Optional module `@mongodb-js/zstd` not found. Please install it to enable zstd compression", { cause: error, dependencyName: "zstd" }));
+      }
+      return ZStandard;
+    }
+    exports.getZstdLibrary = getZstdLibrary;
+    function getAwsCredentialProvider() {
+      try {
+        const credentialProvider = require("@aws-sdk/credential-providers");
+        return credentialProvider;
+      } catch (error) {
+        return makeErrorModule(new error_1.MongoMissingDependencyError("Optional module `@aws-sdk/credential-providers` not found. Please install it to enable getting aws credentials via the official sdk.", { cause: error, dependencyName: "@aws-sdk/credential-providers" }));
+      }
+    }
+    exports.getAwsCredentialProvider = getAwsCredentialProvider;
+    function getGcpMetadata() {
+      try {
+        const credentialProvider = require("gcp-metadata");
+        return credentialProvider;
+      } catch (error) {
+        return makeErrorModule(new error_1.MongoMissingDependencyError("Optional module `gcp-metadata` not found. Please install it to enable getting gcp credentials via the official sdk.", { cause: error, dependencyName: "gcp-metadata" }));
+      }
+    }
+    exports.getGcpMetadata = getGcpMetadata;
+    function getSnappy() {
+      try {
+        const value = require("snappy");
+        return value;
+      } catch (error) {
+        const kModuleError = new error_1.MongoMissingDependencyError("Optional module `snappy` not found. Please install it to enable snappy compression", { cause: error, dependencyName: "snappy" });
+        return { kModuleError };
+      }
+    }
+    exports.getSnappy = getSnappy;
+    function getSocks() {
+      try {
+        const value = require("socks");
+        return value;
+      } catch (error) {
+        const kModuleError = new error_1.MongoMissingDependencyError("Optional module `socks` not found. Please install it to connections over a SOCKS5 proxy", { cause: error, dependencyName: "socks" });
+        return { kModuleError };
+      }
+    }
+    exports.getSocks = getSocks;
+    exports.aws4 = loadAws4();
+    function loadAws4() {
+      let aws4;
+      try {
+        aws4 = require("aws4");
+      } catch (error) {
+        aws4 = makeErrorModule(new error_1.MongoMissingDependencyError("Optional module `aws4` not found. Please install it to enable AWS authentication", { cause: error, dependencyName: "aws4" }));
+      }
+      return aws4;
+    }
+    function getMongoDBClientEncryption() {
+      let mongodbClientEncryption = null;
+      try {
+        mongodbClientEncryption = require("mongodb-client-encryption");
+      } catch (error) {
+        const kModuleError = new error_1.MongoMissingDependencyError("Optional module `mongodb-client-encryption` not found. Please install it to use auto encryption or ClientEncryption.", { cause: error, dependencyName: "mongodb-client-encryption" });
+        return { kModuleError };
+      }
+      return mongodbClientEncryption;
+    }
+    exports.getMongoDBClientEncryption = getMongoDBClientEncryption;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/auth_provider.js
+var require_auth_provider2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/auth_provider.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AuthProvider = exports.AuthContext = void 0;
+    var error_1 = require_error3();
+    var AuthContext = class {
+      constructor(connection, credentials, options) {
+        this.reauthenticating = false;
+        this.connection = connection;
+        this.credentials = credentials;
+        this.options = options;
+      }
+    };
+    exports.AuthContext = AuthContext;
+    var AuthProvider = class {
+      async prepare(handshakeDoc, _authContext) {
+        return handshakeDoc;
+      }
+      async reauth(context) {
+        if (context.reauthenticating) {
+          throw new error_1.MongoRuntimeError("Reauthentication already in progress.");
+        }
+        try {
+          context.reauthenticating = true;
+          await this.auth(context);
+        } finally {
+          context.reauthenticating = false;
+        }
+      }
+    };
+    exports.AuthProvider = AuthProvider;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/gssapi.js
+var require_gssapi2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/gssapi.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.resolveCname = exports.performGSSAPICanonicalizeHostName = exports.GSSAPI = exports.GSSAPICanonicalizationValue = void 0;
+    var dns = require("dns");
+    var deps_1 = require_deps2();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var auth_provider_1 = require_auth_provider2();
+    exports.GSSAPICanonicalizationValue = Object.freeze({
+      on: true,
+      off: false,
+      none: "none",
+      forward: "forward",
+      forwardAndReverse: "forwardAndReverse"
+    });
+    async function externalCommand(connection, command) {
+      const response = await connection.command((0, utils_1.ns)("$external.$cmd"), command);
+      return response;
+    }
+    var krb;
+    var GSSAPI = class extends auth_provider_1.AuthProvider {
+      async auth(authContext) {
+        const { connection, credentials } = authContext;
+        if (credentials == null) {
+          throw new error_1.MongoMissingCredentialsError("Credentials required for GSSAPI authentication");
+        }
+        const { username } = credentials;
+        const client = await makeKerberosClient(authContext);
+        const payload = await client.step("");
+        const saslStartResponse = await externalCommand(connection, saslStart(payload));
+        const negotiatedPayload = await negotiate(client, 10, saslStartResponse.payload);
+        const saslContinueResponse = await externalCommand(connection, saslContinue(negotiatedPayload, saslStartResponse.conversationId));
+        const finalizePayload = await finalize(client, username, saslContinueResponse.payload);
+        await externalCommand(connection, {
+          saslContinue: 1,
+          conversationId: saslContinueResponse.conversationId,
+          payload: finalizePayload
+        });
+      }
+    };
+    exports.GSSAPI = GSSAPI;
+    async function makeKerberosClient(authContext) {
+      const { hostAddress } = authContext.options;
+      const { credentials } = authContext;
+      if (!hostAddress || typeof hostAddress.host !== "string" || !credentials) {
+        throw new error_1.MongoInvalidArgumentError("Connection must have host and port and credentials defined.");
+      }
+      loadKrb();
+      if ("kModuleError" in krb) {
+        throw krb["kModuleError"];
+      }
+      const { initializeClient } = krb;
+      const { username, password } = credentials;
+      const mechanismProperties = credentials.mechanismProperties;
+      const serviceName = mechanismProperties.SERVICE_NAME ?? "mongodb";
+      const host = await performGSSAPICanonicalizeHostName(hostAddress.host, mechanismProperties);
+      const initOptions = {};
+      if (password != null) {
+        Object.assign(initOptions, { user: username, password });
+      }
+      const spnHost = mechanismProperties.SERVICE_HOST ?? host;
+      let spn = `${serviceName}${process.platform === "win32" ? "/" : "@"}${spnHost}`;
+      if ("SERVICE_REALM" in mechanismProperties) {
+        spn = `${spn}@${mechanismProperties.SERVICE_REALM}`;
+      }
+      return await initializeClient(spn, initOptions);
+    }
+    function saslStart(payload) {
+      return {
+        saslStart: 1,
+        mechanism: "GSSAPI",
+        payload,
+        autoAuthorize: 1
+      };
+    }
+    function saslContinue(payload, conversationId) {
+      return {
+        saslContinue: 1,
+        conversationId,
+        payload
+      };
+    }
+    async function negotiate(client, retries, payload) {
+      try {
+        const response = await client.step(payload);
+        return response || "";
+      } catch (error) {
+        if (retries === 0) {
+          throw error;
+        }
+        return await negotiate(client, retries - 1, payload);
+      }
+    }
+    async function finalize(client, user, payload) {
+      const response = await client.unwrap(payload);
+      return await client.wrap(response || "", { user });
+    }
+    async function performGSSAPICanonicalizeHostName(host, mechanismProperties) {
+      const mode = mechanismProperties.CANONICALIZE_HOST_NAME;
+      if (!mode || mode === exports.GSSAPICanonicalizationValue.none) {
+        return host;
+      }
+      if (mode === exports.GSSAPICanonicalizationValue.on || mode === exports.GSSAPICanonicalizationValue.forwardAndReverse) {
+        const { address } = await dns.promises.lookup(host);
+        try {
+          const results = await dns.promises.resolvePtr(address);
+          return results.length > 0 ? results[0] : host;
+        } catch (error) {
+          return await resolveCname(host);
+        }
+      } else {
+        return await resolveCname(host);
+      }
+    }
+    exports.performGSSAPICanonicalizeHostName = performGSSAPICanonicalizeHostName;
+    async function resolveCname(host) {
+      try {
+        const results = await dns.promises.resolveCname(host);
+        return results.length > 0 ? results[0] : host;
+      } catch {
+        return host;
+      }
+    }
+    exports.resolveCname = resolveCname;
+    function loadKrb() {
+      if (!krb) {
+        krb = (0, deps_1.getKerberos)();
+      }
+    }
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/providers.js
+var require_providers3 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/providers.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AUTH_MECHS_AUTH_SRC_EXTERNAL = exports.AuthMechanism = void 0;
+    exports.AuthMechanism = Object.freeze({
+      MONGODB_AWS: "MONGODB-AWS",
+      MONGODB_CR: "MONGODB-CR",
+      MONGODB_DEFAULT: "DEFAULT",
+      MONGODB_GSSAPI: "GSSAPI",
+      MONGODB_PLAIN: "PLAIN",
+      MONGODB_SCRAM_SHA1: "SCRAM-SHA-1",
+      MONGODB_SCRAM_SHA256: "SCRAM-SHA-256",
+      MONGODB_X509: "MONGODB-X509",
+      MONGODB_OIDC: "MONGODB-OIDC"
+    });
+    exports.AUTH_MECHS_AUTH_SRC_EXTERNAL = /* @__PURE__ */ new Set([
+      exports.AuthMechanism.MONGODB_GSSAPI,
+      exports.AuthMechanism.MONGODB_AWS,
+      exports.AuthMechanism.MONGODB_OIDC,
+      exports.AuthMechanism.MONGODB_X509
+    ]);
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongo_credentials.js
+var require_mongo_credentials2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongo_credentials.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MongoCredentials = exports.DEFAULT_ALLOWED_HOSTS = void 0;
+    var error_1 = require_error3();
+    var gssapi_1 = require_gssapi2();
+    var providers_1 = require_providers3();
+    function getDefaultAuthMechanism(hello) {
+      if (hello) {
+        if (Array.isArray(hello.saslSupportedMechs)) {
+          return hello.saslSupportedMechs.includes(providers_1.AuthMechanism.MONGODB_SCRAM_SHA256) ? providers_1.AuthMechanism.MONGODB_SCRAM_SHA256 : providers_1.AuthMechanism.MONGODB_SCRAM_SHA1;
+        }
+        if (hello.maxWireVersion >= 3) {
+          return providers_1.AuthMechanism.MONGODB_SCRAM_SHA1;
+        }
+      }
+      return providers_1.AuthMechanism.MONGODB_CR;
+    }
+    var ALLOWED_ENVIRONMENT_NAMES = [
+      "test",
+      "azure",
+      "gcp"
+    ];
+    var ALLOWED_HOSTS_ERROR = "Auth mechanism property ALLOWED_HOSTS must be an array of strings.";
+    exports.DEFAULT_ALLOWED_HOSTS = [
+      "*.mongodb.net",
+      "*.mongodb-qa.net",
+      "*.mongodb-dev.net",
+      "*.mongodbgov.net",
+      "localhost",
+      "127.0.0.1",
+      "::1"
+    ];
+    var TOKEN_RESOURCE_MISSING_ERROR = "TOKEN_RESOURCE must be set in the auth mechanism properties when ENVIRONMENT is azure or gcp.";
+    var MongoCredentials = class {
+      constructor(options) {
+        this.username = options.username ?? "";
+        this.password = options.password;
+        this.source = options.source;
+        if (!this.source && options.db) {
+          this.source = options.db;
+        }
+        this.mechanism = options.mechanism || providers_1.AuthMechanism.MONGODB_DEFAULT;
+        this.mechanismProperties = options.mechanismProperties || {};
+        if (this.mechanism.match(/MONGODB-AWS/i)) {
+          if (!this.username && process.env.AWS_ACCESS_KEY_ID) {
+            this.username = process.env.AWS_ACCESS_KEY_ID;
+          }
+          if (!this.password && process.env.AWS_SECRET_ACCESS_KEY) {
+            this.password = process.env.AWS_SECRET_ACCESS_KEY;
+          }
+          if (this.mechanismProperties.AWS_SESSION_TOKEN == null && process.env.AWS_SESSION_TOKEN != null) {
+            this.mechanismProperties = {
+              ...this.mechanismProperties,
+              AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN
+            };
+          }
+        }
+        if (this.mechanism === providers_1.AuthMechanism.MONGODB_OIDC && !this.mechanismProperties.ALLOWED_HOSTS) {
+          this.mechanismProperties = {
+            ...this.mechanismProperties,
+            ALLOWED_HOSTS: exports.DEFAULT_ALLOWED_HOSTS
+          };
+        }
+        Object.freeze(this.mechanismProperties);
+        Object.freeze(this);
+      }
+      equals(other) {
+        return this.mechanism === other.mechanism && this.username === other.username && this.password === other.password && this.source === other.source;
+      }
+      resolveAuthMechanism(hello) {
+        if (this.mechanism.match(/DEFAULT/i)) {
+          return new MongoCredentials({
+            username: this.username,
+            password: this.password,
+            source: this.source,
+            mechanism: getDefaultAuthMechanism(hello),
+            mechanismProperties: this.mechanismProperties
+          });
+        }
+        return this;
+      }
+      validate() {
+        if ((this.mechanism === providers_1.AuthMechanism.MONGODB_GSSAPI || this.mechanism === providers_1.AuthMechanism.MONGODB_CR || this.mechanism === providers_1.AuthMechanism.MONGODB_PLAIN || this.mechanism === providers_1.AuthMechanism.MONGODB_SCRAM_SHA1 || this.mechanism === providers_1.AuthMechanism.MONGODB_SCRAM_SHA256) && !this.username) {
+          throw new error_1.MongoMissingCredentialsError(`Username required for mechanism '${this.mechanism}'`);
+        }
+        if (this.mechanism === providers_1.AuthMechanism.MONGODB_OIDC) {
+          if (this.username && this.mechanismProperties.ENVIRONMENT && this.mechanismProperties.ENVIRONMENT !== "azure") {
+            throw new error_1.MongoInvalidArgumentError(`username and ENVIRONMENT '${this.mechanismProperties.ENVIRONMENT}' may not be used together for mechanism '${this.mechanism}'.`);
+          }
+          if (this.username && this.password) {
+            throw new error_1.MongoInvalidArgumentError(`No password is allowed in ENVIRONMENT '${this.mechanismProperties.ENVIRONMENT}' for '${this.mechanism}'.`);
+          }
+          if ((this.mechanismProperties.ENVIRONMENT === "azure" || this.mechanismProperties.ENVIRONMENT === "gcp") && !this.mechanismProperties.TOKEN_RESOURCE) {
+            throw new error_1.MongoInvalidArgumentError(TOKEN_RESOURCE_MISSING_ERROR);
+          }
+          if (this.mechanismProperties.ENVIRONMENT && !ALLOWED_ENVIRONMENT_NAMES.includes(this.mechanismProperties.ENVIRONMENT)) {
+            throw new error_1.MongoInvalidArgumentError(`Currently only a ENVIRONMENT in ${ALLOWED_ENVIRONMENT_NAMES.join(",")} is supported for mechanism '${this.mechanism}'.`);
+          }
+          if (!this.mechanismProperties.ENVIRONMENT && !this.mechanismProperties.OIDC_CALLBACK && !this.mechanismProperties.OIDC_HUMAN_CALLBACK) {
+            throw new error_1.MongoInvalidArgumentError(`Either a ENVIRONMENT, OIDC_CALLBACK, or OIDC_HUMAN_CALLBACK must be specified for mechanism '${this.mechanism}'.`);
+          }
+          if (this.mechanismProperties.ALLOWED_HOSTS) {
+            const hosts = this.mechanismProperties.ALLOWED_HOSTS;
+            if (!Array.isArray(hosts)) {
+              throw new error_1.MongoInvalidArgumentError(ALLOWED_HOSTS_ERROR);
+            }
+            for (const host of hosts) {
+              if (typeof host !== "string") {
+                throw new error_1.MongoInvalidArgumentError(ALLOWED_HOSTS_ERROR);
+              }
+            }
+          }
+        }
+        if (providers_1.AUTH_MECHS_AUTH_SRC_EXTERNAL.has(this.mechanism)) {
+          if (this.source != null && this.source !== "$external") {
+            throw new error_1.MongoAPIError(`Invalid source '${this.source}' for mechanism '${this.mechanism}' specified.`);
+          }
+        }
+        if (this.mechanism === providers_1.AuthMechanism.MONGODB_PLAIN && this.source == null) {
+          throw new error_1.MongoAPIError("PLAIN Authentication Mechanism needs an auth source");
+        }
+        if (this.mechanism === providers_1.AuthMechanism.MONGODB_X509 && this.password != null) {
+          if (this.password === "") {
+            Reflect.set(this, "password", void 0);
+            return;
+          }
+          throw new error_1.MongoAPIError(`Password not allowed for mechanism MONGODB-X509`);
+        }
+        const canonicalization = this.mechanismProperties.CANONICALIZE_HOST_NAME ?? false;
+        if (!Object.values(gssapi_1.GSSAPICanonicalizationValue).includes(canonicalization)) {
+          throw new error_1.MongoAPIError(`Invalid CANONICALIZE_HOST_NAME value: ${canonicalization}`);
+        }
+      }
+      static merge(creds, options) {
+        return new MongoCredentials({
+          username: options.username ?? creds?.username ?? "",
+          password: options.password ?? creds?.password ?? "",
+          mechanism: options.mechanism ?? creds?.mechanism ?? providers_1.AuthMechanism.MONGODB_DEFAULT,
+          mechanismProperties: options.mechanismProperties ?? creds?.mechanismProperties ?? {},
+          source: options.source ?? options.db ?? creds?.source ?? "admin"
+        });
+      }
+    };
+    exports.MongoCredentials = MongoCredentials;
+  }
+});
+
+// node_modules/mongodb/package.json
+var require_package3 = __commonJS({
+  "node_modules/mongodb/package.json"(exports, module2) {
+    module2.exports = {
+      name: "mongodb",
+      version: "6.8.0",
+      description: "The official MongoDB driver for Node.js",
+      main: "lib/index.js",
+      files: [
+        "lib",
+        "src",
+        "etc/prepare.js",
+        "mongodb.d.ts",
+        "tsconfig.json"
+      ],
+      types: "mongodb.d.ts",
+      repository: {
+        type: "git",
+        url: "git@github.com:mongodb/node-mongodb-native.git"
+      },
+      keywords: [
+        "mongodb",
+        "driver",
+        "official"
+      ],
+      author: {
+        name: "The MongoDB NodeJS Team",
+        email: "dbx-node@mongodb.com"
+      },
+      dependencies: {
+        "@mongodb-js/saslprep": "^1.1.5",
+        bson: "^6.7.0",
+        "mongodb-connection-string-url": "^3.0.0"
+      },
+      peerDependencies: {
+        "@aws-sdk/credential-providers": "^3.188.0",
+        "@mongodb-js/zstd": "^1.1.0",
+        "gcp-metadata": "^5.2.0",
+        kerberos: "^2.0.1",
+        "mongodb-client-encryption": ">=6.0.0 <7",
+        snappy: "^7.2.2",
+        socks: "^2.7.1"
+      },
+      peerDependenciesMeta: {
+        "@aws-sdk/credential-providers": {
+          optional: true
+        },
+        "@mongodb-js/zstd": {
+          optional: true
+        },
+        kerberos: {
+          optional: true
+        },
+        snappy: {
+          optional: true
+        },
+        "mongodb-client-encryption": {
+          optional: true
+        },
+        "gcp-metadata": {
+          optional: true
+        },
+        socks: {
+          optional: true
+        }
+      },
+      devDependencies: {
+        "@aws-sdk/credential-providers": "^3.515.0",
+        "@iarna/toml": "^2.2.5",
+        "@istanbuljs/nyc-config-typescript": "^1.0.2",
+        "@microsoft/api-extractor": "^7.43.1",
+        "@microsoft/tsdoc-config": "^0.16.2",
+        "@mongodb-js/zstd": "^1.2.0",
+        "@types/chai": "^4.3.14",
+        "@types/chai-subset": "^1.3.5",
+        "@types/express": "^4.17.21",
+        "@types/kerberos": "^1.1.5",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "^20.12.7",
+        "@types/saslprep": "^1.0.3",
+        "@types/semver": "^7.5.8",
+        "@types/sinon": "^17.0.3",
+        "@types/sinon-chai": "^3.2.12",
+        "@types/whatwg-url": "^11.0.4",
+        "@typescript-eslint/eslint-plugin": "^5.62.0",
+        "@typescript-eslint/parser": "^5.62.0",
+        chai: "^4.4.1",
+        "chai-subset": "^1.6.0",
+        chalk: "^4.1.2",
+        eslint: "^8.56.0",
+        "eslint-config-prettier": "^8.10.0",
+        "eslint-plugin-github": "^4.10.2",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-mocha": "^10.4.1",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-simple-import-sort": "^10.0.0",
+        "eslint-plugin-tsdoc": "^0.2.17",
+        "eslint-plugin-unused-imports": "^2.0.0",
+        express: "^4.19.2",
+        "gcp-metadata": "^5.3.0",
+        "js-yaml": "^4.1.0",
+        mocha: "^10.4.0",
+        "mocha-sinon": "^2.1.2",
+        "mongodb-client-encryption": "^6.0.1",
+        "mongodb-legacy": "^6.0.1",
+        nyc: "^15.1.0",
+        prettier: "^2.8.8",
+        semver: "^7.6.0",
+        sinon: "^17.0.1",
+        "sinon-chai": "^3.7.0",
+        snappy: "^7.2.2",
+        socks: "^2.8.1",
+        "source-map-support": "^0.5.21",
+        "ts-node": "^10.9.2",
+        tsd: "^0.31.0",
+        typescript: "5.0",
+        "typescript-cached-transpile": "^0.0.6",
+        "v8-heapsnapshot": "^1.3.1",
+        yargs: "^17.7.2"
+      },
+      license: "Apache-2.0",
+      engines: {
+        node: ">=16.20.1"
+      },
+      bugs: {
+        url: "https://jira.mongodb.org/projects/NODE/issues/"
+      },
+      homepage: "https://github.com/mongodb/node-mongodb-native",
+      scripts: {
+        "build:evergreen": "node .evergreen/generate_evergreen_tasks.js",
+        "build:ts": "node ./node_modules/typescript/bin/tsc",
+        "build:dts": "npm run build:ts && api-extractor run && node etc/clean_definition_files.cjs && eslint mongodb.d.ts --fix",
+        "build:docs": "./etc/docs/build.ts",
+        "build:typedoc": "typedoc",
+        "build:nightly": "node ./.github/scripts/nightly.mjs",
+        "check:bench": "node test/benchmarks/driverBench",
+        "check:coverage": "nyc npm run test:all",
+        "check:integration-coverage": "nyc npm run check:test",
+        "check:lambda": "mocha --config test/mocha_lambda.json test/integration/node-specific/examples/handler.test.js",
+        "check:lambda:aws": "mocha --config test/mocha_lambda.json test/integration/node-specific/examples/aws_handler.test.js",
+        "check:lint": "npm run build:dts && npm run check:dts && npm run check:eslint && npm run check:tsd",
+        "check:eslint": "eslint -v && eslint --max-warnings=0 --ext '.js,.ts' src test",
+        "check:tsd": "tsd --version && tsd",
+        "check:dependencies": "mocha test/action/dependency.test.ts",
+        "check:dts": "node ./node_modules/typescript/bin/tsc --noEmit mongodb.d.ts && tsd",
+        "check:search-indexes": "nyc mocha --config test/mocha_mongodb.json test/manual/search-index-management.prose.test.ts",
+        "check:test": "mocha --config test/mocha_mongodb.json test/integration",
+        "check:unit": "mocha test/unit",
+        "check:ts": "node ./node_modules/typescript/bin/tsc -v && node ./node_modules/typescript/bin/tsc --noEmit",
+        "check:atlas": "mocha --config test/manual/mocharc.json test/manual/atlas_connectivity.test.ts",
+        "check:drivers-atlas-testing": "mocha --config test/mocha_mongodb.json test/atlas/drivers_atlas_testing.test.ts",
+        "check:adl": "mocha --config test/mocha_mongodb.json test/manual/atlas-data-lake-testing",
+        "check:aws": "nyc mocha --config test/mocha_mongodb.json test/integration/auth/mongodb_aws.test.ts",
+        "check:oidc-auth": "mocha --config test/mocha_mongodb.json test/integration/auth/auth.spec.test.ts",
+        "check:oidc-test": "mocha --config test/mocha_mongodb.json test/integration/auth/mongodb_oidc.prose.test.ts",
+        "check:oidc-azure": "mocha --config test/mocha_mongodb.json test/integration/auth/mongodb_oidc_azure.prose.05.test.ts",
+        "check:oidc-gcp": "mocha --config test/mocha_mongodb.json test/integration/auth/mongodb_oidc_gcp.prose.06.test.ts",
+        "check:ocsp": "mocha --config test/manual/mocharc.json test/manual/ocsp_support.test.js",
+        "check:kerberos": "nyc mocha --config test/manual/mocharc.json test/manual/kerberos.test.ts",
+        "check:tls": "mocha --config test/manual/mocharc.json test/manual/tls_support.test.ts",
+        "check:ldap": "nyc mocha --config test/manual/mocharc.json test/manual/ldap.test.js",
+        "check:socks5": "mocha --config test/manual/mocharc.json test/manual/socks5.test.ts",
+        "check:csfle": "mocha --config test/mocha_mongodb.json test/integration/client-side-encryption",
+        "check:snappy": "mocha test/unit/assorted/snappy.test.js",
+        "check:x509": "mocha test/manual/x509_auth.test.ts",
+        "fix:eslint": "npm run check:eslint -- --fix",
+        prepare: "node etc/prepare.js",
+        "preview:docs": "ts-node etc/docs/preview.ts",
+        test: "npm run check:lint && npm run test:all",
+        "test:all": "npm run check:unit && npm run check:test",
+        "update:docs": "npm run build:docs -- --yes"
+      },
+      tsd: {
+        directory: "test/types",
+        compilerOptions: {
+          strict: true,
+          target: "esnext",
+          module: "commonjs",
+          moduleResolution: "node"
+        }
+      }
+    };
+  }
+});
+
+// node_modules/mongodb/lib/cmap/handshake/client_metadata.js
+var require_client_metadata2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/handshake/client_metadata.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.getFAASEnv = exports.addContainerMetadata = exports.makeClientMetadata = exports.LimitedSizeDocument = void 0;
+    var os = require("os");
+    var process2 = require("process");
+    var bson_1 = require_bson3();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var NODE_DRIVER_VERSION = require_package3().version;
+    var LimitedSizeDocument = class {
+      constructor(maxSize) {
+        this.maxSize = maxSize;
+        this.document = /* @__PURE__ */ new Map();
+        this.documentSize = 5;
+      }
+      ifItFitsItSits(key, value) {
+        const newElementSize = bson_1.BSON.serialize((/* @__PURE__ */ new Map()).set(key, value)).byteLength - 5;
+        if (newElementSize + this.documentSize > this.maxSize) {
+          return false;
+        }
+        this.documentSize += newElementSize;
+        this.document.set(key, value);
+        return true;
+      }
+      toObject() {
+        return bson_1.BSON.deserialize(bson_1.BSON.serialize(this.document), {
+          promoteLongs: false,
+          promoteBuffers: false,
+          promoteValues: false,
+          useBigInt64: false
+        });
+      }
+    };
+    exports.LimitedSizeDocument = LimitedSizeDocument;
+    function makeClientMetadata(options) {
+      const metadataDocument = new LimitedSizeDocument(512);
+      const { appName = "" } = options;
+      if (appName.length > 0) {
+        const name2 = Buffer.byteLength(appName, "utf8") <= 128 ? options.appName : Buffer.from(appName, "utf8").subarray(0, 128).toString("utf8");
+        metadataDocument.ifItFitsItSits("application", { name: name2 });
+      }
+      const { name = "", version = "", platform = "" } = options.driverInfo;
+      const driverInfo = {
+        name: name.length > 0 ? `nodejs|${name}` : "nodejs",
+        version: version.length > 0 ? `${NODE_DRIVER_VERSION}|${version}` : NODE_DRIVER_VERSION
+      };
+      if (!metadataDocument.ifItFitsItSits("driver", driverInfo)) {
+        throw new error_1.MongoInvalidArgumentError("Unable to include driverInfo name and version, metadata cannot exceed 512 bytes");
+      }
+      let runtimeInfo = getRuntimeInfo();
+      if (platform.length > 0) {
+        runtimeInfo = `${runtimeInfo}|${platform}`;
+      }
+      if (!metadataDocument.ifItFitsItSits("platform", runtimeInfo)) {
+        throw new error_1.MongoInvalidArgumentError("Unable to include driverInfo platform, metadata cannot exceed 512 bytes");
+      }
+      const osInfo = (/* @__PURE__ */ new Map()).set("name", process2.platform).set("architecture", process2.arch).set("version", os.release()).set("type", os.type());
+      if (!metadataDocument.ifItFitsItSits("os", osInfo)) {
+        for (const key of osInfo.keys()) {
+          osInfo.delete(key);
+          if (osInfo.size === 0)
+            break;
+          if (metadataDocument.ifItFitsItSits("os", osInfo))
+            break;
+        }
+      }
+      const faasEnv = getFAASEnv();
+      if (faasEnv != null) {
+        if (!metadataDocument.ifItFitsItSits("env", faasEnv)) {
+          for (const key of faasEnv.keys()) {
+            faasEnv.delete(key);
+            if (faasEnv.size === 0)
+              break;
+            if (metadataDocument.ifItFitsItSits("env", faasEnv))
+              break;
+          }
+        }
+      }
+      return metadataDocument.toObject();
+    }
+    exports.makeClientMetadata = makeClientMetadata;
+    var dockerPromise;
+    async function getContainerMetadata() {
+      const containerMetadata = {};
+      dockerPromise ??= (0, utils_1.fileIsAccessible)("/.dockerenv");
+      const isDocker = await dockerPromise;
+      const { KUBERNETES_SERVICE_HOST = "" } = process2.env;
+      const isKubernetes = KUBERNETES_SERVICE_HOST.length > 0 ? true : false;
+      if (isDocker)
+        containerMetadata.runtime = "docker";
+      if (isKubernetes)
+        containerMetadata.orchestrator = "kubernetes";
+      return containerMetadata;
+    }
+    async function addContainerMetadata(originalMetadata) {
+      const containerMetadata = await getContainerMetadata();
+      if (Object.keys(containerMetadata).length === 0)
+        return originalMetadata;
+      const extendedMetadata = new LimitedSizeDocument(512);
+      const extendedEnvMetadata = { ...originalMetadata?.env, container: containerMetadata };
+      for (const [key, val] of Object.entries(originalMetadata)) {
+        if (key !== "env") {
+          extendedMetadata.ifItFitsItSits(key, val);
+        } else {
+          if (!extendedMetadata.ifItFitsItSits("env", extendedEnvMetadata)) {
+            extendedMetadata.ifItFitsItSits("env", val);
+          }
+        }
+      }
+      if (!("env" in originalMetadata)) {
+        extendedMetadata.ifItFitsItSits("env", extendedEnvMetadata);
+      }
+      return extendedMetadata.toObject();
+    }
+    exports.addContainerMetadata = addContainerMetadata;
+    function getFAASEnv() {
+      const { AWS_EXECUTION_ENV = "", AWS_LAMBDA_RUNTIME_API = "", FUNCTIONS_WORKER_RUNTIME = "", K_SERVICE = "", FUNCTION_NAME = "", VERCEL = "", AWS_LAMBDA_FUNCTION_MEMORY_SIZE = "", AWS_REGION = "", FUNCTION_MEMORY_MB = "", FUNCTION_REGION = "", FUNCTION_TIMEOUT_SEC = "", VERCEL_REGION = "" } = process2.env;
+      const isAWSFaaS = AWS_EXECUTION_ENV.startsWith("AWS_Lambda_") || AWS_LAMBDA_RUNTIME_API.length > 0;
+      const isAzureFaaS = FUNCTIONS_WORKER_RUNTIME.length > 0;
+      const isGCPFaaS = K_SERVICE.length > 0 || FUNCTION_NAME.length > 0;
+      const isVercelFaaS = VERCEL.length > 0;
+      const faasEnv = /* @__PURE__ */ new Map();
+      if (isVercelFaaS && !(isAzureFaaS || isGCPFaaS)) {
+        if (VERCEL_REGION.length > 0) {
+          faasEnv.set("region", VERCEL_REGION);
+        }
+        faasEnv.set("name", "vercel");
+        return faasEnv;
+      }
+      if (isAWSFaaS && !(isAzureFaaS || isGCPFaaS || isVercelFaaS)) {
+        if (AWS_REGION.length > 0) {
+          faasEnv.set("region", AWS_REGION);
+        }
+        if (AWS_LAMBDA_FUNCTION_MEMORY_SIZE.length > 0 && Number.isInteger(+AWS_LAMBDA_FUNCTION_MEMORY_SIZE)) {
+          faasEnv.set("memory_mb", new bson_1.Int32(AWS_LAMBDA_FUNCTION_MEMORY_SIZE));
+        }
+        faasEnv.set("name", "aws.lambda");
+        return faasEnv;
+      }
+      if (isAzureFaaS && !(isGCPFaaS || isAWSFaaS || isVercelFaaS)) {
+        faasEnv.set("name", "azure.func");
+        return faasEnv;
+      }
+      if (isGCPFaaS && !(isAzureFaaS || isAWSFaaS || isVercelFaaS)) {
+        if (FUNCTION_REGION.length > 0) {
+          faasEnv.set("region", FUNCTION_REGION);
+        }
+        if (FUNCTION_MEMORY_MB.length > 0 && Number.isInteger(+FUNCTION_MEMORY_MB)) {
+          faasEnv.set("memory_mb", new bson_1.Int32(FUNCTION_MEMORY_MB));
+        }
+        if (FUNCTION_TIMEOUT_SEC.length > 0 && Number.isInteger(+FUNCTION_TIMEOUT_SEC)) {
+          faasEnv.set("timeout_sec", new bson_1.Int32(FUNCTION_TIMEOUT_SEC));
+        }
+        faasEnv.set("name", "gcp.func");
+        return faasEnv;
+      }
+      return null;
+    }
+    exports.getFAASEnv = getFAASEnv;
+    function getRuntimeInfo() {
+      if ("Deno" in globalThis) {
+        const version = typeof Deno?.version?.deno === "string" ? Deno?.version?.deno : "0.0.0-unknown";
+        return `Deno v${version}, ${os.endianness()}`;
+      }
+      if ("Bun" in globalThis) {
+        const version = typeof Bun?.version === "string" ? Bun?.version : "0.0.0-unknown";
+        return `Bun v${version}, ${os.endianness()}`;
+      }
+      return `Node.js ${process2.version}, ${os.endianness()}`;
+    }
+  }
+});
+
+// node_modules/mongodb/lib/cmap/commands.js
+var require_commands2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/commands.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.OpCompressedRequest = exports.OpMsgResponse = exports.OpMsgRequest = exports.OpReply = exports.OpQueryRequest = void 0;
+    var BSON = require_bson3();
+    var error_1 = require_error3();
+    var compression_1 = require_compression2();
+    var constants_1 = require_constants4();
+    var _requestId = 0;
+    var OPTS_TAILABLE_CURSOR = 2;
+    var OPTS_SECONDARY = 4;
+    var OPTS_OPLOG_REPLAY = 8;
+    var OPTS_NO_CURSOR_TIMEOUT = 16;
+    var OPTS_AWAIT_DATA = 32;
+    var OPTS_EXHAUST = 64;
+    var OPTS_PARTIAL = 128;
+    var CURSOR_NOT_FOUND = 1;
+    var QUERY_FAILURE = 2;
+    var SHARD_CONFIG_STALE = 4;
+    var AWAIT_CAPABLE = 8;
+    var OpQueryRequest = class {
+      constructor(databaseName, query, options) {
+        this.databaseName = databaseName;
+        this.query = query;
+        const ns = `${databaseName}.$cmd`;
+        if (typeof databaseName !== "string") {
+          throw new error_1.MongoRuntimeError("Database name must be a string for a query");
+        }
+        if (query == null)
+          throw new error_1.MongoRuntimeError("A query document must be specified for query");
+        if (ns.indexOf("\0") !== -1) {
+          throw new error_1.MongoRuntimeError("Namespace cannot contain a null character");
+        }
+        this.ns = ns;
+        this.numberToSkip = options.numberToSkip || 0;
+        this.numberToReturn = options.numberToReturn || 0;
+        this.returnFieldSelector = options.returnFieldSelector || void 0;
+        this.requestId = options.requestId ?? OpQueryRequest.getRequestId();
+        this.pre32Limit = options.pre32Limit;
+        this.serializeFunctions = typeof options.serializeFunctions === "boolean" ? options.serializeFunctions : false;
+        this.ignoreUndefined = typeof options.ignoreUndefined === "boolean" ? options.ignoreUndefined : false;
+        this.maxBsonSize = options.maxBsonSize || 1024 * 1024 * 16;
+        this.checkKeys = typeof options.checkKeys === "boolean" ? options.checkKeys : false;
+        this.batchSize = this.numberToReturn;
+        this.tailable = false;
+        this.secondaryOk = typeof options.secondaryOk === "boolean" ? options.secondaryOk : false;
+        this.oplogReplay = false;
+        this.noCursorTimeout = false;
+        this.awaitData = false;
+        this.exhaust = false;
+        this.partial = false;
+      }
+      incRequestId() {
+        this.requestId = _requestId++;
+      }
+      nextRequestId() {
+        return _requestId + 1;
+      }
+      static getRequestId() {
+        return ++_requestId;
+      }
+      toBin() {
+        const buffers = [];
+        let projection = null;
+        let flags = 0;
+        if (this.tailable) {
+          flags |= OPTS_TAILABLE_CURSOR;
+        }
+        if (this.secondaryOk) {
+          flags |= OPTS_SECONDARY;
+        }
+        if (this.oplogReplay) {
+          flags |= OPTS_OPLOG_REPLAY;
+        }
+        if (this.noCursorTimeout) {
+          flags |= OPTS_NO_CURSOR_TIMEOUT;
+        }
+        if (this.awaitData) {
+          flags |= OPTS_AWAIT_DATA;
+        }
+        if (this.exhaust) {
+          flags |= OPTS_EXHAUST;
+        }
+        if (this.partial) {
+          flags |= OPTS_PARTIAL;
+        }
+        if (this.batchSize !== this.numberToReturn)
+          this.numberToReturn = this.batchSize;
+        const header = Buffer.alloc(
+          4 * 4 + 4 + Buffer.byteLength(this.ns) + 1 + 4 + 4
+        );
+        buffers.push(header);
+        const query = BSON.serialize(this.query, {
+          checkKeys: this.checkKeys,
+          serializeFunctions: this.serializeFunctions,
+          ignoreUndefined: this.ignoreUndefined
+        });
+        buffers.push(query);
+        if (this.returnFieldSelector && Object.keys(this.returnFieldSelector).length > 0) {
+          projection = BSON.serialize(this.returnFieldSelector, {
+            checkKeys: this.checkKeys,
+            serializeFunctions: this.serializeFunctions,
+            ignoreUndefined: this.ignoreUndefined
+          });
+          buffers.push(projection);
+        }
+        const totalLength = header.length + query.length + (projection ? projection.length : 0);
+        let index = 4;
+        header[3] = totalLength >> 24 & 255;
+        header[2] = totalLength >> 16 & 255;
+        header[1] = totalLength >> 8 & 255;
+        header[0] = totalLength & 255;
+        header[index + 3] = this.requestId >> 24 & 255;
+        header[index + 2] = this.requestId >> 16 & 255;
+        header[index + 1] = this.requestId >> 8 & 255;
+        header[index] = this.requestId & 255;
+        index = index + 4;
+        header[index + 3] = 0 >> 24 & 255;
+        header[index + 2] = 0 >> 16 & 255;
+        header[index + 1] = 0 >> 8 & 255;
+        header[index] = 0 & 255;
+        index = index + 4;
+        header[index + 3] = constants_1.OP_QUERY >> 24 & 255;
+        header[index + 2] = constants_1.OP_QUERY >> 16 & 255;
+        header[index + 1] = constants_1.OP_QUERY >> 8 & 255;
+        header[index] = constants_1.OP_QUERY & 255;
+        index = index + 4;
+        header[index + 3] = flags >> 24 & 255;
+        header[index + 2] = flags >> 16 & 255;
+        header[index + 1] = flags >> 8 & 255;
+        header[index] = flags & 255;
+        index = index + 4;
+        index = index + header.write(this.ns, index, "utf8") + 1;
+        header[index - 1] = 0;
+        header[index + 3] = this.numberToSkip >> 24 & 255;
+        header[index + 2] = this.numberToSkip >> 16 & 255;
+        header[index + 1] = this.numberToSkip >> 8 & 255;
+        header[index] = this.numberToSkip & 255;
+        index = index + 4;
+        header[index + 3] = this.numberToReturn >> 24 & 255;
+        header[index + 2] = this.numberToReturn >> 16 & 255;
+        header[index + 1] = this.numberToReturn >> 8 & 255;
+        header[index] = this.numberToReturn & 255;
+        index = index + 4;
+        return buffers;
+      }
+    };
+    exports.OpQueryRequest = OpQueryRequest;
+    var OpReply = class {
+      constructor(message, msgHeader, msgBody, opts) {
+        this.index = 0;
+        this.sections = [];
+        this.moreToCome = false;
+        this.parsed = false;
+        this.raw = message;
+        this.data = msgBody;
+        this.opts = opts ?? {
+          useBigInt64: false,
+          promoteLongs: true,
+          promoteValues: true,
+          promoteBuffers: false,
+          bsonRegExp: false
+        };
+        this.length = msgHeader.length;
+        this.requestId = msgHeader.requestId;
+        this.responseTo = msgHeader.responseTo;
+        this.opCode = msgHeader.opCode;
+        this.fromCompressed = msgHeader.fromCompressed;
+        this.useBigInt64 = typeof this.opts.useBigInt64 === "boolean" ? this.opts.useBigInt64 : false;
+        this.promoteLongs = typeof this.opts.promoteLongs === "boolean" ? this.opts.promoteLongs : true;
+        this.promoteValues = typeof this.opts.promoteValues === "boolean" ? this.opts.promoteValues : true;
+        this.promoteBuffers = typeof this.opts.promoteBuffers === "boolean" ? this.opts.promoteBuffers : false;
+        this.bsonRegExp = typeof this.opts.bsonRegExp === "boolean" ? this.opts.bsonRegExp : false;
+      }
+      isParsed() {
+        return this.parsed;
+      }
+      parse() {
+        if (this.parsed)
+          return this.sections[0];
+        this.index = 20;
+        this.responseFlags = this.data.readInt32LE(0);
+        this.cursorId = new BSON.Long(this.data.readInt32LE(4), this.data.readInt32LE(8));
+        this.startingFrom = this.data.readInt32LE(12);
+        this.numberReturned = this.data.readInt32LE(16);
+        if (this.numberReturned < 0 || this.numberReturned > 2 ** 32 - 1) {
+          throw new RangeError(`OP_REPLY numberReturned is an invalid array length ${this.numberReturned}`);
+        }
+        this.cursorNotFound = (this.responseFlags & CURSOR_NOT_FOUND) !== 0;
+        this.queryFailure = (this.responseFlags & QUERY_FAILURE) !== 0;
+        this.shardConfigStale = (this.responseFlags & SHARD_CONFIG_STALE) !== 0;
+        this.awaitCapable = (this.responseFlags & AWAIT_CAPABLE) !== 0;
+        for (let i = 0; i < this.numberReturned; i++) {
+          const bsonSize = this.data[this.index] | this.data[this.index + 1] << 8 | this.data[this.index + 2] << 16 | this.data[this.index + 3] << 24;
+          const section = this.data.subarray(this.index, this.index + bsonSize);
+          this.sections.push(section);
+          this.index = this.index + bsonSize;
+        }
+        this.parsed = true;
+        return this.sections[0];
+      }
+    };
+    exports.OpReply = OpReply;
+    var OPTS_CHECKSUM_PRESENT = 1;
+    var OPTS_MORE_TO_COME = 2;
+    var OPTS_EXHAUST_ALLOWED = 1 << 16;
+    var OpMsgRequest = class {
+      constructor(databaseName, command, options) {
+        this.databaseName = databaseName;
+        this.command = command;
+        this.options = options;
+        if (command == null)
+          throw new error_1.MongoInvalidArgumentError("Query document must be specified for query");
+        this.command.$db = databaseName;
+        this.options = options ?? {};
+        this.requestId = options.requestId ? options.requestId : OpMsgRequest.getRequestId();
+        this.serializeFunctions = typeof options.serializeFunctions === "boolean" ? options.serializeFunctions : false;
+        this.ignoreUndefined = typeof options.ignoreUndefined === "boolean" ? options.ignoreUndefined : false;
+        this.checkKeys = typeof options.checkKeys === "boolean" ? options.checkKeys : false;
+        this.maxBsonSize = options.maxBsonSize || 1024 * 1024 * 16;
+        this.checksumPresent = false;
+        this.moreToCome = options.moreToCome || false;
+        this.exhaustAllowed = typeof options.exhaustAllowed === "boolean" ? options.exhaustAllowed : false;
+      }
+      toBin() {
+        const buffers = [];
+        let flags = 0;
+        if (this.checksumPresent) {
+          flags |= OPTS_CHECKSUM_PRESENT;
+        }
+        if (this.moreToCome) {
+          flags |= OPTS_MORE_TO_COME;
+        }
+        if (this.exhaustAllowed) {
+          flags |= OPTS_EXHAUST_ALLOWED;
+        }
+        const header = Buffer.alloc(
+          4 * 4 + 4
+        );
+        buffers.push(header);
+        let totalLength = header.length;
+        const command = this.command;
+        totalLength += this.makeDocumentSegment(buffers, command);
+        header.writeInt32LE(totalLength, 0);
+        header.writeInt32LE(this.requestId, 4);
+        header.writeInt32LE(0, 8);
+        header.writeInt32LE(constants_1.OP_MSG, 12);
+        header.writeUInt32LE(flags, 16);
+        return buffers;
+      }
+      makeDocumentSegment(buffers, document2) {
+        const payloadTypeBuffer = Buffer.alloc(1);
+        payloadTypeBuffer[0] = 0;
+        const documentBuffer = this.serializeBson(document2);
+        buffers.push(payloadTypeBuffer);
+        buffers.push(documentBuffer);
+        return payloadTypeBuffer.length + documentBuffer.length;
+      }
+      serializeBson(document2) {
+        return BSON.serialize(document2, {
+          checkKeys: this.checkKeys,
+          serializeFunctions: this.serializeFunctions,
+          ignoreUndefined: this.ignoreUndefined
+        });
+      }
+      static getRequestId() {
+        _requestId = _requestId + 1 & 2147483647;
+        return _requestId;
+      }
+    };
+    exports.OpMsgRequest = OpMsgRequest;
+    var OpMsgResponse = class {
+      constructor(message, msgHeader, msgBody, opts) {
+        this.index = 0;
+        this.sections = [];
+        this.parsed = false;
+        this.raw = message;
+        this.data = msgBody;
+        this.opts = opts ?? {
+          useBigInt64: false,
+          promoteLongs: true,
+          promoteValues: true,
+          promoteBuffers: false,
+          bsonRegExp: false
+        };
+        this.length = msgHeader.length;
+        this.requestId = msgHeader.requestId;
+        this.responseTo = msgHeader.responseTo;
+        this.opCode = msgHeader.opCode;
+        this.fromCompressed = msgHeader.fromCompressed;
+        this.responseFlags = msgBody.readInt32LE(0);
+        this.checksumPresent = (this.responseFlags & OPTS_CHECKSUM_PRESENT) !== 0;
+        this.moreToCome = (this.responseFlags & OPTS_MORE_TO_COME) !== 0;
+        this.exhaustAllowed = (this.responseFlags & OPTS_EXHAUST_ALLOWED) !== 0;
+        this.useBigInt64 = typeof this.opts.useBigInt64 === "boolean" ? this.opts.useBigInt64 : false;
+        this.promoteLongs = typeof this.opts.promoteLongs === "boolean" ? this.opts.promoteLongs : true;
+        this.promoteValues = typeof this.opts.promoteValues === "boolean" ? this.opts.promoteValues : true;
+        this.promoteBuffers = typeof this.opts.promoteBuffers === "boolean" ? this.opts.promoteBuffers : false;
+        this.bsonRegExp = typeof this.opts.bsonRegExp === "boolean" ? this.opts.bsonRegExp : false;
+      }
+      isParsed() {
+        return this.parsed;
+      }
+      parse() {
+        if (this.parsed)
+          return this.sections[0];
+        this.index = 4;
+        while (this.index < this.data.length) {
+          const payloadType = this.data.readUInt8(this.index++);
+          if (payloadType === 0) {
+            const bsonSize = this.data.readUInt32LE(this.index);
+            const bin = this.data.subarray(this.index, this.index + bsonSize);
+            this.sections.push(bin);
+            this.index += bsonSize;
+          } else if (payloadType === 1) {
+            throw new error_1.MongoRuntimeError("OP_MSG Payload Type 1 detected unsupported protocol");
+          }
+        }
+        this.parsed = true;
+        return this.sections[0];
+      }
+    };
+    exports.OpMsgResponse = OpMsgResponse;
+    var MESSAGE_HEADER_SIZE = 16;
+    var COMPRESSION_DETAILS_SIZE = 9;
+    var OpCompressedRequest = class {
+      constructor(command, options) {
+        this.command = command;
+        this.options = options;
+      }
+      static canCompress(command) {
+        const commandDoc = command instanceof OpMsgRequest ? command.command : command.query;
+        const commandName = Object.keys(commandDoc)[0];
+        return !compression_1.uncompressibleCommands.has(commandName);
+      }
+      async toBin() {
+        const concatenatedOriginalCommandBuffer = Buffer.concat(this.command.toBin());
+        const messageToBeCompressed = concatenatedOriginalCommandBuffer.slice(MESSAGE_HEADER_SIZE);
+        const originalCommandOpCode = concatenatedOriginalCommandBuffer.readInt32LE(12);
+        const compressedMessage = await (0, compression_1.compress)(this.options, messageToBeCompressed);
+        const msgHeader = Buffer.alloc(MESSAGE_HEADER_SIZE);
+        msgHeader.writeInt32LE(MESSAGE_HEADER_SIZE + COMPRESSION_DETAILS_SIZE + compressedMessage.length, 0);
+        msgHeader.writeInt32LE(this.command.requestId, 4);
+        msgHeader.writeInt32LE(0, 8);
+        msgHeader.writeInt32LE(constants_1.OP_COMPRESSED, 12);
+        const compressionDetails = Buffer.alloc(COMPRESSION_DETAILS_SIZE);
+        compressionDetails.writeInt32LE(originalCommandOpCode, 0);
+        compressionDetails.writeInt32LE(messageToBeCompressed.length, 4);
+        compressionDetails.writeUInt8(compression_1.Compressor[this.options.agreedCompressor], 8);
+        return [msgHeader, compressionDetails, compressedMessage];
+      }
+    };
+    exports.OpCompressedRequest = OpCompressedRequest;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/wire_protocol/compression.js
+var require_compression2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/wire_protocol/compression.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.decompressResponse = exports.compressCommand = exports.decompress = exports.compress = exports.uncompressibleCommands = exports.Compressor = void 0;
+    var util_1 = require("util");
+    var zlib = require("zlib");
+    var constants_1 = require_constants5();
+    var deps_1 = require_deps2();
+    var error_1 = require_error3();
+    var commands_1 = require_commands2();
+    var constants_2 = require_constants4();
+    exports.Compressor = Object.freeze({
+      none: 0,
+      snappy: 1,
+      zlib: 2,
+      zstd: 3
+    });
+    exports.uncompressibleCommands = /* @__PURE__ */ new Set([
+      constants_1.LEGACY_HELLO_COMMAND,
+      "saslStart",
+      "saslContinue",
+      "getnonce",
+      "authenticate",
+      "createUser",
+      "updateUser",
+      "copydbSaslStart",
+      "copydbgetnonce",
+      "copydb"
+    ]);
+    var ZSTD_COMPRESSION_LEVEL = 3;
+    var zlibInflate = (0, util_1.promisify)(zlib.inflate.bind(zlib));
+    var zlibDeflate = (0, util_1.promisify)(zlib.deflate.bind(zlib));
+    var zstd;
+    var Snappy = null;
+    function loadSnappy() {
+      if (Snappy == null) {
+        const snappyImport = (0, deps_1.getSnappy)();
+        if ("kModuleError" in snappyImport) {
+          throw snappyImport.kModuleError;
+        }
+        Snappy = snappyImport;
+      }
+      return Snappy;
+    }
+    async function compress(options, dataToBeCompressed) {
+      const zlibOptions = {};
+      switch (options.agreedCompressor) {
+        case "snappy": {
+          Snappy ??= loadSnappy();
+          return await Snappy.compress(dataToBeCompressed);
+        }
+        case "zstd": {
+          loadZstd();
+          if ("kModuleError" in zstd) {
+            throw zstd["kModuleError"];
+          }
+          return await zstd.compress(dataToBeCompressed, ZSTD_COMPRESSION_LEVEL);
+        }
+        case "zlib": {
+          if (options.zlibCompressionLevel) {
+            zlibOptions.level = options.zlibCompressionLevel;
+          }
+          return await zlibDeflate(dataToBeCompressed, zlibOptions);
+        }
+        default: {
+          throw new error_1.MongoInvalidArgumentError(`Unknown compressor ${options.agreedCompressor} failed to compress`);
+        }
+      }
+    }
+    exports.compress = compress;
+    async function decompress(compressorID, compressedData) {
+      if (compressorID !== exports.Compressor.snappy && compressorID !== exports.Compressor.zstd && compressorID !== exports.Compressor.zlib && compressorID !== exports.Compressor.none) {
+        throw new error_1.MongoDecompressionError(`Server sent message compressed using an unsupported compressor. (Received compressor ID ${compressorID})`);
+      }
+      switch (compressorID) {
+        case exports.Compressor.snappy: {
+          Snappy ??= loadSnappy();
+          return await Snappy.uncompress(compressedData, { asBuffer: true });
+        }
+        case exports.Compressor.zstd: {
+          loadZstd();
+          if ("kModuleError" in zstd) {
+            throw zstd["kModuleError"];
+          }
+          return await zstd.decompress(compressedData);
+        }
+        case exports.Compressor.zlib: {
+          return await zlibInflate(compressedData);
+        }
+        default: {
+          return compressedData;
+        }
+      }
+    }
+    exports.decompress = decompress;
+    function loadZstd() {
+      if (!zstd) {
+        zstd = (0, deps_1.getZstdLibrary)();
+      }
+    }
+    var MESSAGE_HEADER_SIZE = 16;
+    async function compressCommand(command, description) {
+      const finalCommand = description.agreedCompressor === "none" || !commands_1.OpCompressedRequest.canCompress(command) ? command : new commands_1.OpCompressedRequest(command, {
+        agreedCompressor: description.agreedCompressor ?? "none",
+        zlibCompressionLevel: description.zlibCompressionLevel ?? 0
+      });
+      const data = await finalCommand.toBin();
+      return Buffer.concat(data);
+    }
+    exports.compressCommand = compressCommand;
+    async function decompressResponse(message) {
+      const messageHeader = {
+        length: message.readInt32LE(0),
+        requestId: message.readInt32LE(4),
+        responseTo: message.readInt32LE(8),
+        opCode: message.readInt32LE(12)
+      };
+      if (messageHeader.opCode !== constants_2.OP_COMPRESSED) {
+        const ResponseType2 = messageHeader.opCode === constants_2.OP_MSG ? commands_1.OpMsgResponse : commands_1.OpReply;
+        const messageBody2 = message.subarray(MESSAGE_HEADER_SIZE);
+        return new ResponseType2(message, messageHeader, messageBody2);
+      }
+      const header = {
+        ...messageHeader,
+        fromCompressed: true,
+        opCode: message.readInt32LE(MESSAGE_HEADER_SIZE),
+        length: message.readInt32LE(MESSAGE_HEADER_SIZE + 4)
+      };
+      const compressorID = message[MESSAGE_HEADER_SIZE + 8];
+      const compressedBuffer = message.slice(MESSAGE_HEADER_SIZE + 9);
+      const ResponseType = header.opCode === constants_2.OP_MSG ? commands_1.OpMsgResponse : commands_1.OpReply;
+      const messageBody = await decompress(compressorID, compressedBuffer);
+      if (messageBody.length !== header.length) {
+        throw new error_1.MongoDecompressionError("Message body and message header must be the same length");
+      }
+      return new ResponseType(message, header, messageBody);
+    }
+    exports.decompressResponse = decompressResponse;
+  }
+});
+
+// node_modules/mongodb/lib/client-side-encryption/crypto_callbacks.js
+var require_crypto_callbacks2 = __commonJS({
+  "node_modules/mongodb/lib/client-side-encryption/crypto_callbacks.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.hmacSha256Hook = exports.hmacSha512Hook = exports.aes256CtrDecryptHook = exports.aes256CtrEncryptHook = exports.aes256CbcDecryptHook = exports.aes256CbcEncryptHook = exports.signRsaSha256Hook = exports.makeHmacHook = exports.sha256Hook = exports.randomHook = exports.makeAES256Hook = void 0;
+    var crypto = require("crypto");
+    function makeAES256Hook(method, mode) {
+      return function(key, iv, input, output) {
+        let result;
+        try {
+          const cipher = crypto[method](mode, key, iv);
+          cipher.setAutoPadding(false);
+          result = cipher.update(input);
+          const final = cipher.final();
+          if (final.length > 0) {
+            result = Buffer.concat([result, final]);
+          }
+        } catch (e) {
+          return e;
+        }
+        result.copy(output);
+        return result.length;
+      };
+    }
+    exports.makeAES256Hook = makeAES256Hook;
+    function randomHook(buffer, count) {
+      try {
+        crypto.randomFillSync(buffer, 0, count);
+      } catch (e) {
+        return e;
+      }
+      return count;
+    }
+    exports.randomHook = randomHook;
+    function sha256Hook(input, output) {
+      let result;
+      try {
+        result = crypto.createHash("sha256").update(input).digest();
+      } catch (e) {
+        return e;
+      }
+      result.copy(output);
+      return result.length;
+    }
+    exports.sha256Hook = sha256Hook;
+    function makeHmacHook(algorithm) {
+      return (key, input, output) => {
+        let result;
+        try {
+          result = crypto.createHmac(algorithm, key).update(input).digest();
+        } catch (e) {
+          return e;
+        }
+        result.copy(output);
+        return result.length;
+      };
+    }
+    exports.makeHmacHook = makeHmacHook;
+    function signRsaSha256Hook(key, input, output) {
+      let result;
+      try {
+        const signer = crypto.createSign("sha256WithRSAEncryption");
+        const privateKey = Buffer.from(`-----BEGIN PRIVATE KEY-----
+${key.toString("base64")}
+-----END PRIVATE KEY-----
+`);
+        result = signer.update(input).end().sign(privateKey);
+      } catch (e) {
+        return e;
+      }
+      result.copy(output);
+      return result.length;
+    }
+    exports.signRsaSha256Hook = signRsaSha256Hook;
+    exports.aes256CbcEncryptHook = makeAES256Hook("createCipheriv", "aes-256-cbc");
+    exports.aes256CbcDecryptHook = makeAES256Hook("createDecipheriv", "aes-256-cbc");
+    exports.aes256CtrEncryptHook = makeAES256Hook("createCipheriv", "aes-256-ctr");
+    exports.aes256CtrDecryptHook = makeAES256Hook("createDecipheriv", "aes-256-ctr");
+    exports.hmacSha512Hook = makeHmacHook("sha512");
+    exports.hmacSha256Hook = makeHmacHook("sha256");
+  }
+});
+
+// node_modules/mongodb/lib/client-side-encryption/errors.js
+var require_errors3 = __commonJS({
+  "node_modules/mongodb/lib/client-side-encryption/errors.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MongoCryptKMSRequestNetworkTimeoutError = exports.MongoCryptAzureKMSRequestError = exports.MongoCryptCreateEncryptedCollectionError = exports.MongoCryptCreateDataKeyError = exports.MongoCryptInvalidArgumentError = exports.MongoCryptError = void 0;
+    var error_1 = require_error3();
+    var MongoCryptError = class extends error_1.MongoError {
+      constructor(message, options = {}) {
+        super(message, options);
+      }
+      get name() {
+        return "MongoCryptError";
+      }
+    };
+    exports.MongoCryptError = MongoCryptError;
+    var MongoCryptInvalidArgumentError = class extends MongoCryptError {
+      constructor(message) {
+        super(message);
+      }
+      get name() {
+        return "MongoCryptInvalidArgumentError";
+      }
+    };
+    exports.MongoCryptInvalidArgumentError = MongoCryptInvalidArgumentError;
+    var MongoCryptCreateDataKeyError = class extends MongoCryptError {
+      constructor(encryptedFields, { cause }) {
+        super(`Unable to complete creating data keys: ${cause.message}`, { cause });
+        this.encryptedFields = encryptedFields;
+      }
+      get name() {
+        return "MongoCryptCreateDataKeyError";
+      }
+    };
+    exports.MongoCryptCreateDataKeyError = MongoCryptCreateDataKeyError;
+    var MongoCryptCreateEncryptedCollectionError = class extends MongoCryptError {
+      constructor(encryptedFields, { cause }) {
+        super(`Unable to create collection: ${cause.message}`, { cause });
+        this.encryptedFields = encryptedFields;
+      }
+      get name() {
+        return "MongoCryptCreateEncryptedCollectionError";
+      }
+    };
+    exports.MongoCryptCreateEncryptedCollectionError = MongoCryptCreateEncryptedCollectionError;
+    var MongoCryptAzureKMSRequestError = class extends MongoCryptError {
+      constructor(message, body) {
+        super(message);
+        this.body = body;
+      }
+      get name() {
+        return "MongoCryptAzureKMSRequestError";
+      }
+    };
+    exports.MongoCryptAzureKMSRequestError = MongoCryptAzureKMSRequestError;
+    var MongoCryptKMSRequestNetworkTimeoutError = class extends MongoCryptError {
+      get name() {
+        return "MongoCryptKMSRequestNetworkTimeoutError";
+      }
+    };
+    exports.MongoCryptKMSRequestNetworkTimeoutError = MongoCryptKMSRequestNetworkTimeoutError;
+  }
+});
+
+// node_modules/mongodb/lib/client-side-encryption/mongocryptd_manager.js
+var require_mongocryptd_manager2 = __commonJS({
+  "node_modules/mongodb/lib/client-side-encryption/mongocryptd_manager.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MongocryptdManager = void 0;
+    var error_1 = require_error3();
+    var MongocryptdManager = class {
+      constructor(extraOptions = {}) {
+        this.uri = typeof extraOptions.mongocryptdURI === "string" && extraOptions.mongocryptdURI.length > 0 ? extraOptions.mongocryptdURI : MongocryptdManager.DEFAULT_MONGOCRYPTD_URI;
+        this.bypassSpawn = !!extraOptions.mongocryptdBypassSpawn;
+        this.spawnPath = extraOptions.mongocryptdSpawnPath || "";
+        this.spawnArgs = [];
+        if (Array.isArray(extraOptions.mongocryptdSpawnArgs)) {
+          this.spawnArgs = this.spawnArgs.concat(extraOptions.mongocryptdSpawnArgs);
+        }
+        if (this.spawnArgs.filter((arg) => typeof arg === "string").every((arg) => arg.indexOf("--idleShutdownTimeoutSecs") < 0)) {
+          this.spawnArgs.push("--idleShutdownTimeoutSecs", "60");
+        }
+      }
+      async spawn() {
+        const cmdName = this.spawnPath || "mongocryptd";
+        const { spawn } = require("child_process");
+        this._child = spawn(cmdName, this.spawnArgs, {
+          stdio: "ignore",
+          detached: true
+        });
+        this._child.on("error", () => {
+        });
+        this._child.unref();
+      }
+      async withRespawn(fn) {
+        try {
+          const result2 = await fn();
+          return result2;
+        } catch (err) {
+          const shouldSpawn = err instanceof error_1.MongoNetworkTimeoutError && !this.bypassSpawn;
+          if (!shouldSpawn) {
+            throw err;
+          }
+        }
+        await this.spawn();
+        const result = await fn();
+        return result;
+      }
+    };
+    MongocryptdManager.DEFAULT_MONGOCRYPTD_URI = "mongodb://localhost:27020";
+    exports.MongocryptdManager = MongocryptdManager;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/aws_temporary_credentials.js
+var require_aws_temporary_credentials2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/aws_temporary_credentials.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.LegacyAWSTemporaryCredentialProvider = exports.AWSSDKCredentialProvider = exports.AWSTemporaryCredentialProvider = void 0;
+    var deps_1 = require_deps2();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var AWS_RELATIVE_URI = "http://169.254.170.2";
+    var AWS_EC2_URI = "http://169.254.169.254";
+    var AWS_EC2_PATH = "/latest/meta-data/iam/security-credentials";
+    var AWSTemporaryCredentialProvider = class {
+      static get awsSDK() {
+        AWSTemporaryCredentialProvider._awsSDK ??= (0, deps_1.getAwsCredentialProvider)();
+        return AWSTemporaryCredentialProvider._awsSDK;
+      }
+      static get isAWSSDKInstalled() {
+        return !("kModuleError" in AWSTemporaryCredentialProvider.awsSDK);
+      }
+    };
+    exports.AWSTemporaryCredentialProvider = AWSTemporaryCredentialProvider;
+    var AWSSDKCredentialProvider = class extends AWSTemporaryCredentialProvider {
+      get provider() {
+        if ("kModuleError" in AWSTemporaryCredentialProvider.awsSDK) {
+          throw AWSTemporaryCredentialProvider.awsSDK.kModuleError;
+        }
+        if (this._provider) {
+          return this._provider;
+        }
+        let { AWS_STS_REGIONAL_ENDPOINTS = "", AWS_REGION = "" } = process.env;
+        AWS_STS_REGIONAL_ENDPOINTS = AWS_STS_REGIONAL_ENDPOINTS.toLowerCase();
+        AWS_REGION = AWS_REGION.toLowerCase();
+        const awsRegionSettingsExist = AWS_REGION.length !== 0 && AWS_STS_REGIONAL_ENDPOINTS.length !== 0;
+        const LEGACY_REGIONS = /* @__PURE__ */ new Set([
+          "ap-northeast-1",
+          "ap-south-1",
+          "ap-southeast-1",
+          "ap-southeast-2",
+          "aws-global",
+          "ca-central-1",
+          "eu-central-1",
+          "eu-north-1",
+          "eu-west-1",
+          "eu-west-2",
+          "eu-west-3",
+          "sa-east-1",
+          "us-east-1",
+          "us-east-2",
+          "us-west-1",
+          "us-west-2"
+        ]);
+        const useRegionalSts = AWS_STS_REGIONAL_ENDPOINTS === "regional" || AWS_STS_REGIONAL_ENDPOINTS === "legacy" && !LEGACY_REGIONS.has(AWS_REGION);
+        this._provider = awsRegionSettingsExist && useRegionalSts ? AWSTemporaryCredentialProvider.awsSDK.fromNodeProviderChain({
+          clientConfig: { region: AWS_REGION }
+        }) : AWSTemporaryCredentialProvider.awsSDK.fromNodeProviderChain();
+        return this._provider;
+      }
+      async getCredentials() {
+        try {
+          const creds = await this.provider();
+          return {
+            AccessKeyId: creds.accessKeyId,
+            SecretAccessKey: creds.secretAccessKey,
+            Token: creds.sessionToken,
+            Expiration: creds.expiration
+          };
+        } catch (error) {
+          throw new error_1.MongoAWSError(error.message, { cause: error });
+        }
+      }
+    };
+    exports.AWSSDKCredentialProvider = AWSSDKCredentialProvider;
+    var LegacyAWSTemporaryCredentialProvider = class extends AWSTemporaryCredentialProvider {
+      async getCredentials() {
+        if (process.env.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI) {
+          return await (0, utils_1.request)(`${AWS_RELATIVE_URI}${process.env.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI}`);
+        }
+        const token = await (0, utils_1.request)(`${AWS_EC2_URI}/latest/api/token`, {
+          method: "PUT",
+          json: false,
+          headers: { "X-aws-ec2-metadata-token-ttl-seconds": 30 }
+        });
+        const roleName = await (0, utils_1.request)(`${AWS_EC2_URI}/${AWS_EC2_PATH}`, {
+          json: false,
+          headers: { "X-aws-ec2-metadata-token": token }
+        });
+        const creds = await (0, utils_1.request)(`${AWS_EC2_URI}/${AWS_EC2_PATH}/${roleName}`, {
+          headers: { "X-aws-ec2-metadata-token": token }
+        });
+        return creds;
+      }
+    };
+    exports.LegacyAWSTemporaryCredentialProvider = LegacyAWSTemporaryCredentialProvider;
+  }
+});
+
+// node_modules/mongodb/lib/client-side-encryption/providers/aws.js
+var require_aws2 = __commonJS({
+  "node_modules/mongodb/lib/client-side-encryption/providers/aws.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.loadAWSCredentials = void 0;
+    var aws_temporary_credentials_1 = require_aws_temporary_credentials2();
+    async function loadAWSCredentials(kmsProviders) {
+      const credentialProvider = new aws_temporary_credentials_1.AWSSDKCredentialProvider();
+      const { SecretAccessKey = "", AccessKeyId = "", Token } = await credentialProvider.getCredentials();
+      const aws = {
+        secretAccessKey: SecretAccessKey,
+        accessKeyId: AccessKeyId
+      };
+      Token != null && (aws.sessionToken = Token);
+      return { ...kmsProviders, aws };
+    }
+    exports.loadAWSCredentials = loadAWSCredentials;
+  }
+});
+
+// node_modules/mongodb/lib/client-side-encryption/providers/azure.js
+var require_azure2 = __commonJS({
+  "node_modules/mongodb/lib/client-side-encryption/providers/azure.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.loadAzureCredentials = exports.fetchAzureKMSToken = exports.prepareRequest = exports.addAzureParams = exports.tokenCache = exports.AzureCredentialCache = exports.AZURE_BASE_URL = void 0;
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var errors_1 = require_errors3();
+    var MINIMUM_TOKEN_REFRESH_IN_MILLISECONDS = 6e3;
+    exports.AZURE_BASE_URL = "http://169.254.169.254/metadata/identity/oauth2/token?";
+    var AzureCredentialCache = class {
+      constructor() {
+        this.cachedToken = null;
+      }
+      async getToken() {
+        if (this.cachedToken == null || this.needsRefresh(this.cachedToken)) {
+          this.cachedToken = await this._getToken();
+        }
+        return { accessToken: this.cachedToken.accessToken };
+      }
+      needsRefresh(token) {
+        const timeUntilExpirationMS = token.expiresOnTimestamp - Date.now();
+        return timeUntilExpirationMS <= MINIMUM_TOKEN_REFRESH_IN_MILLISECONDS;
+      }
+      resetCache() {
+        this.cachedToken = null;
+      }
+      _getToken() {
+        return fetchAzureKMSToken();
+      }
+    };
+    exports.AzureCredentialCache = AzureCredentialCache;
+    exports.tokenCache = new AzureCredentialCache();
+    async function parseResponse(response) {
+      const { status, body: rawBody } = response;
+      const body = (() => {
+        try {
+          return JSON.parse(rawBody);
+        } catch {
+          throw new errors_1.MongoCryptAzureKMSRequestError("Malformed JSON body in GET request.");
+        }
+      })();
+      if (status !== 200) {
+        throw new errors_1.MongoCryptAzureKMSRequestError("Unable to complete request.", body);
+      }
+      if (!body.access_token) {
+        throw new errors_1.MongoCryptAzureKMSRequestError("Malformed response body - missing field `access_token`.");
+      }
+      if (!body.expires_in) {
+        throw new errors_1.MongoCryptAzureKMSRequestError("Malformed response body - missing field `expires_in`.");
+      }
+      const expiresInMS = Number(body.expires_in) * 1e3;
+      if (Number.isNaN(expiresInMS)) {
+        throw new errors_1.MongoCryptAzureKMSRequestError("Malformed response body - unable to parse int from `expires_in` field.");
+      }
+      return {
+        accessToken: body.access_token,
+        expiresOnTimestamp: Date.now() + expiresInMS
+      };
+    }
+    function addAzureParams(url, resource, username) {
+      url.searchParams.append("api-version", "2018-02-01");
+      url.searchParams.append("resource", resource);
+      if (username) {
+        url.searchParams.append("client_id", username);
+      }
+      return url;
+    }
+    exports.addAzureParams = addAzureParams;
+    function prepareRequest(options) {
+      const url = new URL(options.url?.toString() ?? exports.AZURE_BASE_URL);
+      addAzureParams(url, "https://vault.azure.net");
+      const headers = { ...options.headers, "Content-Type": "application/json", Metadata: true };
+      return { headers, url };
+    }
+    exports.prepareRequest = prepareRequest;
+    async function fetchAzureKMSToken(options = {}) {
+      const { headers, url } = prepareRequest(options);
+      try {
+        const response = await (0, utils_1.get)(url, { headers });
+        return await parseResponse(response);
+      } catch (error) {
+        if (error instanceof error_1.MongoNetworkTimeoutError) {
+          throw new errors_1.MongoCryptAzureKMSRequestError(`[Azure KMS] ${error.message}`);
+        }
+        throw error;
+      }
+    }
+    exports.fetchAzureKMSToken = fetchAzureKMSToken;
+    async function loadAzureCredentials(kmsProviders) {
+      const azure = await exports.tokenCache.getToken();
+      return { ...kmsProviders, azure };
+    }
+    exports.loadAzureCredentials = loadAzureCredentials;
+  }
+});
+
+// node_modules/mongodb/lib/client-side-encryption/providers/gcp.js
+var require_gcp2 = __commonJS({
+  "node_modules/mongodb/lib/client-side-encryption/providers/gcp.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.loadGCPCredentials = void 0;
+    var deps_1 = require_deps2();
+    async function loadGCPCredentials(kmsProviders) {
+      const gcpMetadata = (0, deps_1.getGcpMetadata)();
+      if ("kModuleError" in gcpMetadata) {
+        return kmsProviders;
+      }
+      const { access_token: accessToken } = await gcpMetadata.instance({
+        property: "service-accounts/default/token"
+      });
+      return { ...kmsProviders, gcp: { accessToken } };
+    }
+    exports.loadGCPCredentials = loadGCPCredentials;
+  }
+});
+
+// node_modules/mongodb/lib/client-side-encryption/providers/index.js
+var require_providers4 = __commonJS({
+  "node_modules/mongodb/lib/client-side-encryption/providers/index.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.refreshKMSCredentials = exports.isEmptyCredentials = void 0;
+    var aws_1 = require_aws2();
+    var azure_1 = require_azure2();
+    var gcp_1 = require_gcp2();
+    function isEmptyCredentials(providerName, kmsProviders) {
+      const provider = kmsProviders[providerName];
+      if (provider == null) {
+        return false;
+      }
+      return typeof provider === "object" && Object.keys(provider).length === 0;
+    }
+    exports.isEmptyCredentials = isEmptyCredentials;
+    async function refreshKMSCredentials(kmsProviders) {
+      let finalKMSProviders = kmsProviders;
+      if (isEmptyCredentials("aws", kmsProviders)) {
+        finalKMSProviders = await (0, aws_1.loadAWSCredentials)(finalKMSProviders);
+      }
+      if (isEmptyCredentials("gcp", kmsProviders)) {
+        finalKMSProviders = await (0, gcp_1.loadGCPCredentials)(finalKMSProviders);
+      }
+      if (isEmptyCredentials("azure", kmsProviders)) {
+        finalKMSProviders = await (0, azure_1.loadAzureCredentials)(finalKMSProviders);
+      }
+      return finalKMSProviders;
+    }
+    exports.refreshKMSCredentials = refreshKMSCredentials;
+  }
+});
+
+// node_modules/mongodb/lib/client-side-encryption/state_machine.js
+var require_state_machine2 = __commonJS({
+  "node_modules/mongodb/lib/client-side-encryption/state_machine.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.StateMachine = void 0;
+    var fs = require("fs/promises");
+    var net = require("net");
+    var tls = require("tls");
+    var bson_1 = require_bson3();
+    var deps_1 = require_deps2();
+    var utils_1 = require_utils5();
+    var errors_1 = require_errors3();
+    var socks = null;
+    function loadSocks() {
+      if (socks == null) {
+        const socksImport = (0, deps_1.getSocks)();
+        if ("kModuleError" in socksImport) {
+          throw socksImport.kModuleError;
+        }
+        socks = socksImport;
+      }
+      return socks;
+    }
+    var MONGOCRYPT_CTX_ERROR = 0;
+    var MONGOCRYPT_CTX_NEED_MONGO_COLLINFO = 1;
+    var MONGOCRYPT_CTX_NEED_MONGO_MARKINGS = 2;
+    var MONGOCRYPT_CTX_NEED_MONGO_KEYS = 3;
+    var MONGOCRYPT_CTX_NEED_KMS_CREDENTIALS = 7;
+    var MONGOCRYPT_CTX_NEED_KMS = 4;
+    var MONGOCRYPT_CTX_READY = 5;
+    var MONGOCRYPT_CTX_DONE = 6;
+    var HTTPS_PORT = 443;
+    var stateToString = /* @__PURE__ */ new Map([
+      [MONGOCRYPT_CTX_ERROR, "MONGOCRYPT_CTX_ERROR"],
+      [MONGOCRYPT_CTX_NEED_MONGO_COLLINFO, "MONGOCRYPT_CTX_NEED_MONGO_COLLINFO"],
+      [MONGOCRYPT_CTX_NEED_MONGO_MARKINGS, "MONGOCRYPT_CTX_NEED_MONGO_MARKINGS"],
+      [MONGOCRYPT_CTX_NEED_MONGO_KEYS, "MONGOCRYPT_CTX_NEED_MONGO_KEYS"],
+      [MONGOCRYPT_CTX_NEED_KMS_CREDENTIALS, "MONGOCRYPT_CTX_NEED_KMS_CREDENTIALS"],
+      [MONGOCRYPT_CTX_NEED_KMS, "MONGOCRYPT_CTX_NEED_KMS"],
+      [MONGOCRYPT_CTX_READY, "MONGOCRYPT_CTX_READY"],
+      [MONGOCRYPT_CTX_DONE, "MONGOCRYPT_CTX_DONE"]
+    ]);
+    var INSECURE_TLS_OPTIONS = [
+      "tlsInsecure",
+      "tlsAllowInvalidCertificates",
+      "tlsAllowInvalidHostnames",
+      "tlsDisableOCSPEndpointCheck",
+      "tlsDisableCertificateRevocationCheck"
+    ];
+    function debug(msg) {
+      if (process.env.MONGODB_CRYPT_DEBUG) {
+        console.error(msg);
+      }
+    }
+    var EMPTY_V;
+    var StateMachine = class {
+      constructor(options, bsonOptions = (0, bson_1.pluckBSONSerializeOptions)(options)) {
+        this.options = options;
+        this.bsonOptions = bsonOptions;
+      }
+      async execute(executor, context) {
+        const keyVaultNamespace = executor._keyVaultNamespace;
+        const keyVaultClient = executor._keyVaultClient;
+        const metaDataClient = executor._metaDataClient;
+        const mongocryptdClient = executor._mongocryptdClient;
+        const mongocryptdManager = executor._mongocryptdManager;
+        let result = null;
+        while (context.state !== MONGOCRYPT_CTX_DONE && context.state !== MONGOCRYPT_CTX_ERROR) {
+          debug(`[context#${context.id}] ${stateToString.get(context.state) || context.state}`);
+          switch (context.state) {
+            case MONGOCRYPT_CTX_NEED_MONGO_COLLINFO: {
+              const filter = (0, bson_1.deserialize)(context.nextMongoOperation());
+              if (!metaDataClient) {
+                throw new errors_1.MongoCryptError("unreachable state machine state: entered MONGOCRYPT_CTX_NEED_MONGO_COLLINFO but metadata client is undefined");
+              }
+              const collInfo = await this.fetchCollectionInfo(metaDataClient, context.ns, filter);
+              if (collInfo) {
+                context.addMongoOperationResponse(collInfo);
+              }
+              context.finishMongoOperation();
+              break;
+            }
+            case MONGOCRYPT_CTX_NEED_MONGO_MARKINGS: {
+              const command = context.nextMongoOperation();
+              if (!mongocryptdClient) {
+                throw new errors_1.MongoCryptError("unreachable state machine state: entered MONGOCRYPT_CTX_NEED_MONGO_MARKINGS but mongocryptdClient is undefined");
+              }
+              const markedCommand = mongocryptdManager ? await mongocryptdManager.withRespawn(this.markCommand.bind(this, mongocryptdClient, context.ns, command)) : await this.markCommand(mongocryptdClient, context.ns, command);
+              context.addMongoOperationResponse(markedCommand);
+              context.finishMongoOperation();
+              break;
+            }
+            case MONGOCRYPT_CTX_NEED_MONGO_KEYS: {
+              const filter = context.nextMongoOperation();
+              const keys = await this.fetchKeys(keyVaultClient, keyVaultNamespace, filter);
+              if (keys.length === 0) {
+                result = EMPTY_V ??= (0, bson_1.serialize)({ v: [] });
+              }
+              for await (const key of keys) {
+                context.addMongoOperationResponse((0, bson_1.serialize)(key));
+              }
+              context.finishMongoOperation();
+              break;
+            }
+            case MONGOCRYPT_CTX_NEED_KMS_CREDENTIALS: {
+              const kmsProviders = await executor.askForKMSCredentials();
+              context.provideKMSProviders((0, bson_1.serialize)(kmsProviders));
+              break;
+            }
+            case MONGOCRYPT_CTX_NEED_KMS: {
+              const requests = Array.from(this.requests(context));
+              await Promise.all(requests);
+              context.finishKMSRequests();
+              break;
+            }
+            case MONGOCRYPT_CTX_READY: {
+              const finalizedContext = context.finalize();
+              if (context.state === MONGOCRYPT_CTX_ERROR) {
+                const message = context.status.message || "Finalization error";
+                throw new errors_1.MongoCryptError(message);
+              }
+              result = finalizedContext;
+              break;
+            }
+            default:
+              throw new errors_1.MongoCryptError(`Unknown state: ${context.state}`);
+          }
+        }
+        if (context.state === MONGOCRYPT_CTX_ERROR || result == null) {
+          const message = context.status.message;
+          if (!message) {
+            debug(`unidentifiable error in MongoCrypt - received an error status from \`libmongocrypt\` but received no error message.`);
+          }
+          throw new errors_1.MongoCryptError(message ?? "unidentifiable error in MongoCrypt - received an error status from `libmongocrypt` but received no error message.");
+        }
+        return result;
+      }
+      async kmsRequest(request) {
+        const parsedUrl = request.endpoint.split(":");
+        const port = parsedUrl[1] != null ? Number.parseInt(parsedUrl[1], 10) : HTTPS_PORT;
+        const options = {
+          host: parsedUrl[0],
+          servername: parsedUrl[0],
+          port
+        };
+        const message = request.message;
+        const buffer = new utils_1.BufferPool();
+        const netSocket = new net.Socket();
+        let socket;
+        function destroySockets() {
+          for (const sock of [socket, netSocket]) {
+            if (sock) {
+              sock.removeAllListeners();
+              sock.destroy();
+            }
+          }
+        }
+        function ontimeout() {
+          return new errors_1.MongoCryptError("KMS request timed out");
+        }
+        function onerror(cause) {
+          return new errors_1.MongoCryptError("KMS request failed", { cause });
+        }
+        function onclose() {
+          return new errors_1.MongoCryptError("KMS request closed");
+        }
+        const tlsOptions = this.options.tlsOptions;
+        if (tlsOptions) {
+          const kmsProvider = request.kmsProvider;
+          const providerTlsOptions = tlsOptions[kmsProvider];
+          if (providerTlsOptions) {
+            const error = this.validateTlsOptions(kmsProvider, providerTlsOptions);
+            if (error) {
+              throw error;
+            }
+            try {
+              await this.setTlsOptions(providerTlsOptions, options);
+            } catch (err) {
+              throw onerror(err);
+            }
+          }
+        }
+        const { promise: willConnect, reject: rejectOnNetSocketError, resolve: resolveOnNetSocketConnect } = (0, utils_1.promiseWithResolvers)();
+        netSocket.once("timeout", () => rejectOnNetSocketError(ontimeout())).once("error", (err) => rejectOnNetSocketError(onerror(err))).once("close", () => rejectOnNetSocketError(onclose())).once("connect", () => resolveOnNetSocketConnect());
+        try {
+          if (this.options.proxyOptions && this.options.proxyOptions.proxyHost) {
+            netSocket.connect({
+              host: this.options.proxyOptions.proxyHost,
+              port: this.options.proxyOptions.proxyPort || 1080
+            });
+            await willConnect;
+            try {
+              socks ??= loadSocks();
+              options.socket = (await socks.SocksClient.createConnection({
+                existing_socket: netSocket,
+                command: "connect",
+                destination: { host: options.host, port: options.port },
+                proxy: {
+                  host: "iLoveJavaScript",
+                  port: 0,
+                  type: 5,
+                  userId: this.options.proxyOptions.proxyUsername,
+                  password: this.options.proxyOptions.proxyPassword
+                }
+              })).socket;
+            } catch (err) {
+              throw onerror(err);
+            }
+          }
+          socket = tls.connect(options, () => {
+            socket.write(message);
+          });
+          const { promise: willResolveKmsRequest, reject: rejectOnTlsSocketError, resolve } = (0, utils_1.promiseWithResolvers)();
+          socket.once("timeout", () => rejectOnTlsSocketError(ontimeout())).once("error", (err) => rejectOnTlsSocketError(onerror(err))).once("close", () => rejectOnTlsSocketError(onclose())).on("data", (data) => {
+            buffer.append(data);
+            while (request.bytesNeeded > 0 && buffer.length) {
+              const bytesNeeded = Math.min(request.bytesNeeded, buffer.length);
+              request.addResponse(buffer.read(bytesNeeded));
+            }
+            if (request.bytesNeeded <= 0) {
+              resolve();
+            }
+          });
+          await willResolveKmsRequest;
+        } finally {
+          destroySockets();
+        }
+      }
+      *requests(context) {
+        for (let request = context.nextKMSRequest(); request != null; request = context.nextKMSRequest()) {
+          yield this.kmsRequest(request);
+        }
+      }
+      validateTlsOptions(kmsProvider, tlsOptions) {
+        const tlsOptionNames = Object.keys(tlsOptions);
+        for (const option of INSECURE_TLS_OPTIONS) {
+          if (tlsOptionNames.includes(option)) {
+            return new errors_1.MongoCryptError(`Insecure TLS options prohibited for ${kmsProvider}: ${option}`);
+          }
+        }
+      }
+      async setTlsOptions(tlsOptions, options) {
+        if (tlsOptions.tlsCertificateKeyFile) {
+          const cert = await fs.readFile(tlsOptions.tlsCertificateKeyFile);
+          options.cert = options.key = cert;
+        }
+        if (tlsOptions.tlsCAFile) {
+          options.ca = await fs.readFile(tlsOptions.tlsCAFile);
+        }
+        if (tlsOptions.tlsCertificateKeyFilePassword) {
+          options.passphrase = tlsOptions.tlsCertificateKeyFilePassword;
+        }
+      }
+      async fetchCollectionInfo(client, ns, filter) {
+        const { db } = utils_1.MongoDBCollectionNamespace.fromString(ns);
+        const collections = await client.db(db).listCollections(filter, {
+          promoteLongs: false,
+          promoteValues: false
+        }).toArray();
+        const info = collections.length > 0 ? (0, bson_1.serialize)(collections[0]) : null;
+        return info;
+      }
+      async markCommand(client, ns, command) {
+        const options = { promoteLongs: false, promoteValues: false };
+        const { db } = utils_1.MongoDBCollectionNamespace.fromString(ns);
+        const rawCommand = (0, bson_1.deserialize)(command, options);
+        const response = await client.db(db).command(rawCommand, options);
+        return (0, bson_1.serialize)(response, this.bsonOptions);
+      }
+      fetchKeys(client, keyVaultNamespace, filter) {
+        const { db: dbName, collection: collectionName } = utils_1.MongoDBCollectionNamespace.fromString(keyVaultNamespace);
+        return client.db(dbName).collection(collectionName, { readConcern: { level: "majority" } }).find((0, bson_1.deserialize)(filter)).toArray();
+      }
+    };
+    exports.StateMachine = StateMachine;
+  }
+});
+
+// node_modules/mongodb/lib/client-side-encryption/auto_encrypter.js
+var require_auto_encrypter2 = __commonJS({
+  "node_modules/mongodb/lib/client-side-encryption/auto_encrypter.js"(exports) {
+    "use strict";
+    var _a;
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AutoEncrypter = exports.AutoEncryptionLoggerLevel = void 0;
+    var bson_1 = require_bson3();
+    var constants_1 = require_constants5();
+    var deps_1 = require_deps2();
+    var error_1 = require_error3();
+    var mongo_client_1 = require_mongo_client2();
+    var utils_1 = require_utils5();
+    var cryptoCallbacks = require_crypto_callbacks2();
+    var errors_1 = require_errors3();
+    var mongocryptd_manager_1 = require_mongocryptd_manager2();
+    var providers_1 = require_providers4();
+    var state_machine_1 = require_state_machine2();
+    exports.AutoEncryptionLoggerLevel = Object.freeze({
+      FatalError: 0,
+      Error: 1,
+      Warning: 2,
+      Info: 3,
+      Trace: 4
+    });
+    var AutoEncrypter = class {
+      static getMongoCrypt() {
+        const encryption = (0, deps_1.getMongoDBClientEncryption)();
+        if ("kModuleError" in encryption) {
+          throw encryption.kModuleError;
+        }
+        return encryption.MongoCrypt;
+      }
+      constructor(client, options) {
+        this[_a] = false;
+        this._client = client;
+        this._bypassEncryption = options.bypassAutoEncryption === true;
+        this._keyVaultNamespace = options.keyVaultNamespace || "admin.datakeys";
+        this._keyVaultClient = options.keyVaultClient || client;
+        this._metaDataClient = options.metadataClient || client;
+        this._proxyOptions = options.proxyOptions || {};
+        this._tlsOptions = options.tlsOptions || {};
+        this._kmsProviders = options.kmsProviders || {};
+        const mongoCryptOptions = {
+          cryptoCallbacks
+        };
+        if (options.schemaMap) {
+          mongoCryptOptions.schemaMap = Buffer.isBuffer(options.schemaMap) ? options.schemaMap : (0, bson_1.serialize)(options.schemaMap);
+        }
+        if (options.encryptedFieldsMap) {
+          mongoCryptOptions.encryptedFieldsMap = Buffer.isBuffer(options.encryptedFieldsMap) ? options.encryptedFieldsMap : (0, bson_1.serialize)(options.encryptedFieldsMap);
+        }
+        mongoCryptOptions.kmsProviders = !Buffer.isBuffer(this._kmsProviders) ? (0, bson_1.serialize)(this._kmsProviders) : this._kmsProviders;
+        if (options.options?.logger) {
+          mongoCryptOptions.logger = options.options.logger;
+        }
+        if (options.extraOptions && options.extraOptions.cryptSharedLibPath) {
+          mongoCryptOptions.cryptSharedLibPath = options.extraOptions.cryptSharedLibPath;
+        }
+        if (options.bypassQueryAnalysis) {
+          mongoCryptOptions.bypassQueryAnalysis = options.bypassQueryAnalysis;
+        }
+        this._bypassMongocryptdAndCryptShared = this._bypassEncryption || !!options.bypassQueryAnalysis;
+        if (options.extraOptions && options.extraOptions.cryptSharedLibSearchPaths) {
+          mongoCryptOptions.cryptSharedLibSearchPaths = options.extraOptions.cryptSharedLibSearchPaths;
+        } else if (!this._bypassMongocryptdAndCryptShared) {
+          mongoCryptOptions.cryptSharedLibSearchPaths = ["$SYSTEM"];
+        }
+        const MongoCrypt = AutoEncrypter.getMongoCrypt();
+        this._mongocrypt = new MongoCrypt(mongoCryptOptions);
+        this._contextCounter = 0;
+        if (options.extraOptions && options.extraOptions.cryptSharedLibRequired && !this.cryptSharedLibVersionInfo) {
+          throw new errors_1.MongoCryptInvalidArgumentError("`cryptSharedLibRequired` set but no crypt_shared library loaded");
+        }
+        if (!this._bypassMongocryptdAndCryptShared && !this.cryptSharedLibVersionInfo) {
+          this._mongocryptdManager = new mongocryptd_manager_1.MongocryptdManager(options.extraOptions);
+          const clientOptions = {
+            serverSelectionTimeoutMS: 1e4
+          };
+          if (options.extraOptions == null || typeof options.extraOptions.mongocryptdURI !== "string") {
+            clientOptions.family = 4;
+          }
+          this._mongocryptdClient = new mongo_client_1.MongoClient(this._mongocryptdManager.uri, clientOptions);
+        }
+      }
+      async init() {
+        if (this._bypassMongocryptdAndCryptShared || this.cryptSharedLibVersionInfo) {
+          return;
+        }
+        if (!this._mongocryptdManager) {
+          throw new error_1.MongoRuntimeError("Reached impossible state: mongocryptdManager is undefined when neither bypassSpawn nor the shared lib are specified.");
+        }
+        if (!this._mongocryptdClient) {
+          throw new error_1.MongoRuntimeError("Reached impossible state: mongocryptdClient is undefined when neither bypassSpawn nor the shared lib are specified.");
+        }
+        if (!this._mongocryptdManager.bypassSpawn) {
+          await this._mongocryptdManager.spawn();
+        }
+        try {
+          const client = await this._mongocryptdClient.connect();
+          return client;
+        } catch (error) {
+          const { message } = error;
+          if (message && (message.match(/timed out after/) || message.match(/ENOTFOUND/))) {
+            throw new error_1.MongoRuntimeError("Unable to connect to `mongocryptd`, please make sure it is running or in your PATH for auto-spawn", { cause: error });
+          }
+          throw error;
+        }
+      }
+      async teardown(force) {
+        await this._mongocryptdClient?.close(force);
+      }
+      async encrypt(ns, cmd, options = {}) {
+        if (this._bypassEncryption) {
+          return cmd;
+        }
+        const commandBuffer = Buffer.isBuffer(cmd) ? cmd : (0, bson_1.serialize)(cmd, options);
+        const context = this._mongocrypt.makeEncryptionContext(utils_1.MongoDBCollectionNamespace.fromString(ns).db, commandBuffer);
+        context.id = this._contextCounter++;
+        context.ns = ns;
+        context.document = cmd;
+        const stateMachine = new state_machine_1.StateMachine({
+          promoteValues: false,
+          promoteLongs: false,
+          proxyOptions: this._proxyOptions,
+          tlsOptions: this._tlsOptions
+        });
+        return (0, bson_1.deserialize)(await stateMachine.execute(this, context), {
+          promoteValues: false,
+          promoteLongs: false
+        });
+      }
+      async decrypt(response, options = {}) {
+        const context = this._mongocrypt.makeDecryptionContext(response);
+        context.id = this._contextCounter++;
+        const stateMachine = new state_machine_1.StateMachine({
+          ...options,
+          proxyOptions: this._proxyOptions,
+          tlsOptions: this._tlsOptions
+        });
+        return await stateMachine.execute(this, context);
+      }
+      async askForKMSCredentials() {
+        return await (0, providers_1.refreshKMSCredentials)(this._kmsProviders);
+      }
+      get cryptSharedLibVersionInfo() {
+        return this._mongocrypt.cryptSharedLibVersionInfo;
+      }
+      static get libmongocryptVersion() {
+        return AutoEncrypter.getMongoCrypt().libmongocryptVersion;
+      }
+    };
+    exports.AutoEncrypter = AutoEncrypter;
+    _a = constants_1.kDecorateResult;
+  }
+});
+
+// node_modules/mongodb/lib/encrypter.js
+var require_encrypter2 = __commonJS({
+  "node_modules/mongodb/lib/encrypter.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Encrypter = void 0;
+    var util_1 = require("util");
+    var auto_encrypter_1 = require_auto_encrypter2();
+    var constants_1 = require_constants5();
+    var deps_1 = require_deps2();
+    var error_1 = require_error3();
+    var mongo_client_1 = require_mongo_client2();
+    var kInternalClient = Symbol("internalClient");
+    var Encrypter = class {
+      constructor(client, uri, options) {
+        if (typeof options.autoEncryption !== "object") {
+          throw new error_1.MongoInvalidArgumentError('Option "autoEncryption" must be specified');
+        }
+        this[kInternalClient] = null;
+        this.bypassAutoEncryption = !!options.autoEncryption.bypassAutoEncryption;
+        this.needsConnecting = false;
+        if (options.maxPoolSize === 0 && options.autoEncryption.keyVaultClient == null) {
+          options.autoEncryption.keyVaultClient = client;
+        } else if (options.autoEncryption.keyVaultClient == null) {
+          options.autoEncryption.keyVaultClient = this.getInternalClient(client, uri, options);
+        }
+        if (this.bypassAutoEncryption) {
+          options.autoEncryption.metadataClient = void 0;
+        } else if (options.maxPoolSize === 0) {
+          options.autoEncryption.metadataClient = client;
+        } else {
+          options.autoEncryption.metadataClient = this.getInternalClient(client, uri, options);
+        }
+        if (options.proxyHost) {
+          options.autoEncryption.proxyOptions = {
+            proxyHost: options.proxyHost,
+            proxyPort: options.proxyPort,
+            proxyUsername: options.proxyUsername,
+            proxyPassword: options.proxyPassword
+          };
+        }
+        this.autoEncrypter = new auto_encrypter_1.AutoEncrypter(client, options.autoEncryption);
+      }
+      getInternalClient(client, uri, options) {
+        let internalClient = this[kInternalClient];
+        if (internalClient == null) {
+          const clonedOptions = {};
+          for (const key of [
+            ...Object.getOwnPropertyNames(options),
+            ...Object.getOwnPropertySymbols(options)
+          ]) {
+            if (["autoEncryption", "minPoolSize", "servers", "caseTranslate", "dbName"].includes(key))
+              continue;
+            Reflect.set(clonedOptions, key, Reflect.get(options, key));
+          }
+          clonedOptions.minPoolSize = 0;
+          internalClient = new mongo_client_1.MongoClient(uri, clonedOptions);
+          this[kInternalClient] = internalClient;
+          for (const eventName of constants_1.MONGO_CLIENT_EVENTS) {
+            for (const listener of client.listeners(eventName)) {
+              internalClient.on(eventName, listener);
+            }
+          }
+          client.on("newListener", (eventName, listener) => {
+            internalClient?.on(eventName, listener);
+          });
+          this.needsConnecting = true;
+        }
+        return internalClient;
+      }
+      async connectInternalClient() {
+        const internalClient = this[kInternalClient];
+        if (this.needsConnecting && internalClient != null) {
+          this.needsConnecting = false;
+          await internalClient.connect();
+        }
+      }
+      closeCallback(client, force, callback2) {
+        (0, util_1.callbackify)(this.close.bind(this))(client, force, callback2);
+      }
+      async close(client, force) {
+        let error;
+        try {
+          await this.autoEncrypter.teardown(force);
+        } catch (autoEncrypterError) {
+          error = autoEncrypterError;
+        }
+        const internalClient = this[kInternalClient];
+        if (internalClient != null && client !== internalClient) {
+          return await internalClient.close(force);
+        }
+        if (error != null) {
+          throw error;
+        }
+      }
+      static checkForMongoCrypt() {
+        const mongodbClientEncryption = (0, deps_1.getMongoDBClientEncryption)();
+        if ("kModuleError" in mongodbClientEncryption) {
+          throw new error_1.MongoMissingDependencyError("Auto-encryption requested, but the module is not installed. Please add `mongodb-client-encryption` as a dependency of your project", {
+            cause: mongodbClientEncryption["kModuleError"],
+            dependencyName: "mongodb-client-encryption"
+          });
+        }
+      }
+    };
+    exports.Encrypter = Encrypter;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/command_monitoring_events.js
+var require_command_monitoring_events2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/command_monitoring_events.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.SENSITIVE_COMMANDS = exports.CommandFailedEvent = exports.CommandSucceededEvent = exports.CommandStartedEvent = void 0;
+    var constants_1 = require_constants5();
+    var utils_1 = require_utils5();
+    var commands_1 = require_commands2();
+    var CommandStartedEvent = class {
+      constructor(connection, command, serverConnectionId) {
+        this.name = constants_1.COMMAND_STARTED;
+        const cmd = extractCommand(command);
+        const commandName = extractCommandName(cmd);
+        const { address, connectionId, serviceId } = extractConnectionDetails(connection);
+        if (exports.SENSITIVE_COMMANDS.has(commandName)) {
+          this.commandObj = {};
+          this.commandObj[commandName] = true;
+        }
+        this.address = address;
+        this.connectionId = connectionId;
+        this.serviceId = serviceId;
+        this.requestId = command.requestId;
+        this.databaseName = command.databaseName;
+        this.commandName = commandName;
+        this.command = maybeRedact(commandName, cmd, cmd);
+        this.serverConnectionId = serverConnectionId;
+      }
+      get hasServiceId() {
+        return !!this.serviceId;
+      }
+    };
+    exports.CommandStartedEvent = CommandStartedEvent;
+    var CommandSucceededEvent = class {
+      constructor(connection, command, reply, started, serverConnectionId) {
+        this.name = constants_1.COMMAND_SUCCEEDED;
+        const cmd = extractCommand(command);
+        const commandName = extractCommandName(cmd);
+        const { address, connectionId, serviceId } = extractConnectionDetails(connection);
+        this.address = address;
+        this.connectionId = connectionId;
+        this.serviceId = serviceId;
+        this.requestId = command.requestId;
+        this.commandName = commandName;
+        this.duration = (0, utils_1.calculateDurationInMs)(started);
+        this.reply = maybeRedact(commandName, cmd, extractReply(command, reply));
+        this.serverConnectionId = serverConnectionId;
+      }
+      get hasServiceId() {
+        return !!this.serviceId;
+      }
+    };
+    exports.CommandSucceededEvent = CommandSucceededEvent;
+    var CommandFailedEvent = class {
+      constructor(connection, command, error, started, serverConnectionId) {
+        this.name = constants_1.COMMAND_FAILED;
+        const cmd = extractCommand(command);
+        const commandName = extractCommandName(cmd);
+        const { address, connectionId, serviceId } = extractConnectionDetails(connection);
+        this.address = address;
+        this.connectionId = connectionId;
+        this.serviceId = serviceId;
+        this.requestId = command.requestId;
+        this.commandName = commandName;
+        this.duration = (0, utils_1.calculateDurationInMs)(started);
+        this.failure = maybeRedact(commandName, cmd, error);
+        this.serverConnectionId = serverConnectionId;
+      }
+      get hasServiceId() {
+        return !!this.serviceId;
+      }
+    };
+    exports.CommandFailedEvent = CommandFailedEvent;
+    exports.SENSITIVE_COMMANDS = /* @__PURE__ */ new Set([
+      "authenticate",
+      "saslStart",
+      "saslContinue",
+      "getnonce",
+      "createUser",
+      "updateUser",
+      "copydbgetnonce",
+      "copydbsaslstart",
+      "copydb"
+    ]);
+    var HELLO_COMMANDS = /* @__PURE__ */ new Set(["hello", constants_1.LEGACY_HELLO_COMMAND, constants_1.LEGACY_HELLO_COMMAND_CAMEL_CASE]);
+    var extractCommandName = (commandDoc) => Object.keys(commandDoc)[0];
+    var namespace = (command) => command.ns;
+    var collectionName = (command) => command.ns.split(".")[1];
+    var maybeRedact = (commandName, commandDoc, result) => exports.SENSITIVE_COMMANDS.has(commandName) || HELLO_COMMANDS.has(commandName) && commandDoc.speculativeAuthenticate ? {} : result;
+    var LEGACY_FIND_QUERY_MAP = {
+      $query: "filter",
+      $orderby: "sort",
+      $hint: "hint",
+      $comment: "comment",
+      $maxScan: "maxScan",
+      $max: "max",
+      $min: "min",
+      $returnKey: "returnKey",
+      $showDiskLoc: "showRecordId",
+      $maxTimeMS: "maxTimeMS",
+      $snapshot: "snapshot"
+    };
+    var LEGACY_FIND_OPTIONS_MAP = {
+      numberToSkip: "skip",
+      numberToReturn: "batchSize",
+      returnFieldSelector: "projection"
+    };
+    var OP_QUERY_KEYS = [
+      "tailable",
+      "oplogReplay",
+      "noCursorTimeout",
+      "awaitData",
+      "partial",
+      "exhaust"
+    ];
+    function extractCommand(command) {
+      if (command instanceof commands_1.OpMsgRequest) {
+        return (0, utils_1.deepCopy)(command.command);
+      }
+      if (command.query?.$query) {
+        let result;
+        if (command.ns === "admin.$cmd") {
+          result = Object.assign({}, command.query.$query);
+        } else {
+          result = { find: collectionName(command) };
+          Object.keys(LEGACY_FIND_QUERY_MAP).forEach((key) => {
+            if (command.query[key] != null) {
+              result[LEGACY_FIND_QUERY_MAP[key]] = (0, utils_1.deepCopy)(command.query[key]);
+            }
+          });
+        }
+        Object.keys(LEGACY_FIND_OPTIONS_MAP).forEach((key) => {
+          const legacyKey = key;
+          if (command[legacyKey] != null) {
+            result[LEGACY_FIND_OPTIONS_MAP[legacyKey]] = (0, utils_1.deepCopy)(command[legacyKey]);
+          }
+        });
+        OP_QUERY_KEYS.forEach((key) => {
+          if (command[key]) {
+            result[key] = command[key];
+          }
+        });
+        if (command.pre32Limit != null) {
+          result.limit = command.pre32Limit;
+        }
+        if (command.query.$explain) {
+          return { explain: result };
+        }
+        return result;
+      }
+      const clonedQuery = {};
+      const clonedCommand = {};
+      if (command.query) {
+        for (const k in command.query) {
+          clonedQuery[k] = (0, utils_1.deepCopy)(command.query[k]);
+        }
+        clonedCommand.query = clonedQuery;
+      }
+      for (const k in command) {
+        if (k === "query")
+          continue;
+        clonedCommand[k] = (0, utils_1.deepCopy)(command[k]);
+      }
+      return command.query ? clonedQuery : clonedCommand;
+    }
+    function extractReply(command, reply) {
+      if (!reply) {
+        return reply;
+      }
+      if (command instanceof commands_1.OpMsgRequest) {
+        return (0, utils_1.deepCopy)(reply.result ? reply.result : reply);
+      }
+      if (command.query && command.query.$query != null) {
+        return {
+          ok: 1,
+          cursor: {
+            id: (0, utils_1.deepCopy)(reply.cursorId),
+            ns: namespace(command),
+            firstBatch: (0, utils_1.deepCopy)(reply.documents)
+          }
+        };
+      }
+      return (0, utils_1.deepCopy)(reply.result ? reply.result : reply);
+    }
+    function extractConnectionDetails(connection) {
+      let connectionId;
+      if ("id" in connection) {
+        connectionId = connection.id;
+      }
+      return {
+        address: connection.address,
+        serviceId: connection.serviceId,
+        connectionId
+      };
+    }
+  }
+});
+
+// node_modules/mongodb/lib/cmap/stream_description.js
+var require_stream_description2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/stream_description.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.StreamDescription = void 0;
+    var bson_1 = require_bson3();
+    var common_1 = require_common5();
+    var server_description_1 = require_server_description2();
+    var RESPONSE_FIELDS = [
+      "minWireVersion",
+      "maxWireVersion",
+      "maxBsonObjectSize",
+      "maxMessageSizeBytes",
+      "maxWriteBatchSize",
+      "logicalSessionTimeoutMinutes"
+    ];
+    var StreamDescription = class {
+      constructor(address, options) {
+        this.hello = null;
+        this.address = address;
+        this.type = common_1.ServerType.Unknown;
+        this.minWireVersion = void 0;
+        this.maxWireVersion = void 0;
+        this.maxBsonObjectSize = 16777216;
+        this.maxMessageSizeBytes = 48e6;
+        this.maxWriteBatchSize = 1e5;
+        this.logicalSessionTimeoutMinutes = options?.logicalSessionTimeoutMinutes;
+        this.loadBalanced = !!options?.loadBalanced;
+        this.compressors = options && options.compressors && Array.isArray(options.compressors) ? options.compressors : [];
+        this.serverConnectionId = null;
+      }
+      receiveResponse(response) {
+        if (response == null) {
+          return;
+        }
+        this.hello = response;
+        this.type = (0, server_description_1.parseServerType)(response);
+        if ("connectionId" in response) {
+          this.serverConnectionId = this.parseServerConnectionID(response.connectionId);
+        } else {
+          this.serverConnectionId = null;
+        }
+        for (const field of RESPONSE_FIELDS) {
+          if (response[field] != null) {
+            this[field] = response[field];
+          }
+          if ("__nodejs_mock_server__" in response) {
+            this.__nodejs_mock_server__ = response["__nodejs_mock_server__"];
+          }
+        }
+        if (response.compression) {
+          this.compressor = this.compressors.filter((c) => response.compression?.includes(c))[0];
+        }
+      }
+      parseServerConnectionID(serverConnectionId) {
+        return bson_1.Long.isLong(serverConnectionId) ? serverConnectionId.toBigInt() : BigInt(serverConnectionId);
+      }
+    };
+    exports.StreamDescription = StreamDescription;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/wire_protocol/on_data.js
+var require_on_data2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/wire_protocol/on_data.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.onData = void 0;
+    var utils_1 = require_utils5();
+    function onData(emitter) {
+      const unconsumedEvents = new utils_1.List();
+      const unconsumedPromises = new utils_1.List();
+      let error = null;
+      let finished = false;
+      const iterator = {
+        next() {
+          const value = unconsumedEvents.shift();
+          if (value != null) {
+            return Promise.resolve({ value, done: false });
+          }
+          if (error != null) {
+            const p = Promise.reject(error);
+            error = null;
+            return p;
+          }
+          if (finished)
+            return closeHandler();
+          const { promise, resolve, reject } = (0, utils_1.promiseWithResolvers)();
+          unconsumedPromises.push({ resolve, reject });
+          return promise;
+        },
+        return() {
+          return closeHandler();
+        },
+        throw(err) {
+          errorHandler(err);
+          return Promise.resolve({ value: void 0, done: true });
+        },
+        [Symbol.asyncIterator]() {
+          return this;
+        }
+      };
+      emitter.on("data", eventHandler);
+      emitter.on("error", errorHandler);
+      return iterator;
+      function eventHandler(value) {
+        const promise = unconsumedPromises.shift();
+        if (promise != null)
+          promise.resolve({ value, done: false });
+        else
+          unconsumedEvents.push(value);
+      }
+      function errorHandler(err) {
+        const promise = unconsumedPromises.shift();
+        if (promise != null)
+          promise.reject(err);
+        else
+          error = err;
+        void closeHandler();
+      }
+      function closeHandler() {
+        emitter.off("data", eventHandler);
+        emitter.off("error", errorHandler);
+        finished = true;
+        const doneResult = { value: void 0, done: finished };
+        for (const promise of unconsumedPromises) {
+          promise.resolve(doneResult);
+        }
+        return Promise.resolve(doneResult);
+      }
+    }
+    exports.onData = onData;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/connection.js
+var require_connection4 = __commonJS({
+  "node_modules/mongodb/lib/cmap/connection.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.CryptoConnection = exports.SizedMessageTransform = exports.Connection = exports.hasSessionSupport = void 0;
+    var stream_1 = require("stream");
+    var timers_1 = require("timers");
+    var bson_1 = require_bson3();
+    var constants_1 = require_constants5();
+    var error_1 = require_error3();
+    var mongo_logger_1 = require_mongo_logger2();
+    var mongo_types_1 = require_mongo_types2();
+    var read_preference_1 = require_read_preference2();
+    var common_1 = require_common5();
+    var sessions_1 = require_sessions2();
+    var utils_1 = require_utils5();
+    var command_monitoring_events_1 = require_command_monitoring_events2();
+    var commands_1 = require_commands2();
+    var stream_description_1 = require_stream_description2();
+    var compression_1 = require_compression2();
+    var on_data_1 = require_on_data2();
+    var responses_1 = require_responses2();
+    var shared_1 = require_shared2();
+    function hasSessionSupport(conn) {
+      const description = conn.description;
+      return description.logicalSessionTimeoutMinutes != null;
+    }
+    exports.hasSessionSupport = hasSessionSupport;
+    function streamIdentifier(stream, options) {
+      if (options.proxyHost) {
+        return options.hostAddress.toString();
+      }
+      const { remoteAddress, remotePort } = stream;
+      if (typeof remoteAddress === "string" && typeof remotePort === "number") {
+        return utils_1.HostAddress.fromHostPort(remoteAddress, remotePort).toString();
+      }
+      return (0, utils_1.uuidV4)().toString("hex");
+    }
+    var Connection = class extends mongo_types_1.TypedEventEmitter {
+      constructor(stream, options) {
+        super();
+        this.lastHelloMS = -1;
+        this.helloOk = false;
+        this.delayedTimeoutId = null;
+        this.closed = false;
+        this.clusterTime = null;
+        this.error = null;
+        this.dataEvents = null;
+        this.socket = stream;
+        this.id = options.id;
+        this.address = streamIdentifier(stream, options);
+        this.socketTimeoutMS = options.socketTimeoutMS ?? 0;
+        this.monitorCommands = options.monitorCommands;
+        this.serverApi = options.serverApi;
+        this.mongoLogger = options.mongoLogger;
+        this.established = false;
+        this.description = new stream_description_1.StreamDescription(this.address, options);
+        this.generation = options.generation;
+        this.lastUseTime = (0, utils_1.now)();
+        this.messageStream = this.socket.on("error", this.onError.bind(this)).pipe(new SizedMessageTransform({ connection: this })).on("error", this.onError.bind(this));
+        this.socket.on("close", this.onClose.bind(this));
+        this.socket.on("timeout", this.onTimeout.bind(this));
+      }
+      get hello() {
+        return this.description.hello;
+      }
+      set hello(response) {
+        this.description.receiveResponse(response);
+        Object.freeze(this.description);
+      }
+      get serviceId() {
+        return this.hello?.serviceId;
+      }
+      get loadBalanced() {
+        return this.description.loadBalanced;
+      }
+      get idleTime() {
+        return (0, utils_1.calculateDurationInMs)(this.lastUseTime);
+      }
+      get hasSessionSupport() {
+        return this.description.logicalSessionTimeoutMinutes != null;
+      }
+      get supportsOpMsg() {
+        return this.description != null && (0, utils_1.maxWireVersion)(this) >= 6 && !this.description.__nodejs_mock_server__;
+      }
+      get shouldEmitAndLogCommand() {
+        return (this.monitorCommands || this.established && !this.authContext?.reauthenticating && this.mongoLogger?.willLog(mongo_logger_1.MongoLoggableComponent.COMMAND, mongo_logger_1.SeverityLevel.DEBUG)) ?? false;
+      }
+      markAvailable() {
+        this.lastUseTime = (0, utils_1.now)();
+      }
+      onError(error) {
+        this.cleanup(error);
+      }
+      onClose() {
+        const message = `connection ${this.id} to ${this.address} closed`;
+        this.cleanup(new error_1.MongoNetworkError(message));
+      }
+      onTimeout() {
+        this.delayedTimeoutId = (0, timers_1.setTimeout)(() => {
+          const message = `connection ${this.id} to ${this.address} timed out`;
+          const beforeHandshake = this.hello == null;
+          this.cleanup(new error_1.MongoNetworkTimeoutError(message, { beforeHandshake }));
+        }, 1).unref();
+      }
+      destroy() {
+        if (this.closed) {
+          return;
+        }
+        this.removeAllListeners(Connection.PINNED);
+        this.removeAllListeners(Connection.UNPINNED);
+        const message = `connection ${this.id} to ${this.address} closed`;
+        this.cleanup(new error_1.MongoNetworkError(message));
+      }
+      cleanup(error) {
+        if (this.closed) {
+          return;
+        }
+        this.socket.destroy();
+        this.error = error;
+        this.dataEvents?.throw(error).then(void 0, utils_1.squashError);
+        this.closed = true;
+        this.emit(Connection.CLOSE);
+      }
+      prepareCommand(db, command, options) {
+        let cmd = { ...command };
+        const readPreference = (0, shared_1.getReadPreference)(options);
+        const session = options?.session;
+        let clusterTime = this.clusterTime;
+        if (this.serverApi) {
+          const { version, strict, deprecationErrors } = this.serverApi;
+          cmd.apiVersion = version;
+          if (strict != null)
+            cmd.apiStrict = strict;
+          if (deprecationErrors != null)
+            cmd.apiDeprecationErrors = deprecationErrors;
+        }
+        if (this.hasSessionSupport && session) {
+          if (session.clusterTime && clusterTime && session.clusterTime.clusterTime.greaterThan(clusterTime.clusterTime)) {
+            clusterTime = session.clusterTime;
+          }
+          const sessionError = (0, sessions_1.applySession)(session, cmd, options);
+          if (sessionError)
+            throw sessionError;
+        } else if (session?.explicit) {
+          throw new error_1.MongoCompatibilityError("Current topology does not support sessions");
+        }
+        if (clusterTime) {
+          cmd.$clusterTime = clusterTime;
+        }
+        if (this.description.type !== common_1.ServerType.Standalone) {
+          if (!(0, shared_1.isSharded)(this) && !this.description.loadBalanced && this.supportsOpMsg && options.directConnection === true && readPreference?.mode === "primary") {
+            cmd.$readPreference = read_preference_1.ReadPreference.primaryPreferred.toJSON();
+          } else if ((0, shared_1.isSharded)(this) && !this.supportsOpMsg && readPreference?.mode !== "primary") {
+            cmd = {
+              $query: cmd,
+              $readPreference: readPreference.toJSON()
+            };
+          } else if (readPreference?.mode !== "primary") {
+            cmd.$readPreference = readPreference.toJSON();
+          }
+        }
+        const commandOptions = {
+          numberToSkip: 0,
+          numberToReturn: -1,
+          checkKeys: false,
+          secondaryOk: readPreference.secondaryOk(),
+          ...options
+        };
+        const message = this.supportsOpMsg ? new commands_1.OpMsgRequest(db, cmd, commandOptions) : new commands_1.OpQueryRequest(db, cmd, commandOptions);
+        return message;
+      }
+      async *sendWire(message, options, responseType) {
+        this.throwIfAborted();
+        if (typeof options.socketTimeoutMS === "number") {
+          this.socket.setTimeout(options.socketTimeoutMS);
+        } else if (this.socketTimeoutMS !== 0) {
+          this.socket.setTimeout(this.socketTimeoutMS);
+        }
+        try {
+          await this.writeCommand(message, {
+            agreedCompressor: this.description.compressor ?? "none",
+            zlibCompressionLevel: this.description.zlibCompressionLevel
+          });
+          if (options.noResponse) {
+            yield responses_1.MongoDBResponse.empty;
+            return;
+          }
+          this.throwIfAborted();
+          for await (const response of this.readMany()) {
+            this.socket.setTimeout(0);
+            const bson = response.parse();
+            const document2 = (responseType ?? responses_1.MongoDBResponse).make(bson);
+            yield document2;
+            this.throwIfAborted();
+            if (typeof options.socketTimeoutMS === "number") {
+              this.socket.setTimeout(options.socketTimeoutMS);
+            } else if (this.socketTimeoutMS !== 0) {
+              this.socket.setTimeout(this.socketTimeoutMS);
+            }
+          }
+        } finally {
+          this.socket.setTimeout(0);
+        }
+      }
+      async *sendCommand(ns, command, options, responseType) {
+        const message = this.prepareCommand(ns.db, command, options);
+        let started = 0;
+        if (this.shouldEmitAndLogCommand) {
+          started = (0, utils_1.now)();
+          this.emitAndLogCommand(this.monitorCommands, Connection.COMMAND_STARTED, message.databaseName, this.established, new command_monitoring_events_1.CommandStartedEvent(this, message, this.description.serverConnectionId));
+        }
+        const bsonOptions = options.documentsReturnedIn == null || !options.raw ? options : {
+          ...options,
+          raw: false,
+          fieldsAsRaw: { [options.documentsReturnedIn]: true }
+        };
+        let document2 = void 0;
+        let object = void 0;
+        try {
+          this.throwIfAborted();
+          for await (document2 of this.sendWire(message, options, responseType)) {
+            object = void 0;
+            if (options.session != null) {
+              (0, sessions_1.updateSessionFromResponse)(options.session, document2);
+            }
+            if (document2.$clusterTime) {
+              this.clusterTime = document2.$clusterTime;
+              this.emit(Connection.CLUSTER_TIME_RECEIVED, document2.$clusterTime);
+            }
+            if (document2.ok === 0) {
+              throw new error_1.MongoServerError(object ??= document2.toObject(bsonOptions));
+            }
+            if (this.shouldEmitAndLogCommand) {
+              this.emitAndLogCommand(this.monitorCommands, Connection.COMMAND_SUCCEEDED, message.databaseName, this.established, new command_monitoring_events_1.CommandSucceededEvent(this, message, options.noResponse ? void 0 : object ??= document2.toObject(bsonOptions), started, this.description.serverConnectionId));
+            }
+            if (responseType == null) {
+              yield object ??= document2.toObject(bsonOptions);
+            } else {
+              yield document2;
+            }
+            this.throwIfAborted();
+          }
+        } catch (error) {
+          if (this.shouldEmitAndLogCommand) {
+            this.emitAndLogCommand(this.monitorCommands, Connection.COMMAND_FAILED, message.databaseName, this.established, new command_monitoring_events_1.CommandFailedEvent(this, message, error, started, this.description.serverConnectionId));
+          }
+          throw error;
+        }
+      }
+      async command(ns, command, options = {}, responseType) {
+        this.throwIfAborted();
+        for await (const document2 of this.sendCommand(ns, command, options, responseType)) {
+          return document2;
+        }
+        throw new error_1.MongoUnexpectedServerResponseError("Unable to get response from server");
+      }
+      exhaustCommand(ns, command, options, replyListener) {
+        const exhaustLoop = async () => {
+          this.throwIfAborted();
+          for await (const reply of this.sendCommand(ns, command, options)) {
+            replyListener(void 0, reply);
+            this.throwIfAborted();
+          }
+          throw new error_1.MongoUnexpectedServerResponseError("Server ended moreToCome unexpectedly");
+        };
+        exhaustLoop().then(void 0, replyListener);
+      }
+      throwIfAborted() {
+        if (this.error)
+          throw this.error;
+      }
+      async writeCommand(command, options) {
+        const finalCommand = options.agreedCompressor === "none" || !commands_1.OpCompressedRequest.canCompress(command) ? command : new commands_1.OpCompressedRequest(command, {
+          agreedCompressor: options.agreedCompressor ?? "none",
+          zlibCompressionLevel: options.zlibCompressionLevel ?? 0
+        });
+        const buffer = Buffer.concat(await finalCommand.toBin());
+        if (this.socket.write(buffer))
+          return;
+        return await (0, utils_1.once)(this.socket, "drain");
+      }
+      async *readMany() {
+        try {
+          this.dataEvents = (0, on_data_1.onData)(this.messageStream);
+          for await (const message of this.dataEvents) {
+            const response = await (0, compression_1.decompressResponse)(message);
+            yield response;
+            if (!response.moreToCome) {
+              return;
+            }
+          }
+        } finally {
+          this.dataEvents = null;
+          this.throwIfAborted();
+        }
+      }
+    };
+    Connection.COMMAND_STARTED = constants_1.COMMAND_STARTED;
+    Connection.COMMAND_SUCCEEDED = constants_1.COMMAND_SUCCEEDED;
+    Connection.COMMAND_FAILED = constants_1.COMMAND_FAILED;
+    Connection.CLUSTER_TIME_RECEIVED = constants_1.CLUSTER_TIME_RECEIVED;
+    Connection.CLOSE = constants_1.CLOSE;
+    Connection.PINNED = constants_1.PINNED;
+    Connection.UNPINNED = constants_1.UNPINNED;
+    exports.Connection = Connection;
+    var SizedMessageTransform = class extends stream_1.Transform {
+      constructor({ connection }) {
+        super({ objectMode: false });
+        this.bufferPool = new utils_1.BufferPool();
+        this.connection = connection;
+      }
+      _transform(chunk, encoding, callback2) {
+        if (this.connection.delayedTimeoutId != null) {
+          (0, timers_1.clearTimeout)(this.connection.delayedTimeoutId);
+          this.connection.delayedTimeoutId = null;
+        }
+        this.bufferPool.append(chunk);
+        const sizeOfMessage = this.bufferPool.getInt32();
+        if (sizeOfMessage == null) {
+          return callback2();
+        }
+        if (sizeOfMessage < 0) {
+          return callback2(new error_1.MongoParseError(`Invalid message size: ${sizeOfMessage}, too small`));
+        }
+        if (sizeOfMessage > this.bufferPool.length) {
+          return callback2();
+        }
+        const message = this.bufferPool.read(sizeOfMessage);
+        return callback2(null, message);
+      }
+    };
+    exports.SizedMessageTransform = SizedMessageTransform;
+    var CryptoConnection = class extends Connection {
+      constructor(stream, options) {
+        super(stream, options);
+        this.autoEncrypter = options.autoEncrypter;
+      }
+      async command(ns, cmd, options, responseType) {
+        const { autoEncrypter } = this;
+        if (!autoEncrypter) {
+          throw new error_1.MongoMissingDependencyError("No AutoEncrypter available for encryption", {
+            dependencyName: "n/a"
+          });
+        }
+        const serverWireVersion = (0, utils_1.maxWireVersion)(this);
+        if (serverWireVersion === 0) {
+          return await super.command(ns, cmd, options, responseType);
+        }
+        if (serverWireVersion < 8) {
+          throw new error_1.MongoCompatibilityError("Auto-encryption requires a minimum MongoDB version of 4.2");
+        }
+        const sort = cmd.find || cmd.findAndModify ? cmd.sort : null;
+        const indexKeys = cmd.createIndexes ? cmd.indexes.map((index) => index.key) : null;
+        const encrypted = await autoEncrypter.encrypt(ns.toString(), cmd, options);
+        if (sort != null && (cmd.find || cmd.findAndModify)) {
+          encrypted.sort = sort;
+        }
+        if (indexKeys != null && cmd.createIndexes) {
+          for (const [offset, index] of indexKeys.entries()) {
+            encrypted.indexes[offset].key = index;
+          }
+        }
+        const encryptedResponse = await super.command(
+          ns,
+          encrypted,
+          options,
+          responseType ?? responses_1.MongoDBResponse
+        );
+        const result = await autoEncrypter.decrypt(encryptedResponse.toBytes(), options);
+        const decryptedResponse = responseType?.make(result) ?? (0, bson_1.deserialize)(result, options);
+        if (autoEncrypter[constants_1.kDecorateResult]) {
+          if (responseType == null) {
+            (0, utils_1.decorateDecryptionResult)(decryptedResponse, encryptedResponse.toObject(), true);
+          } else if (decryptedResponse instanceof responses_1.CursorResponse) {
+            decryptedResponse.encryptedResponse = encryptedResponse;
+          }
+        }
+        return decryptedResponse;
+      }
+    };
+    exports.CryptoConnection = CryptoConnection;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/connect.js
+var require_connect2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/connect.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.makeSocket = exports.LEGAL_TCP_SOCKET_OPTIONS = exports.LEGAL_TLS_SOCKET_OPTIONS = exports.prepareHandshakeDocument = exports.performInitialHandshake = exports.makeConnection = exports.connect = void 0;
+    var net = require("net");
+    var tls = require("tls");
+    var constants_1 = require_constants5();
+    var deps_1 = require_deps2();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var auth_provider_1 = require_auth_provider2();
+    var providers_1 = require_providers3();
+    var connection_1 = require_connection4();
+    var constants_2 = require_constants4();
+    async function connect(options) {
+      let connection = null;
+      try {
+        const socket = await makeSocket(options);
+        connection = makeConnection(options, socket);
+        await performInitialHandshake(connection, options);
+        return connection;
+      } catch (error) {
+        connection?.destroy();
+        throw error;
+      }
+    }
+    exports.connect = connect;
+    function makeConnection(options, socket) {
+      let ConnectionType = options.connectionType ?? connection_1.Connection;
+      if (options.autoEncrypter) {
+        ConnectionType = connection_1.CryptoConnection;
+      }
+      return new ConnectionType(socket, options);
+    }
+    exports.makeConnection = makeConnection;
+    function checkSupportedServer(hello, options) {
+      const maxWireVersion = Number(hello.maxWireVersion);
+      const minWireVersion = Number(hello.minWireVersion);
+      const serverVersionHighEnough = !Number.isNaN(maxWireVersion) && maxWireVersion >= constants_2.MIN_SUPPORTED_WIRE_VERSION;
+      const serverVersionLowEnough = !Number.isNaN(minWireVersion) && minWireVersion <= constants_2.MAX_SUPPORTED_WIRE_VERSION;
+      if (serverVersionHighEnough) {
+        if (serverVersionLowEnough) {
+          return null;
+        }
+        const message2 = `Server at ${options.hostAddress} reports minimum wire version ${JSON.stringify(hello.minWireVersion)}, but this version of the Node.js Driver requires at most ${constants_2.MAX_SUPPORTED_WIRE_VERSION} (MongoDB ${constants_2.MAX_SUPPORTED_SERVER_VERSION})`;
+        return new error_1.MongoCompatibilityError(message2);
+      }
+      const message = `Server at ${options.hostAddress} reports maximum wire version ${JSON.stringify(hello.maxWireVersion) ?? 0}, but this version of the Node.js Driver requires at least ${constants_2.MIN_SUPPORTED_WIRE_VERSION} (MongoDB ${constants_2.MIN_SUPPORTED_SERVER_VERSION})`;
+      return new error_1.MongoCompatibilityError(message);
+    }
+    async function performInitialHandshake(conn, options) {
+      const credentials = options.credentials;
+      if (credentials) {
+        if (!(credentials.mechanism === providers_1.AuthMechanism.MONGODB_DEFAULT) && !options.authProviders.getOrCreateProvider(credentials.mechanism, credentials.mechanismProperties)) {
+          throw new error_1.MongoInvalidArgumentError(`AuthMechanism '${credentials.mechanism}' not supported`);
+        }
+      }
+      const authContext = new auth_provider_1.AuthContext(conn, credentials, options);
+      conn.authContext = authContext;
+      const handshakeDoc = await prepareHandshakeDocument(authContext);
+      const handshakeOptions = { ...options, raw: false };
+      if (typeof options.connectTimeoutMS === "number") {
+        handshakeOptions.socketTimeoutMS = options.connectTimeoutMS;
+      }
+      const start = new Date().getTime();
+      const response = await conn.command((0, utils_1.ns)("admin.$cmd"), handshakeDoc, handshakeOptions);
+      if (!("isWritablePrimary" in response)) {
+        response.isWritablePrimary = response[constants_1.LEGACY_HELLO_COMMAND];
+      }
+      if (response.helloOk) {
+        conn.helloOk = true;
+      }
+      const supportedServerErr = checkSupportedServer(response, options);
+      if (supportedServerErr) {
+        throw supportedServerErr;
+      }
+      if (options.loadBalanced) {
+        if (!response.serviceId) {
+          throw new error_1.MongoCompatibilityError("Driver attempted to initialize in load balancing mode, but the server does not support this mode.");
+        }
+      }
+      conn.hello = response;
+      conn.lastHelloMS = new Date().getTime() - start;
+      if (!response.arbiterOnly && credentials) {
+        authContext.response = response;
+        const resolvedCredentials = credentials.resolveAuthMechanism(response);
+        const provider = options.authProviders.getOrCreateProvider(resolvedCredentials.mechanism, resolvedCredentials.mechanismProperties);
+        if (!provider) {
+          throw new error_1.MongoInvalidArgumentError(`No AuthProvider for ${resolvedCredentials.mechanism} defined.`);
+        }
+        try {
+          await provider.auth(authContext);
+        } catch (error) {
+          if (error instanceof error_1.MongoError) {
+            error.addErrorLabel(error_1.MongoErrorLabel.HandshakeError);
+            if ((0, error_1.needsRetryableWriteLabel)(error, response.maxWireVersion)) {
+              error.addErrorLabel(error_1.MongoErrorLabel.RetryableWriteError);
+            }
+          }
+          throw error;
+        }
+      }
+      conn.established = true;
+    }
+    exports.performInitialHandshake = performInitialHandshake;
+    async function prepareHandshakeDocument(authContext) {
+      const options = authContext.options;
+      const compressors = options.compressors ? options.compressors : [];
+      const { serverApi } = authContext.connection;
+      const clientMetadata = await options.extendedMetadata;
+      const handshakeDoc = {
+        [serverApi?.version || options.loadBalanced === true ? "hello" : constants_1.LEGACY_HELLO_COMMAND]: 1,
+        helloOk: true,
+        client: clientMetadata,
+        compression: compressors
+      };
+      if (options.loadBalanced === true) {
+        handshakeDoc.loadBalanced = true;
+      }
+      const credentials = authContext.credentials;
+      if (credentials) {
+        if (credentials.mechanism === providers_1.AuthMechanism.MONGODB_DEFAULT && credentials.username) {
+          handshakeDoc.saslSupportedMechs = `${credentials.source}.${credentials.username}`;
+          const provider2 = authContext.options.authProviders.getOrCreateProvider(providers_1.AuthMechanism.MONGODB_SCRAM_SHA256, credentials.mechanismProperties);
+          if (!provider2) {
+            throw new error_1.MongoInvalidArgumentError(`No AuthProvider for ${providers_1.AuthMechanism.MONGODB_SCRAM_SHA256} defined.`);
+          }
+          return await provider2.prepare(handshakeDoc, authContext);
+        }
+        const provider = authContext.options.authProviders.getOrCreateProvider(credentials.mechanism, credentials.mechanismProperties);
+        if (!provider) {
+          throw new error_1.MongoInvalidArgumentError(`No AuthProvider for ${credentials.mechanism} defined.`);
+        }
+        return await provider.prepare(handshakeDoc, authContext);
+      }
+      return handshakeDoc;
+    }
+    exports.prepareHandshakeDocument = prepareHandshakeDocument;
+    exports.LEGAL_TLS_SOCKET_OPTIONS = [
+      "ALPNProtocols",
+      "ca",
+      "cert",
+      "checkServerIdentity",
+      "ciphers",
+      "crl",
+      "ecdhCurve",
+      "key",
+      "minDHSize",
+      "passphrase",
+      "pfx",
+      "rejectUnauthorized",
+      "secureContext",
+      "secureProtocol",
+      "servername",
+      "session"
+    ];
+    exports.LEGAL_TCP_SOCKET_OPTIONS = [
+      "family",
+      "hints",
+      "localAddress",
+      "localPort",
+      "lookup"
+    ];
+    function parseConnectOptions(options) {
+      const hostAddress = options.hostAddress;
+      if (!hostAddress)
+        throw new error_1.MongoInvalidArgumentError('Option "hostAddress" is required');
+      const result = {};
+      for (const name of exports.LEGAL_TCP_SOCKET_OPTIONS) {
+        if (options[name] != null) {
+          result[name] = options[name];
+        }
+      }
+      if (typeof hostAddress.socketPath === "string") {
+        result.path = hostAddress.socketPath;
+        return result;
+      } else if (typeof hostAddress.host === "string") {
+        result.host = hostAddress.host;
+        result.port = hostAddress.port;
+        return result;
+      } else {
+        throw new error_1.MongoRuntimeError(`Unexpected HostAddress ${JSON.stringify(hostAddress)}`);
+      }
+    }
+    function parseSslOptions(options) {
+      const result = parseConnectOptions(options);
+      for (const name of exports.LEGAL_TLS_SOCKET_OPTIONS) {
+        if (options[name] != null) {
+          result[name] = options[name];
+        }
+      }
+      if (options.existingSocket) {
+        result.socket = options.existingSocket;
+      }
+      if (result.servername == null && result.host && !net.isIP(result.host)) {
+        result.servername = result.host;
+      }
+      return result;
+    }
+    async function makeSocket(options) {
+      const useTLS = options.tls ?? false;
+      const noDelay = options.noDelay ?? true;
+      const connectTimeoutMS = options.connectTimeoutMS ?? 3e4;
+      const existingSocket = options.existingSocket;
+      let socket;
+      if (options.proxyHost != null) {
+        return await makeSocks5Connection({
+          ...options,
+          connectTimeoutMS
+        });
+      }
+      if (useTLS) {
+        const tlsSocket = tls.connect(parseSslOptions(options));
+        if (typeof tlsSocket.disableRenegotiation === "function") {
+          tlsSocket.disableRenegotiation();
+        }
+        socket = tlsSocket;
+      } else if (existingSocket) {
+        socket = existingSocket;
+      } else {
+        socket = net.createConnection(parseConnectOptions(options));
+      }
+      socket.setKeepAlive(true, 3e5);
+      socket.setTimeout(connectTimeoutMS);
+      socket.setNoDelay(noDelay);
+      let cancellationHandler = null;
+      const { promise: connectedSocket, resolve, reject } = (0, utils_1.promiseWithResolvers)();
+      if (existingSocket) {
+        resolve(socket);
+      } else {
+        const connectEvent = useTLS ? "secureConnect" : "connect";
+        socket.once(connectEvent, () => resolve(socket)).once("error", (error) => reject(connectionFailureError("error", error))).once("timeout", () => reject(connectionFailureError("timeout"))).once("close", () => reject(connectionFailureError("close")));
+        if (options.cancellationToken != null) {
+          cancellationHandler = () => reject(connectionFailureError("cancel"));
+          options.cancellationToken.once("cancel", cancellationHandler);
+        }
+      }
+      try {
+        socket = await connectedSocket;
+        return socket;
+      } catch (error) {
+        socket.destroy();
+        throw error;
+      } finally {
+        socket.setTimeout(0);
+        socket.removeAllListeners();
+        if (cancellationHandler != null) {
+          options.cancellationToken?.removeListener("cancel", cancellationHandler);
+        }
+      }
+    }
+    exports.makeSocket = makeSocket;
+    var socks = null;
+    function loadSocks() {
+      if (socks == null) {
+        const socksImport = (0, deps_1.getSocks)();
+        if ("kModuleError" in socksImport) {
+          throw socksImport.kModuleError;
+        }
+        socks = socksImport;
+      }
+      return socks;
+    }
+    async function makeSocks5Connection(options) {
+      const hostAddress = utils_1.HostAddress.fromHostPort(
+        options.proxyHost ?? "",
+        options.proxyPort ?? 1080
+      );
+      const rawSocket = await makeSocket({
+        ...options,
+        hostAddress,
+        tls: false,
+        proxyHost: void 0
+      });
+      const destination = parseConnectOptions(options);
+      if (typeof destination.host !== "string" || typeof destination.port !== "number") {
+        throw new error_1.MongoInvalidArgumentError("Can only make Socks5 connections to TCP hosts");
+      }
+      socks ??= loadSocks();
+      try {
+        const { socket } = await socks.SocksClient.createConnection({
+          existing_socket: rawSocket,
+          timeout: options.connectTimeoutMS,
+          command: "connect",
+          destination: {
+            host: destination.host,
+            port: destination.port
+          },
+          proxy: {
+            host: "iLoveJavaScript",
+            port: 0,
+            type: 5,
+            userId: options.proxyUsername || void 0,
+            password: options.proxyPassword || void 0
+          }
+        });
+        return await makeSocket({
+          ...options,
+          existingSocket: socket,
+          proxyHost: void 0
+        });
+      } catch (error) {
+        throw connectionFailureError("error", error);
+      }
+    }
+    function connectionFailureError(type, cause) {
+      switch (type) {
+        case "error":
+          return new error_1.MongoNetworkError(error_1.MongoError.buildErrorMessage(cause), { cause });
+        case "timeout":
+          return new error_1.MongoNetworkTimeoutError("connection timed out");
+        case "close":
+          return new error_1.MongoNetworkError("connection closed");
+        case "cancel":
+          return new error_1.MongoNetworkError("connection establishment was cancelled");
+        default:
+          return new error_1.MongoNetworkError("unknown network error");
+      }
+    }
+  }
+});
+
+// node_modules/mongodb/lib/sdam/events.js
+var require_events2 = __commonJS({
+  "node_modules/mongodb/lib/sdam/events.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ServerHeartbeatFailedEvent = exports.ServerHeartbeatSucceededEvent = exports.ServerHeartbeatStartedEvent = exports.TopologyClosedEvent = exports.TopologyOpeningEvent = exports.TopologyDescriptionChangedEvent = exports.ServerClosedEvent = exports.ServerOpeningEvent = exports.ServerDescriptionChangedEvent = void 0;
+    var constants_1 = require_constants5();
+    var ServerDescriptionChangedEvent = class {
+      constructor(topologyId, address, previousDescription, newDescription) {
+        this.name = constants_1.SERVER_DESCRIPTION_CHANGED;
+        this.topologyId = topologyId;
+        this.address = address;
+        this.previousDescription = previousDescription;
+        this.newDescription = newDescription;
+      }
+    };
+    exports.ServerDescriptionChangedEvent = ServerDescriptionChangedEvent;
+    var ServerOpeningEvent = class {
+      constructor(topologyId, address) {
+        this.name = constants_1.SERVER_OPENING;
+        this.topologyId = topologyId;
+        this.address = address;
+      }
+    };
+    exports.ServerOpeningEvent = ServerOpeningEvent;
+    var ServerClosedEvent = class {
+      constructor(topologyId, address) {
+        this.name = constants_1.SERVER_CLOSED;
+        this.topologyId = topologyId;
+        this.address = address;
+      }
+    };
+    exports.ServerClosedEvent = ServerClosedEvent;
+    var TopologyDescriptionChangedEvent = class {
+      constructor(topologyId, previousDescription, newDescription) {
+        this.name = constants_1.TOPOLOGY_DESCRIPTION_CHANGED;
+        this.topologyId = topologyId;
+        this.previousDescription = previousDescription;
+        this.newDescription = newDescription;
+      }
+    };
+    exports.TopologyDescriptionChangedEvent = TopologyDescriptionChangedEvent;
+    var TopologyOpeningEvent = class {
+      constructor(topologyId) {
+        this.name = constants_1.TOPOLOGY_OPENING;
+        this.topologyId = topologyId;
+      }
+    };
+    exports.TopologyOpeningEvent = TopologyOpeningEvent;
+    var TopologyClosedEvent = class {
+      constructor(topologyId) {
+        this.name = constants_1.TOPOLOGY_CLOSED;
+        this.topologyId = topologyId;
+      }
+    };
+    exports.TopologyClosedEvent = TopologyClosedEvent;
+    var ServerHeartbeatStartedEvent = class {
+      constructor(connectionId, awaited) {
+        this.name = constants_1.SERVER_HEARTBEAT_STARTED;
+        this.connectionId = connectionId;
+        this.awaited = awaited;
+      }
+    };
+    exports.ServerHeartbeatStartedEvent = ServerHeartbeatStartedEvent;
+    var ServerHeartbeatSucceededEvent = class {
+      constructor(connectionId, duration, reply, awaited) {
+        this.name = constants_1.SERVER_HEARTBEAT_SUCCEEDED;
+        this.connectionId = connectionId;
+        this.duration = duration;
+        this.reply = reply ?? {};
+        this.awaited = awaited;
+      }
+    };
+    exports.ServerHeartbeatSucceededEvent = ServerHeartbeatSucceededEvent;
+    var ServerHeartbeatFailedEvent = class {
+      constructor(connectionId, duration, failure, awaited) {
+        this.name = constants_1.SERVER_HEARTBEAT_FAILED;
+        this.connectionId = connectionId;
+        this.duration = duration;
+        this.failure = failure;
+        this.awaited = awaited;
+      }
+    };
+    exports.ServerHeartbeatFailedEvent = ServerHeartbeatFailedEvent;
+  }
+});
+
+// node_modules/mongodb/lib/timeout.js
+var require_timeout2 = __commonJS({
+  "node_modules/mongodb/lib/timeout.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Timeout = exports.TimeoutError = void 0;
+    var timers_1 = require("timers");
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var TimeoutError = class extends Error {
+      get name() {
+        return "TimeoutError";
+      }
+      constructor(message, options) {
+        super(message, options);
+      }
+      static is(error) {
+        return error != null && typeof error === "object" && "name" in error && error.name === "TimeoutError";
+      }
+    };
+    exports.TimeoutError = TimeoutError;
+    var Timeout = class extends Promise {
+      get [Symbol.toStringTag]() {
+        return "MongoDBTimeout";
+      }
+      constructor(executor = () => null, duration, unref = false) {
+        let reject;
+        if (duration < 0) {
+          throw new error_1.MongoInvalidArgumentError("Cannot create a Timeout with a negative duration");
+        }
+        super((_, promiseReject) => {
+          reject = promiseReject;
+          executor(utils_1.noop, promiseReject);
+        });
+        this.ended = null;
+        this.timedOut = false;
+        this.duration = duration;
+        this.start = Math.trunc(performance.now());
+        if (this.duration > 0) {
+          this.id = (0, timers_1.setTimeout)(() => {
+            this.ended = Math.trunc(performance.now());
+            this.timedOut = true;
+            reject(new TimeoutError(`Expired after ${duration}ms`));
+          }, this.duration);
+          if (typeof this.id.unref === "function" && unref) {
+            this.id.unref();
+          }
+        }
+      }
+      clear() {
+        (0, timers_1.clearTimeout)(this.id);
+        this.id = void 0;
+      }
+      static expires(durationMS, unref) {
+        return new Timeout(void 0, durationMS, unref);
+      }
+      static is(timeout) {
+        return typeof timeout === "object" && timeout != null && Symbol.toStringTag in timeout && timeout[Symbol.toStringTag] === "MongoDBTimeout" && "then" in timeout && typeof timeout.then === "function";
+      }
+    };
+    exports.Timeout = Timeout;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/connection_pool_events.js
+var require_connection_pool_events2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/connection_pool_events.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ConnectionPoolClearedEvent = exports.ConnectionCheckedInEvent = exports.ConnectionCheckedOutEvent = exports.ConnectionCheckOutFailedEvent = exports.ConnectionCheckOutStartedEvent = exports.ConnectionClosedEvent = exports.ConnectionReadyEvent = exports.ConnectionCreatedEvent = exports.ConnectionPoolClosedEvent = exports.ConnectionPoolReadyEvent = exports.ConnectionPoolCreatedEvent = exports.ConnectionPoolMonitoringEvent = void 0;
+    var constants_1 = require_constants5();
+    var ConnectionPoolMonitoringEvent = class {
+      constructor(pool) {
+        this.time = new Date();
+        this.address = pool.address;
+      }
+    };
+    exports.ConnectionPoolMonitoringEvent = ConnectionPoolMonitoringEvent;
+    var ConnectionPoolCreatedEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool) {
+        super(pool);
+        this.name = constants_1.CONNECTION_POOL_CREATED;
+        const { maxConnecting, maxPoolSize, minPoolSize, maxIdleTimeMS, waitQueueTimeoutMS } = pool.options;
+        this.options = { maxConnecting, maxPoolSize, minPoolSize, maxIdleTimeMS, waitQueueTimeoutMS };
+      }
+    };
+    exports.ConnectionPoolCreatedEvent = ConnectionPoolCreatedEvent;
+    var ConnectionPoolReadyEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool) {
+        super(pool);
+        this.name = constants_1.CONNECTION_POOL_READY;
+      }
+    };
+    exports.ConnectionPoolReadyEvent = ConnectionPoolReadyEvent;
+    var ConnectionPoolClosedEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool) {
+        super(pool);
+        this.name = constants_1.CONNECTION_POOL_CLOSED;
+      }
+    };
+    exports.ConnectionPoolClosedEvent = ConnectionPoolClosedEvent;
+    var ConnectionCreatedEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool, connection) {
+        super(pool);
+        this.name = constants_1.CONNECTION_CREATED;
+        this.connectionId = connection.id;
+      }
+    };
+    exports.ConnectionCreatedEvent = ConnectionCreatedEvent;
+    var ConnectionReadyEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool, connection) {
+        super(pool);
+        this.name = constants_1.CONNECTION_READY;
+        this.connectionId = connection.id;
+      }
+    };
+    exports.ConnectionReadyEvent = ConnectionReadyEvent;
+    var ConnectionClosedEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool, connection, reason, error) {
+        super(pool);
+        this.name = constants_1.CONNECTION_CLOSED;
+        this.connectionId = connection.id;
+        this.reason = reason;
+        this.serviceId = connection.serviceId;
+        this.error = error ?? null;
+      }
+    };
+    exports.ConnectionClosedEvent = ConnectionClosedEvent;
+    var ConnectionCheckOutStartedEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool) {
+        super(pool);
+        this.name = constants_1.CONNECTION_CHECK_OUT_STARTED;
+      }
+    };
+    exports.ConnectionCheckOutStartedEvent = ConnectionCheckOutStartedEvent;
+    var ConnectionCheckOutFailedEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool, reason, error) {
+        super(pool);
+        this.name = constants_1.CONNECTION_CHECK_OUT_FAILED;
+        this.reason = reason;
+        this.error = error;
+      }
+    };
+    exports.ConnectionCheckOutFailedEvent = ConnectionCheckOutFailedEvent;
+    var ConnectionCheckedOutEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool, connection) {
+        super(pool);
+        this.name = constants_1.CONNECTION_CHECKED_OUT;
+        this.connectionId = connection.id;
+      }
+    };
+    exports.ConnectionCheckedOutEvent = ConnectionCheckedOutEvent;
+    var ConnectionCheckedInEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool, connection) {
+        super(pool);
+        this.name = constants_1.CONNECTION_CHECKED_IN;
+        this.connectionId = connection.id;
+      }
+    };
+    exports.ConnectionCheckedInEvent = ConnectionCheckedInEvent;
+    var ConnectionPoolClearedEvent = class extends ConnectionPoolMonitoringEvent {
+      constructor(pool, options = {}) {
+        super(pool);
+        this.name = constants_1.CONNECTION_POOL_CLEARED;
+        this.serviceId = options.serviceId;
+        this.interruptInUseConnections = options.interruptInUseConnections;
+      }
+    };
+    exports.ConnectionPoolClearedEvent = ConnectionPoolClearedEvent;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/errors.js
+var require_errors4 = __commonJS({
+  "node_modules/mongodb/lib/cmap/errors.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.WaitQueueTimeoutError = exports.PoolClearedOnNetworkError = exports.PoolClearedError = exports.PoolClosedError = void 0;
+    var error_1 = require_error3();
+    var PoolClosedError = class extends error_1.MongoDriverError {
+      constructor(pool) {
+        super("Attempted to check out a connection from closed connection pool");
+        this.address = pool.address;
+      }
+      get name() {
+        return "MongoPoolClosedError";
+      }
+    };
+    exports.PoolClosedError = PoolClosedError;
+    var PoolClearedError = class extends error_1.MongoNetworkError {
+      constructor(pool, message) {
+        const errorMessage = message ? message : `Connection pool for ${pool.address} was cleared because another operation failed with: "${pool.serverError?.message}"`;
+        super(errorMessage, pool.serverError ? { cause: pool.serverError } : void 0);
+        this.address = pool.address;
+        this.addErrorLabel(error_1.MongoErrorLabel.PoolRequstedRetry);
+      }
+      get name() {
+        return "MongoPoolClearedError";
+      }
+    };
+    exports.PoolClearedError = PoolClearedError;
+    var PoolClearedOnNetworkError = class extends PoolClearedError {
+      constructor(pool) {
+        super(pool, `Connection to ${pool.address} interrupted due to server monitor timeout`);
+      }
+      get name() {
+        return "PoolClearedOnNetworkError";
+      }
+    };
+    exports.PoolClearedOnNetworkError = PoolClearedOnNetworkError;
+    var WaitQueueTimeoutError = class extends error_1.MongoDriverError {
+      constructor(message, address) {
+        super(message);
+        this.address = address;
+      }
+      get name() {
+        return "MongoWaitQueueTimeoutError";
+      }
+    };
+    exports.WaitQueueTimeoutError = WaitQueueTimeoutError;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/connection_pool.js
+var require_connection_pool2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/connection_pool.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ConnectionPool = exports.PoolState = void 0;
+    var timers_1 = require("timers");
+    var constants_1 = require_constants5();
+    var error_1 = require_error3();
+    var mongo_types_1 = require_mongo_types2();
+    var timeout_1 = require_timeout2();
+    var utils_1 = require_utils5();
+    var connect_1 = require_connect2();
+    var connection_1 = require_connection4();
+    var connection_pool_events_1 = require_connection_pool_events2();
+    var errors_1 = require_errors4();
+    var metrics_1 = require_metrics2();
+    var kServer = Symbol("server");
+    var kConnections = Symbol("connections");
+    var kPending = Symbol("pending");
+    var kCheckedOut = Symbol("checkedOut");
+    var kMinPoolSizeTimer = Symbol("minPoolSizeTimer");
+    var kGeneration = Symbol("generation");
+    var kServiceGenerations = Symbol("serviceGenerations");
+    var kConnectionCounter = Symbol("connectionCounter");
+    var kCancellationToken = Symbol("cancellationToken");
+    var kWaitQueue = Symbol("waitQueue");
+    var kCancelled = Symbol("cancelled");
+    var kMetrics = Symbol("metrics");
+    var kProcessingWaitQueue = Symbol("processingWaitQueue");
+    var kPoolState = Symbol("poolState");
+    exports.PoolState = Object.freeze({
+      paused: "paused",
+      ready: "ready",
+      closed: "closed"
+    });
+    var ConnectionPool = class extends mongo_types_1.TypedEventEmitter {
+      constructor(server, options) {
+        super();
+        this.options = Object.freeze({
+          connectionType: connection_1.Connection,
+          ...options,
+          maxPoolSize: options.maxPoolSize ?? 100,
+          minPoolSize: options.minPoolSize ?? 0,
+          maxConnecting: options.maxConnecting ?? 2,
+          maxIdleTimeMS: options.maxIdleTimeMS ?? 0,
+          waitQueueTimeoutMS: options.waitQueueTimeoutMS ?? 0,
+          minPoolSizeCheckFrequencyMS: options.minPoolSizeCheckFrequencyMS ?? 100,
+          autoEncrypter: options.autoEncrypter
+        });
+        if (this.options.minPoolSize > this.options.maxPoolSize) {
+          throw new error_1.MongoInvalidArgumentError("Connection pool minimum size must not be greater than maximum pool size");
+        }
+        this[kPoolState] = exports.PoolState.paused;
+        this[kServer] = server;
+        this[kConnections] = new utils_1.List();
+        this[kPending] = 0;
+        this[kCheckedOut] = /* @__PURE__ */ new Set();
+        this[kMinPoolSizeTimer] = void 0;
+        this[kGeneration] = 0;
+        this[kServiceGenerations] = /* @__PURE__ */ new Map();
+        this[kConnectionCounter] = (0, utils_1.makeCounter)(1);
+        this[kCancellationToken] = new mongo_types_1.CancellationToken();
+        this[kCancellationToken].setMaxListeners(Infinity);
+        this[kWaitQueue] = new utils_1.List();
+        this[kMetrics] = new metrics_1.ConnectionPoolMetrics();
+        this[kProcessingWaitQueue] = false;
+        this.mongoLogger = this[kServer].topology.client?.mongoLogger;
+        this.component = "connection";
+        process.nextTick(() => {
+          this.emitAndLog(ConnectionPool.CONNECTION_POOL_CREATED, new connection_pool_events_1.ConnectionPoolCreatedEvent(this));
+        });
+      }
+      get address() {
+        return this.options.hostAddress.toString();
+      }
+      get closed() {
+        return this[kPoolState] === exports.PoolState.closed;
+      }
+      get generation() {
+        return this[kGeneration];
+      }
+      get totalConnectionCount() {
+        return this.availableConnectionCount + this.pendingConnectionCount + this.currentCheckedOutCount;
+      }
+      get availableConnectionCount() {
+        return this[kConnections].length;
+      }
+      get pendingConnectionCount() {
+        return this[kPending];
+      }
+      get currentCheckedOutCount() {
+        return this[kCheckedOut].size;
+      }
+      get waitQueueSize() {
+        return this[kWaitQueue].length;
+      }
+      get loadBalanced() {
+        return this.options.loadBalanced;
+      }
+      get serviceGenerations() {
+        return this[kServiceGenerations];
+      }
+      get serverError() {
+        return this[kServer].description.error;
+      }
+      get checkedOutConnections() {
+        return this[kCheckedOut];
+      }
+      waitQueueErrorMetrics() {
+        return this[kMetrics].info(this.options.maxPoolSize);
+      }
+      ready() {
+        if (this[kPoolState] !== exports.PoolState.paused) {
+          return;
+        }
+        this[kPoolState] = exports.PoolState.ready;
+        this.emitAndLog(ConnectionPool.CONNECTION_POOL_READY, new connection_pool_events_1.ConnectionPoolReadyEvent(this));
+        (0, timers_1.clearTimeout)(this[kMinPoolSizeTimer]);
+        this.ensureMinPoolSize();
+      }
+      async checkOut() {
+        this.emitAndLog(ConnectionPool.CONNECTION_CHECK_OUT_STARTED, new connection_pool_events_1.ConnectionCheckOutStartedEvent(this));
+        const waitQueueTimeoutMS = this.options.waitQueueTimeoutMS;
+        const { promise, resolve, reject } = (0, utils_1.promiseWithResolvers)();
+        const timeout = timeout_1.Timeout.expires(waitQueueTimeoutMS);
+        const waitQueueMember = {
+          resolve,
+          reject,
+          timeout
+        };
+        this[kWaitQueue].push(waitQueueMember);
+        process.nextTick(() => this.processWaitQueue());
+        try {
+          return await Promise.race([promise, waitQueueMember.timeout]);
+        } catch (error) {
+          if (timeout_1.TimeoutError.is(error)) {
+            waitQueueMember[kCancelled] = true;
+            waitQueueMember.timeout.clear();
+            this.emitAndLog(ConnectionPool.CONNECTION_CHECK_OUT_FAILED, new connection_pool_events_1.ConnectionCheckOutFailedEvent(this, "timeout"));
+            const timeoutError = new errors_1.WaitQueueTimeoutError(this.loadBalanced ? this.waitQueueErrorMetrics() : "Timed out while checking out a connection from connection pool", this.address);
+            throw timeoutError;
+          }
+          throw error;
+        }
+      }
+      checkIn(connection) {
+        if (!this[kCheckedOut].has(connection)) {
+          return;
+        }
+        const poolClosed = this.closed;
+        const stale = this.connectionIsStale(connection);
+        const willDestroy = !!(poolClosed || stale || connection.closed);
+        if (!willDestroy) {
+          connection.markAvailable();
+          this[kConnections].unshift(connection);
+        }
+        this[kCheckedOut].delete(connection);
+        this.emitAndLog(ConnectionPool.CONNECTION_CHECKED_IN, new connection_pool_events_1.ConnectionCheckedInEvent(this, connection));
+        if (willDestroy) {
+          const reason = connection.closed ? "error" : poolClosed ? "poolClosed" : "stale";
+          this.destroyConnection(connection, reason);
+        }
+        process.nextTick(() => this.processWaitQueue());
+      }
+      clear(options = {}) {
+        if (this.closed) {
+          return;
+        }
+        if (this.loadBalanced) {
+          const { serviceId } = options;
+          if (!serviceId) {
+            throw new error_1.MongoRuntimeError("ConnectionPool.clear() called in load balanced mode with no serviceId.");
+          }
+          const sid = serviceId.toHexString();
+          const generation = this.serviceGenerations.get(sid);
+          if (generation == null) {
+            throw new error_1.MongoRuntimeError("Service generations are required in load balancer mode.");
+          } else {
+            this.serviceGenerations.set(sid, generation + 1);
+          }
+          this.emitAndLog(ConnectionPool.CONNECTION_POOL_CLEARED, new connection_pool_events_1.ConnectionPoolClearedEvent(this, { serviceId }));
+          return;
+        }
+        const interruptInUseConnections = options.interruptInUseConnections ?? false;
+        const oldGeneration = this[kGeneration];
+        this[kGeneration] += 1;
+        const alreadyPaused = this[kPoolState] === exports.PoolState.paused;
+        this[kPoolState] = exports.PoolState.paused;
+        this.clearMinPoolSizeTimer();
+        if (!alreadyPaused) {
+          this.emitAndLog(ConnectionPool.CONNECTION_POOL_CLEARED, new connection_pool_events_1.ConnectionPoolClearedEvent(this, {
+            interruptInUseConnections
+          }));
+        }
+        if (interruptInUseConnections) {
+          process.nextTick(() => this.interruptInUseConnections(oldGeneration));
+        }
+        this.processWaitQueue();
+      }
+      interruptInUseConnections(minGeneration) {
+        for (const connection of this[kCheckedOut]) {
+          if (connection.generation <= minGeneration) {
+            connection.onError(new errors_1.PoolClearedOnNetworkError(this));
+            this.checkIn(connection);
+          }
+        }
+      }
+      close() {
+        if (this.closed) {
+          return;
+        }
+        this[kCancellationToken].emit("cancel");
+        if (typeof this[kConnectionCounter].return === "function") {
+          this[kConnectionCounter].return(void 0);
+        }
+        this[kPoolState] = exports.PoolState.closed;
+        this.clearMinPoolSizeTimer();
+        this.processWaitQueue();
+        for (const conn of this[kConnections]) {
+          this.emitAndLog(ConnectionPool.CONNECTION_CLOSED, new connection_pool_events_1.ConnectionClosedEvent(this, conn, "poolClosed"));
+          conn.destroy();
+        }
+        this[kConnections].clear();
+        this.emitAndLog(ConnectionPool.CONNECTION_POOL_CLOSED, new connection_pool_events_1.ConnectionPoolClosedEvent(this));
+      }
+      async reauthenticate(connection) {
+        const authContext = connection.authContext;
+        if (!authContext) {
+          throw new error_1.MongoRuntimeError("No auth context found on connection.");
+        }
+        const credentials = authContext.credentials;
+        if (!credentials) {
+          throw new error_1.MongoMissingCredentialsError("Connection is missing credentials when asked to reauthenticate");
+        }
+        const resolvedCredentials = credentials.resolveAuthMechanism(connection.hello);
+        const provider = this[kServer].topology.client.s.authProviders.getOrCreateProvider(resolvedCredentials.mechanism, resolvedCredentials.mechanismProperties);
+        if (!provider) {
+          throw new error_1.MongoMissingCredentialsError(`Reauthenticate failed due to no auth provider for ${credentials.mechanism}`);
+        }
+        await provider.reauth(authContext);
+        return;
+      }
+      clearMinPoolSizeTimer() {
+        const minPoolSizeTimer = this[kMinPoolSizeTimer];
+        if (minPoolSizeTimer) {
+          (0, timers_1.clearTimeout)(minPoolSizeTimer);
+        }
+      }
+      destroyConnection(connection, reason) {
+        this.emitAndLog(ConnectionPool.CONNECTION_CLOSED, new connection_pool_events_1.ConnectionClosedEvent(this, connection, reason));
+        connection.destroy();
+      }
+      connectionIsStale(connection) {
+        const serviceId = connection.serviceId;
+        if (this.loadBalanced && serviceId) {
+          const sid = serviceId.toHexString();
+          const generation = this.serviceGenerations.get(sid);
+          return connection.generation !== generation;
+        }
+        return connection.generation !== this[kGeneration];
+      }
+      connectionIsIdle(connection) {
+        return !!(this.options.maxIdleTimeMS && connection.idleTime > this.options.maxIdleTimeMS);
+      }
+      destroyConnectionIfPerished(connection) {
+        const isStale = this.connectionIsStale(connection);
+        const isIdle = this.connectionIsIdle(connection);
+        if (!isStale && !isIdle && !connection.closed) {
+          return false;
+        }
+        const reason = connection.closed ? "error" : isStale ? "stale" : "idle";
+        this.destroyConnection(connection, reason);
+        return true;
+      }
+      createConnection(callback2) {
+        const connectOptions = {
+          ...this.options,
+          id: this[kConnectionCounter].next().value,
+          generation: this[kGeneration],
+          cancellationToken: this[kCancellationToken],
+          mongoLogger: this.mongoLogger,
+          authProviders: this[kServer].topology.client.s.authProviders
+        };
+        this[kPending]++;
+        this.emitAndLog(ConnectionPool.CONNECTION_CREATED, new connection_pool_events_1.ConnectionCreatedEvent(this, { id: connectOptions.id }));
+        (0, connect_1.connect)(connectOptions).then((connection) => {
+          if (this[kPoolState] !== exports.PoolState.ready) {
+            this[kPending]--;
+            connection.destroy();
+            callback2(this.closed ? new errors_1.PoolClosedError(this) : new errors_1.PoolClearedError(this));
+            return;
+          }
+          for (const event of [...constants_1.APM_EVENTS, connection_1.Connection.CLUSTER_TIME_RECEIVED]) {
+            connection.on(event, (e) => this.emit(event, e));
+          }
+          if (this.loadBalanced) {
+            connection.on(connection_1.Connection.PINNED, (pinType) => this[kMetrics].markPinned(pinType));
+            connection.on(connection_1.Connection.UNPINNED, (pinType) => this[kMetrics].markUnpinned(pinType));
+            const serviceId = connection.serviceId;
+            if (serviceId) {
+              let generation;
+              const sid = serviceId.toHexString();
+              if (generation = this.serviceGenerations.get(sid)) {
+                connection.generation = generation;
+              } else {
+                this.serviceGenerations.set(sid, 0);
+                connection.generation = 0;
+              }
+            }
+          }
+          connection.markAvailable();
+          this.emitAndLog(ConnectionPool.CONNECTION_READY, new connection_pool_events_1.ConnectionReadyEvent(this, connection));
+          this[kPending]--;
+          callback2(void 0, connection);
+        }, (error) => {
+          this[kPending]--;
+          this.emitAndLog(ConnectionPool.CONNECTION_CLOSED, new connection_pool_events_1.ConnectionClosedEvent(
+            this,
+            { id: connectOptions.id, serviceId: void 0 },
+            "error",
+            error
+          ));
+          if (error instanceof error_1.MongoNetworkError || error instanceof error_1.MongoServerError) {
+            error.connectionGeneration = connectOptions.generation;
+          }
+          callback2(error ?? new error_1.MongoRuntimeError("Connection creation failed without error"));
+        });
+      }
+      ensureMinPoolSize() {
+        const minPoolSize = this.options.minPoolSize;
+        if (this[kPoolState] !== exports.PoolState.ready || minPoolSize === 0) {
+          return;
+        }
+        this[kConnections].prune((connection) => this.destroyConnectionIfPerished(connection));
+        if (this.totalConnectionCount < minPoolSize && this.pendingConnectionCount < this.options.maxConnecting) {
+          this.createConnection((err, connection) => {
+            if (err) {
+              this[kServer].handleError(err);
+            }
+            if (!err && connection) {
+              this[kConnections].push(connection);
+              process.nextTick(() => this.processWaitQueue());
+            }
+            if (this[kPoolState] === exports.PoolState.ready) {
+              (0, timers_1.clearTimeout)(this[kMinPoolSizeTimer]);
+              this[kMinPoolSizeTimer] = (0, timers_1.setTimeout)(() => this.ensureMinPoolSize(), this.options.minPoolSizeCheckFrequencyMS);
+            }
+          });
+        } else {
+          (0, timers_1.clearTimeout)(this[kMinPoolSizeTimer]);
+          this[kMinPoolSizeTimer] = (0, timers_1.setTimeout)(() => this.ensureMinPoolSize(), this.options.minPoolSizeCheckFrequencyMS);
+        }
+      }
+      processWaitQueue() {
+        if (this[kProcessingWaitQueue]) {
+          return;
+        }
+        this[kProcessingWaitQueue] = true;
+        while (this.waitQueueSize) {
+          const waitQueueMember = this[kWaitQueue].first();
+          if (!waitQueueMember) {
+            this[kWaitQueue].shift();
+            continue;
+          }
+          if (waitQueueMember[kCancelled]) {
+            this[kWaitQueue].shift();
+            continue;
+          }
+          if (this[kPoolState] !== exports.PoolState.ready) {
+            const reason = this.closed ? "poolClosed" : "connectionError";
+            const error = this.closed ? new errors_1.PoolClosedError(this) : new errors_1.PoolClearedError(this);
+            this.emitAndLog(ConnectionPool.CONNECTION_CHECK_OUT_FAILED, new connection_pool_events_1.ConnectionCheckOutFailedEvent(this, reason, error));
+            waitQueueMember.timeout.clear();
+            this[kWaitQueue].shift();
+            waitQueueMember.reject(error);
+            continue;
+          }
+          if (!this.availableConnectionCount) {
+            break;
+          }
+          const connection = this[kConnections].shift();
+          if (!connection) {
+            break;
+          }
+          if (!this.destroyConnectionIfPerished(connection)) {
+            this[kCheckedOut].add(connection);
+            this.emitAndLog(ConnectionPool.CONNECTION_CHECKED_OUT, new connection_pool_events_1.ConnectionCheckedOutEvent(this, connection));
+            waitQueueMember.timeout.clear();
+            this[kWaitQueue].shift();
+            waitQueueMember.resolve(connection);
+          }
+        }
+        const { maxPoolSize, maxConnecting } = this.options;
+        while (this.waitQueueSize > 0 && this.pendingConnectionCount < maxConnecting && (maxPoolSize === 0 || this.totalConnectionCount < maxPoolSize)) {
+          const waitQueueMember = this[kWaitQueue].shift();
+          if (!waitQueueMember || waitQueueMember[kCancelled]) {
+            continue;
+          }
+          this.createConnection((err, connection) => {
+            if (waitQueueMember[kCancelled]) {
+              if (!err && connection) {
+                this[kConnections].push(connection);
+              }
+            } else {
+              if (err) {
+                this.emitAndLog(
+                  ConnectionPool.CONNECTION_CHECK_OUT_FAILED,
+                  new connection_pool_events_1.ConnectionCheckOutFailedEvent(this, "connectionError", err)
+                );
+                waitQueueMember.reject(err);
+              } else if (connection) {
+                this[kCheckedOut].add(connection);
+                this.emitAndLog(ConnectionPool.CONNECTION_CHECKED_OUT, new connection_pool_events_1.ConnectionCheckedOutEvent(this, connection));
+                waitQueueMember.resolve(connection);
+              }
+              waitQueueMember.timeout.clear();
+            }
+            process.nextTick(() => this.processWaitQueue());
+          });
+        }
+        this[kProcessingWaitQueue] = false;
+      }
+    };
+    ConnectionPool.CONNECTION_POOL_CREATED = constants_1.CONNECTION_POOL_CREATED;
+    ConnectionPool.CONNECTION_POOL_CLOSED = constants_1.CONNECTION_POOL_CLOSED;
+    ConnectionPool.CONNECTION_POOL_CLEARED = constants_1.CONNECTION_POOL_CLEARED;
+    ConnectionPool.CONNECTION_POOL_READY = constants_1.CONNECTION_POOL_READY;
+    ConnectionPool.CONNECTION_CREATED = constants_1.CONNECTION_CREATED;
+    ConnectionPool.CONNECTION_READY = constants_1.CONNECTION_READY;
+    ConnectionPool.CONNECTION_CLOSED = constants_1.CONNECTION_CLOSED;
+    ConnectionPool.CONNECTION_CHECK_OUT_STARTED = constants_1.CONNECTION_CHECK_OUT_STARTED;
+    ConnectionPool.CONNECTION_CHECK_OUT_FAILED = constants_1.CONNECTION_CHECK_OUT_FAILED;
+    ConnectionPool.CONNECTION_CHECKED_OUT = constants_1.CONNECTION_CHECKED_OUT;
+    ConnectionPool.CONNECTION_CHECKED_IN = constants_1.CONNECTION_CHECKED_IN;
+    exports.ConnectionPool = ConnectionPool;
+  }
+});
+
+// node_modules/mongodb/lib/sdam/server.js
+var require_server2 = __commonJS({
+  "node_modules/mongodb/lib/sdam/server.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Server = void 0;
+    var connection_1 = require_connection4();
+    var connection_pool_1 = require_connection_pool2();
+    var errors_1 = require_errors4();
+    var constants_1 = require_constants5();
+    var error_1 = require_error3();
+    var mongo_types_1 = require_mongo_types2();
+    var transactions_1 = require_transactions2();
+    var utils_1 = require_utils5();
+    var write_concern_1 = require_write_concern2();
+    var common_1 = require_common5();
+    var monitor_1 = require_monitor2();
+    var server_description_1 = require_server_description2();
+    var stateTransition = (0, utils_1.makeStateMachine)({
+      [common_1.STATE_CLOSED]: [common_1.STATE_CLOSED, common_1.STATE_CONNECTING],
+      [common_1.STATE_CONNECTING]: [common_1.STATE_CONNECTING, common_1.STATE_CLOSING, common_1.STATE_CONNECTED, common_1.STATE_CLOSED],
+      [common_1.STATE_CONNECTED]: [common_1.STATE_CONNECTED, common_1.STATE_CLOSING, common_1.STATE_CLOSED],
+      [common_1.STATE_CLOSING]: [common_1.STATE_CLOSING, common_1.STATE_CLOSED]
+    });
+    var Server = class extends mongo_types_1.TypedEventEmitter {
+      constructor(topology, description, options) {
+        super();
+        this.serverApi = options.serverApi;
+        const poolOptions = { hostAddress: description.hostAddress, ...options };
+        this.topology = topology;
+        this.pool = new connection_pool_1.ConnectionPool(this, poolOptions);
+        this.s = {
+          description,
+          options,
+          state: common_1.STATE_CLOSED,
+          operationCount: 0
+        };
+        for (const event of [...constants_1.CMAP_EVENTS, ...constants_1.APM_EVENTS]) {
+          this.pool.on(event, (e) => this.emit(event, e));
+        }
+        this.pool.on(connection_1.Connection.CLUSTER_TIME_RECEIVED, (clusterTime) => {
+          this.clusterTime = clusterTime;
+        });
+        if (this.loadBalanced) {
+          this.monitor = null;
+          return;
+        }
+        this.monitor = new monitor_1.Monitor(this, this.s.options);
+        for (const event of constants_1.HEARTBEAT_EVENTS) {
+          this.monitor.on(event, (e) => this.emit(event, e));
+        }
+        this.monitor.on("resetServer", (error) => markServerUnknown(this, error));
+        this.monitor.on(Server.SERVER_HEARTBEAT_SUCCEEDED, (event) => {
+          this.emit(Server.DESCRIPTION_RECEIVED, new server_description_1.ServerDescription(this.description.hostAddress, event.reply, {
+            roundTripTime: this.monitor?.roundTripTime,
+            minRoundTripTime: this.monitor?.minRoundTripTime
+          }));
+          if (this.s.state === common_1.STATE_CONNECTING) {
+            stateTransition(this, common_1.STATE_CONNECTED);
+            this.emit(Server.CONNECT, this);
+          }
+        });
+      }
+      get clusterTime() {
+        return this.topology.clusterTime;
+      }
+      set clusterTime(clusterTime) {
+        this.topology.clusterTime = clusterTime;
+      }
+      get description() {
+        return this.s.description;
+      }
+      get name() {
+        return this.s.description.address;
+      }
+      get autoEncrypter() {
+        if (this.s.options && this.s.options.autoEncrypter) {
+          return this.s.options.autoEncrypter;
+        }
+        return;
+      }
+      get loadBalanced() {
+        return this.topology.description.type === common_1.TopologyType.LoadBalanced;
+      }
+      connect() {
+        if (this.s.state !== common_1.STATE_CLOSED) {
+          return;
+        }
+        stateTransition(this, common_1.STATE_CONNECTING);
+        if (!this.loadBalanced) {
+          this.monitor?.connect();
+        } else {
+          stateTransition(this, common_1.STATE_CONNECTED);
+          this.emit(Server.CONNECT, this);
+        }
+      }
+      destroy() {
+        if (this.s.state === common_1.STATE_CLOSED) {
+          return;
+        }
+        stateTransition(this, common_1.STATE_CLOSING);
+        if (!this.loadBalanced) {
+          this.monitor?.close();
+        }
+        this.pool.close();
+        stateTransition(this, common_1.STATE_CLOSED);
+        this.emit("closed");
+      }
+      requestCheck() {
+        if (!this.loadBalanced) {
+          this.monitor?.requestCheck();
+        }
+      }
+      async command(ns, cmd, options, responseType) {
+        if (ns.db == null || typeof ns === "string") {
+          throw new error_1.MongoInvalidArgumentError("Namespace must not be a string");
+        }
+        if (this.s.state === common_1.STATE_CLOSING || this.s.state === common_1.STATE_CLOSED) {
+          throw new error_1.MongoServerClosedError();
+        }
+        const finalOptions = Object.assign({}, options, {
+          wireProtocolCommand: false,
+          directConnection: this.topology.s.options.directConnection
+        });
+        if (finalOptions.omitReadPreference) {
+          delete finalOptions.readPreference;
+        }
+        const session = finalOptions.session;
+        let conn = session?.pinnedConnection;
+        this.incrementOperationCount();
+        if (conn == null) {
+          try {
+            conn = await this.pool.checkOut();
+            if (this.loadBalanced && isPinnableCommand(cmd, session)) {
+              session?.pin(conn);
+            }
+          } catch (checkoutError) {
+            this.decrementOperationCount();
+            if (!(checkoutError instanceof errors_1.PoolClearedError))
+              this.handleError(checkoutError);
+            throw checkoutError;
+          }
+        }
+        try {
+          try {
+            const res = await conn.command(ns, cmd, finalOptions, responseType);
+            (0, write_concern_1.throwIfWriteConcernError)(res);
+            return res;
+          } catch (commandError) {
+            throw this.decorateCommandError(conn, cmd, finalOptions, commandError);
+          }
+        } catch (operationError) {
+          if (operationError instanceof error_1.MongoError && operationError.code === error_1.MONGODB_ERROR_CODES.Reauthenticate) {
+            await this.pool.reauthenticate(conn);
+            try {
+              const res = await conn.command(ns, cmd, finalOptions, responseType);
+              (0, write_concern_1.throwIfWriteConcernError)(res);
+              return res;
+            } catch (commandError) {
+              throw this.decorateCommandError(conn, cmd, finalOptions, commandError);
+            }
+          } else {
+            throw operationError;
+          }
+        } finally {
+          this.decrementOperationCount();
+          if (session?.pinnedConnection !== conn) {
+            this.pool.checkIn(conn);
+          }
+        }
+      }
+      handleError(error, connection) {
+        if (!(error instanceof error_1.MongoError)) {
+          return;
+        }
+        const isStaleError = error.connectionGeneration && error.connectionGeneration < this.pool.generation;
+        if (isStaleError) {
+          return;
+        }
+        const isNetworkNonTimeoutError = error instanceof error_1.MongoNetworkError && !(error instanceof error_1.MongoNetworkTimeoutError);
+        const isNetworkTimeoutBeforeHandshakeError = (0, error_1.isNetworkErrorBeforeHandshake)(error);
+        const isAuthHandshakeError = error.hasErrorLabel(error_1.MongoErrorLabel.HandshakeError);
+        if (isNetworkNonTimeoutError || isNetworkTimeoutBeforeHandshakeError || isAuthHandshakeError) {
+          if (!this.loadBalanced) {
+            error.addErrorLabel(error_1.MongoErrorLabel.ResetPool);
+            markServerUnknown(this, error);
+          } else if (connection) {
+            this.pool.clear({ serviceId: connection.serviceId });
+          }
+        } else {
+          if ((0, error_1.isSDAMUnrecoverableError)(error)) {
+            if (shouldHandleStateChangeError(this, error)) {
+              const shouldClearPool = (0, utils_1.maxWireVersion)(this) <= 7 || (0, error_1.isNodeShuttingDownError)(error);
+              if (this.loadBalanced && connection && shouldClearPool) {
+                this.pool.clear({ serviceId: connection.serviceId });
+              }
+              if (!this.loadBalanced) {
+                if (shouldClearPool) {
+                  error.addErrorLabel(error_1.MongoErrorLabel.ResetPool);
+                }
+                markServerUnknown(this, error);
+                process.nextTick(() => this.requestCheck());
+              }
+            }
+          }
+        }
+      }
+      decorateCommandError(connection, cmd, options, error) {
+        if (typeof error !== "object" || error == null || !("name" in error)) {
+          throw new error_1.MongoRuntimeError("An unexpected error type: " + typeof error);
+        }
+        if (error.name === "AbortError" && "cause" in error && error.cause instanceof error_1.MongoError) {
+          error = error.cause;
+        }
+        if (!(error instanceof error_1.MongoError)) {
+          return error;
+        }
+        if (connectionIsStale(this.pool, connection)) {
+          return error;
+        }
+        const session = options?.session;
+        if (error instanceof error_1.MongoNetworkError) {
+          if (session && !session.hasEnded && session.serverSession) {
+            session.serverSession.isDirty = true;
+          }
+          if (inActiveTransaction(session, cmd) && !error.hasErrorLabel(error_1.MongoErrorLabel.TransientTransactionError)) {
+            error.addErrorLabel(error_1.MongoErrorLabel.TransientTransactionError);
+          }
+          if ((isRetryableWritesEnabled(this.topology) || (0, transactions_1.isTransactionCommand)(cmd)) && (0, utils_1.supportsRetryableWrites)(this) && !inActiveTransaction(session, cmd)) {
+            error.addErrorLabel(error_1.MongoErrorLabel.RetryableWriteError);
+          }
+        } else {
+          if ((isRetryableWritesEnabled(this.topology) || (0, transactions_1.isTransactionCommand)(cmd)) && (0, error_1.needsRetryableWriteLabel)(error, (0, utils_1.maxWireVersion)(this)) && !inActiveTransaction(session, cmd)) {
+            error.addErrorLabel(error_1.MongoErrorLabel.RetryableWriteError);
+          }
+        }
+        if (session && session.isPinned && error.hasErrorLabel(error_1.MongoErrorLabel.TransientTransactionError)) {
+          session.unpin({ force: true });
+        }
+        this.handleError(error, connection);
+        return error;
+      }
+      decrementOperationCount() {
+        return this.s.operationCount -= 1;
+      }
+      incrementOperationCount() {
+        return this.s.operationCount += 1;
+      }
+    };
+    Server.SERVER_HEARTBEAT_STARTED = constants_1.SERVER_HEARTBEAT_STARTED;
+    Server.SERVER_HEARTBEAT_SUCCEEDED = constants_1.SERVER_HEARTBEAT_SUCCEEDED;
+    Server.SERVER_HEARTBEAT_FAILED = constants_1.SERVER_HEARTBEAT_FAILED;
+    Server.CONNECT = constants_1.CONNECT;
+    Server.DESCRIPTION_RECEIVED = constants_1.DESCRIPTION_RECEIVED;
+    Server.CLOSED = constants_1.CLOSED;
+    Server.ENDED = constants_1.ENDED;
+    exports.Server = Server;
+    function markServerUnknown(server, error) {
+      if (server.loadBalanced) {
+        return;
+      }
+      if (error instanceof error_1.MongoNetworkError && !(error instanceof error_1.MongoNetworkTimeoutError)) {
+        server.monitor?.reset();
+      }
+      server.emit(Server.DESCRIPTION_RECEIVED, new server_description_1.ServerDescription(server.description.hostAddress, void 0, { error }));
+    }
+    function isPinnableCommand(cmd, session) {
+      if (session) {
+        return session.inTransaction() || session.transaction.isCommitted && "commitTransaction" in cmd || "aggregate" in cmd || "find" in cmd || "getMore" in cmd || "listCollections" in cmd || "listIndexes" in cmd;
+      }
+      return false;
+    }
+    function connectionIsStale(pool, connection) {
+      if (connection.serviceId) {
+        return connection.generation !== pool.serviceGenerations.get(connection.serviceId.toHexString());
+      }
+      return connection.generation !== pool.generation;
+    }
+    function shouldHandleStateChangeError(server, err) {
+      const etv = err.topologyVersion;
+      const stv = server.description.topologyVersion;
+      return (0, server_description_1.compareTopologyVersion)(stv, etv) < 0;
+    }
+    function inActiveTransaction(session, cmd) {
+      return session && session.inTransaction() && !(0, transactions_1.isTransactionCommand)(cmd);
+    }
+    function isRetryableWritesEnabled(topology) {
+      return topology.s.options.retryWrites !== false;
+    }
+  }
+});
+
+// node_modules/mongodb/lib/sdam/monitor.js
+var require_monitor2 = __commonJS({
+  "node_modules/mongodb/lib/sdam/monitor.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.RTTSampler = exports.MonitorInterval = exports.RTTPinger = exports.Monitor = exports.ServerMonitoringMode = void 0;
+    var timers_1 = require("timers");
+    var bson_1 = require_bson3();
+    var connect_1 = require_connect2();
+    var client_metadata_1 = require_client_metadata2();
+    var constants_1 = require_constants5();
+    var error_1 = require_error3();
+    var mongo_logger_1 = require_mongo_logger2();
+    var mongo_types_1 = require_mongo_types2();
+    var utils_1 = require_utils5();
+    var common_1 = require_common5();
+    var events_1 = require_events2();
+    var server_1 = require_server2();
+    var kServer = Symbol("server");
+    var kMonitorId = Symbol("monitorId");
+    var kCancellationToken = Symbol("cancellationToken");
+    var STATE_IDLE = "idle";
+    var STATE_MONITORING = "monitoring";
+    var stateTransition = (0, utils_1.makeStateMachine)({
+      [common_1.STATE_CLOSING]: [common_1.STATE_CLOSING, STATE_IDLE, common_1.STATE_CLOSED],
+      [common_1.STATE_CLOSED]: [common_1.STATE_CLOSED, STATE_MONITORING],
+      [STATE_IDLE]: [STATE_IDLE, STATE_MONITORING, common_1.STATE_CLOSING],
+      [STATE_MONITORING]: [STATE_MONITORING, STATE_IDLE, common_1.STATE_CLOSING]
+    });
+    var INVALID_REQUEST_CHECK_STATES = /* @__PURE__ */ new Set([common_1.STATE_CLOSING, common_1.STATE_CLOSED, STATE_MONITORING]);
+    function isInCloseState(monitor) {
+      return monitor.s.state === common_1.STATE_CLOSED || monitor.s.state === common_1.STATE_CLOSING;
+    }
+    exports.ServerMonitoringMode = Object.freeze({
+      auto: "auto",
+      poll: "poll",
+      stream: "stream"
+    });
+    var Monitor = class extends mongo_types_1.TypedEventEmitter {
+      constructor(server, options) {
+        super();
+        this.component = mongo_logger_1.MongoLoggableComponent.TOPOLOGY;
+        this[kServer] = server;
+        this.connection = null;
+        this[kCancellationToken] = new mongo_types_1.CancellationToken();
+        this[kCancellationToken].setMaxListeners(Infinity);
+        this[kMonitorId] = void 0;
+        this.s = {
+          state: common_1.STATE_CLOSED
+        };
+        this.address = server.description.address;
+        this.options = Object.freeze({
+          connectTimeoutMS: options.connectTimeoutMS ?? 1e4,
+          heartbeatFrequencyMS: options.heartbeatFrequencyMS ?? 1e4,
+          minHeartbeatFrequencyMS: options.minHeartbeatFrequencyMS ?? 500,
+          serverMonitoringMode: options.serverMonitoringMode
+        });
+        this.isRunningInFaasEnv = (0, client_metadata_1.getFAASEnv)() != null;
+        this.mongoLogger = this[kServer].topology.client?.mongoLogger;
+        this.rttSampler = new RTTSampler(10);
+        const cancellationToken = this[kCancellationToken];
+        const connectOptions = {
+          id: "<monitor>",
+          generation: server.pool.generation,
+          cancellationToken,
+          hostAddress: server.description.hostAddress,
+          ...options,
+          raw: false,
+          useBigInt64: false,
+          promoteLongs: true,
+          promoteValues: true,
+          promoteBuffers: true
+        };
+        delete connectOptions.credentials;
+        if (connectOptions.autoEncrypter) {
+          delete connectOptions.autoEncrypter;
+        }
+        this.connectOptions = Object.freeze(connectOptions);
+      }
+      connect() {
+        if (this.s.state !== common_1.STATE_CLOSED) {
+          return;
+        }
+        const heartbeatFrequencyMS = this.options.heartbeatFrequencyMS;
+        const minHeartbeatFrequencyMS = this.options.minHeartbeatFrequencyMS;
+        this[kMonitorId] = new MonitorInterval(monitorServer(this), {
+          heartbeatFrequencyMS,
+          minHeartbeatFrequencyMS,
+          immediate: true
+        });
+      }
+      requestCheck() {
+        if (INVALID_REQUEST_CHECK_STATES.has(this.s.state)) {
+          return;
+        }
+        this[kMonitorId]?.wake();
+      }
+      reset() {
+        const topologyVersion = this[kServer].description.topologyVersion;
+        if (isInCloseState(this) || topologyVersion == null) {
+          return;
+        }
+        stateTransition(this, common_1.STATE_CLOSING);
+        resetMonitorState(this);
+        stateTransition(this, STATE_IDLE);
+        const heartbeatFrequencyMS = this.options.heartbeatFrequencyMS;
+        const minHeartbeatFrequencyMS = this.options.minHeartbeatFrequencyMS;
+        this[kMonitorId] = new MonitorInterval(monitorServer(this), {
+          heartbeatFrequencyMS,
+          minHeartbeatFrequencyMS
+        });
+      }
+      close() {
+        if (isInCloseState(this)) {
+          return;
+        }
+        stateTransition(this, common_1.STATE_CLOSING);
+        resetMonitorState(this);
+        this.emit("close");
+        stateTransition(this, common_1.STATE_CLOSED);
+      }
+      get roundTripTime() {
+        return this.rttSampler.average();
+      }
+      get minRoundTripTime() {
+        return this.rttSampler.min();
+      }
+      get latestRtt() {
+        return this.rttSampler.last;
+      }
+      addRttSample(rtt) {
+        this.rttSampler.addSample(rtt);
+      }
+      clearRttSamples() {
+        this.rttSampler.clear();
+      }
+    };
+    exports.Monitor = Monitor;
+    function resetMonitorState(monitor) {
+      monitor[kMonitorId]?.stop();
+      monitor[kMonitorId] = void 0;
+      monitor.rttPinger?.close();
+      monitor.rttPinger = void 0;
+      monitor[kCancellationToken].emit("cancel");
+      monitor.connection?.destroy();
+      monitor.connection = null;
+      monitor.clearRttSamples();
+    }
+    function useStreamingProtocol(monitor, topologyVersion) {
+      if (topologyVersion == null)
+        return false;
+      const serverMonitoringMode = monitor.options.serverMonitoringMode;
+      if (serverMonitoringMode === exports.ServerMonitoringMode.poll)
+        return false;
+      if (serverMonitoringMode === exports.ServerMonitoringMode.stream)
+        return true;
+      if (monitor.isRunningInFaasEnv)
+        return false;
+      return true;
+    }
+    function checkServer(monitor, callback2) {
+      let start;
+      let awaited;
+      const topologyVersion = monitor[kServer].description.topologyVersion;
+      const isAwaitable = useStreamingProtocol(monitor, topologyVersion);
+      monitor.emitAndLogHeartbeat(server_1.Server.SERVER_HEARTBEAT_STARTED, monitor[kServer].topology.s.id, void 0, new events_1.ServerHeartbeatStartedEvent(monitor.address, isAwaitable));
+      function onHeartbeatFailed(err) {
+        monitor.connection?.destroy();
+        monitor.connection = null;
+        monitor.emitAndLogHeartbeat(server_1.Server.SERVER_HEARTBEAT_FAILED, monitor[kServer].topology.s.id, void 0, new events_1.ServerHeartbeatFailedEvent(monitor.address, (0, utils_1.calculateDurationInMs)(start), err, awaited));
+        const error = !(err instanceof error_1.MongoError) ? new error_1.MongoError(error_1.MongoError.buildErrorMessage(err), { cause: err }) : err;
+        error.addErrorLabel(error_1.MongoErrorLabel.ResetPool);
+        if (error instanceof error_1.MongoNetworkTimeoutError) {
+          error.addErrorLabel(error_1.MongoErrorLabel.InterruptInUseConnections);
+        }
+        monitor.emit("resetServer", error);
+        callback2(err);
+      }
+      function onHeartbeatSucceeded(hello) {
+        if (!("isWritablePrimary" in hello)) {
+          hello.isWritablePrimary = hello[constants_1.LEGACY_HELLO_COMMAND];
+        }
+        const duration = isAwaitable && monitor.rttPinger ? monitor.rttPinger.latestRtt ?? (0, utils_1.calculateDurationInMs)(start) : (0, utils_1.calculateDurationInMs)(start);
+        monitor.addRttSample(duration);
+        monitor.emitAndLogHeartbeat(server_1.Server.SERVER_HEARTBEAT_SUCCEEDED, monitor[kServer].topology.s.id, hello.connectionId, new events_1.ServerHeartbeatSucceededEvent(monitor.address, duration, hello, isAwaitable));
+        if (isAwaitable) {
+          monitor.emitAndLogHeartbeat(server_1.Server.SERVER_HEARTBEAT_STARTED, monitor[kServer].topology.s.id, void 0, new events_1.ServerHeartbeatStartedEvent(monitor.address, true));
+          start = (0, utils_1.now)();
+        } else {
+          monitor.rttPinger?.close();
+          monitor.rttPinger = void 0;
+          callback2(void 0, hello);
+        }
+      }
+      const { connection } = monitor;
+      if (connection && !connection.closed) {
+        const { serverApi, helloOk } = connection;
+        const connectTimeoutMS = monitor.options.connectTimeoutMS;
+        const maxAwaitTimeMS = monitor.options.heartbeatFrequencyMS;
+        const cmd = {
+          [serverApi?.version || helloOk ? "hello" : constants_1.LEGACY_HELLO_COMMAND]: 1,
+          ...isAwaitable && topologyVersion ? { maxAwaitTimeMS, topologyVersion: makeTopologyVersion(topologyVersion) } : {}
+        };
+        const options = isAwaitable ? {
+          socketTimeoutMS: connectTimeoutMS ? connectTimeoutMS + maxAwaitTimeMS : 0,
+          exhaustAllowed: true
+        } : { socketTimeoutMS: connectTimeoutMS };
+        if (isAwaitable && monitor.rttPinger == null) {
+          monitor.rttPinger = new RTTPinger(monitor);
+        }
+        start = (0, utils_1.now)();
+        if (isAwaitable) {
+          awaited = true;
+          return connection.exhaustCommand((0, utils_1.ns)("admin.$cmd"), cmd, options, (error, hello) => {
+            if (error)
+              return onHeartbeatFailed(error);
+            return onHeartbeatSucceeded(hello);
+          });
+        }
+        awaited = false;
+        connection.command((0, utils_1.ns)("admin.$cmd"), cmd, options).then(onHeartbeatSucceeded, onHeartbeatFailed);
+        return;
+      }
+      (async () => {
+        const socket = await (0, connect_1.makeSocket)(monitor.connectOptions);
+        const connection2 = (0, connect_1.makeConnection)(monitor.connectOptions, socket);
+        start = (0, utils_1.now)();
+        try {
+          await (0, connect_1.performInitialHandshake)(connection2, monitor.connectOptions);
+          return connection2;
+        } catch (error) {
+          connection2.destroy();
+          throw error;
+        }
+      })().then((connection2) => {
+        if (isInCloseState(monitor)) {
+          connection2.destroy();
+          return;
+        }
+        const duration = (0, utils_1.calculateDurationInMs)(start);
+        monitor.addRttSample(duration);
+        monitor.connection = connection2;
+        monitor.emitAndLogHeartbeat(server_1.Server.SERVER_HEARTBEAT_SUCCEEDED, monitor[kServer].topology.s.id, connection2.hello?.connectionId, new events_1.ServerHeartbeatSucceededEvent(monitor.address, duration, connection2.hello, useStreamingProtocol(monitor, connection2.hello?.topologyVersion)));
+        callback2(void 0, connection2.hello);
+      }, (error) => {
+        monitor.connection = null;
+        awaited = false;
+        onHeartbeatFailed(error);
+      });
+    }
+    function monitorServer(monitor) {
+      return (callback2) => {
+        if (monitor.s.state === STATE_MONITORING) {
+          process.nextTick(callback2);
+          return;
+        }
+        stateTransition(monitor, STATE_MONITORING);
+        function done() {
+          if (!isInCloseState(monitor)) {
+            stateTransition(monitor, STATE_IDLE);
+          }
+          callback2();
+        }
+        checkServer(monitor, (err, hello) => {
+          if (err) {
+            if (monitor[kServer].description.type === common_1.ServerType.Unknown) {
+              return done();
+            }
+          }
+          if (useStreamingProtocol(monitor, hello?.topologyVersion)) {
+            (0, timers_1.setTimeout)(() => {
+              if (!isInCloseState(monitor)) {
+                monitor[kMonitorId]?.wake();
+              }
+            }, 0);
+          }
+          done();
+        });
+      };
+    }
+    function makeTopologyVersion(tv) {
+      return {
+        processId: tv.processId,
+        counter: bson_1.Long.isLong(tv.counter) ? tv.counter : bson_1.Long.fromNumber(tv.counter)
+      };
+    }
+    var RTTPinger = class {
+      constructor(monitor) {
+        this.connection = void 0;
+        this[kCancellationToken] = monitor[kCancellationToken];
+        this.closed = false;
+        this.monitor = monitor;
+        this.latestRtt = monitor.latestRtt ?? void 0;
+        const heartbeatFrequencyMS = monitor.options.heartbeatFrequencyMS;
+        this[kMonitorId] = (0, timers_1.setTimeout)(() => this.measureRoundTripTime(), heartbeatFrequencyMS);
+      }
+      get roundTripTime() {
+        return this.monitor.roundTripTime;
+      }
+      get minRoundTripTime() {
+        return this.monitor.minRoundTripTime;
+      }
+      close() {
+        this.closed = true;
+        (0, timers_1.clearTimeout)(this[kMonitorId]);
+        this.connection?.destroy();
+        this.connection = void 0;
+      }
+      measureAndReschedule(start, conn) {
+        if (this.closed) {
+          conn?.destroy();
+          return;
+        }
+        if (this.connection == null) {
+          this.connection = conn;
+        }
+        this.latestRtt = (0, utils_1.calculateDurationInMs)(start);
+        this[kMonitorId] = (0, timers_1.setTimeout)(() => this.measureRoundTripTime(), this.monitor.options.heartbeatFrequencyMS);
+      }
+      measureRoundTripTime() {
+        const start = (0, utils_1.now)();
+        if (this.closed) {
+          return;
+        }
+        const connection = this.connection;
+        if (connection == null) {
+          (0, connect_1.connect)(this.monitor.connectOptions).then((connection2) => {
+            this.measureAndReschedule(start, connection2);
+          }, () => {
+            this.connection = void 0;
+          });
+          return;
+        }
+        const commandName = connection.serverApi?.version || connection.helloOk ? "hello" : constants_1.LEGACY_HELLO_COMMAND;
+        connection.command((0, utils_1.ns)("admin.$cmd"), { [commandName]: 1 }, void 0).then(() => this.measureAndReschedule(start), () => {
+          this.connection?.destroy();
+          this.connection = void 0;
+          return;
+        });
+      }
+    };
+    exports.RTTPinger = RTTPinger;
+    var MonitorInterval = class {
+      constructor(fn, options = {}) {
+        this.isExpeditedCallToFnScheduled = false;
+        this.stopped = false;
+        this.isExecutionInProgress = false;
+        this.hasExecutedOnce = false;
+        this._executeAndReschedule = () => {
+          if (this.stopped)
+            return;
+          if (this.timerId) {
+            (0, timers_1.clearTimeout)(this.timerId);
+          }
+          this.isExpeditedCallToFnScheduled = false;
+          this.isExecutionInProgress = true;
+          this.fn(() => {
+            this.lastExecutionEnded = (0, utils_1.now)();
+            this.isExecutionInProgress = false;
+            this._reschedule(this.heartbeatFrequencyMS);
+          });
+        };
+        this.fn = fn;
+        this.lastExecutionEnded = -Infinity;
+        this.heartbeatFrequencyMS = options.heartbeatFrequencyMS ?? 1e3;
+        this.minHeartbeatFrequencyMS = options.minHeartbeatFrequencyMS ?? 500;
+        if (options.immediate) {
+          this._executeAndReschedule();
+        } else {
+          this._reschedule(void 0);
+        }
+      }
+      wake() {
+        const currentTime = (0, utils_1.now)();
+        const timeSinceLastCall = currentTime - this.lastExecutionEnded;
+        if (timeSinceLastCall < 0) {
+          return this._executeAndReschedule();
+        }
+        if (this.isExecutionInProgress) {
+          return;
+        }
+        if (this.isExpeditedCallToFnScheduled) {
+          return;
+        }
+        if (timeSinceLastCall < this.minHeartbeatFrequencyMS) {
+          this.isExpeditedCallToFnScheduled = true;
+          this._reschedule(this.minHeartbeatFrequencyMS - timeSinceLastCall);
+          return;
+        }
+        this._executeAndReschedule();
+      }
+      stop() {
+        this.stopped = true;
+        if (this.timerId) {
+          (0, timers_1.clearTimeout)(this.timerId);
+          this.timerId = void 0;
+        }
+        this.lastExecutionEnded = -Infinity;
+        this.isExpeditedCallToFnScheduled = false;
+      }
+      toString() {
+        return JSON.stringify(this);
+      }
+      toJSON() {
+        const currentTime = (0, utils_1.now)();
+        const timeSinceLastCall = currentTime - this.lastExecutionEnded;
+        return {
+          timerId: this.timerId != null ? "set" : "cleared",
+          lastCallTime: this.lastExecutionEnded,
+          isExpeditedCheckScheduled: this.isExpeditedCallToFnScheduled,
+          stopped: this.stopped,
+          heartbeatFrequencyMS: this.heartbeatFrequencyMS,
+          minHeartbeatFrequencyMS: this.minHeartbeatFrequencyMS,
+          currentTime,
+          timeSinceLastCall
+        };
+      }
+      _reschedule(ms) {
+        if (this.stopped)
+          return;
+        if (this.timerId) {
+          (0, timers_1.clearTimeout)(this.timerId);
+        }
+        this.timerId = (0, timers_1.setTimeout)(this._executeAndReschedule, ms || this.heartbeatFrequencyMS);
+      }
+    };
+    exports.MonitorInterval = MonitorInterval;
+    var RTTSampler = class {
+      constructor(windowSize = 10) {
+        this.rttSamples = new Float64Array(windowSize);
+        this.length = 0;
+        this.writeIndex = 0;
+      }
+      addSample(sample) {
+        this.rttSamples[this.writeIndex++] = sample;
+        if (this.length < this.rttSamples.length) {
+          this.length++;
+        }
+        this.writeIndex %= this.rttSamples.length;
+      }
+      min() {
+        if (this.length < 2)
+          return 0;
+        let min = this.rttSamples[0];
+        for (let i = 1; i < this.length; i++) {
+          if (this.rttSamples[i] < min)
+            min = this.rttSamples[i];
+        }
+        return min;
+      }
+      average() {
+        if (this.length === 0)
+          return 0;
+        let sum = 0;
+        for (let i = 0; i < this.length; i++) {
+          sum += this.rttSamples[i];
+        }
+        return sum / this.length;
+      }
+      get last() {
+        if (this.length === 0)
+          return null;
+        return this.rttSamples[this.writeIndex === 0 ? this.length - 1 : this.writeIndex - 1];
+      }
+      clear() {
+        this.length = 0;
+        this.writeIndex = 0;
+      }
+    };
+    exports.RTTSampler = RTTSampler;
+  }
+});
+
+// node_modules/mongodb/lib/connection_string.js
+var require_connection_string2 = __commonJS({
+  "node_modules/mongodb/lib/connection_string.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.FEATURE_FLAGS = exports.DEFAULT_OPTIONS = exports.OPTIONS = exports.parseOptions = exports.resolveSRVRecord = void 0;
+    var dns = require("dns");
+    var mongodb_connection_string_url_1 = require_lib2();
+    var url_1 = require("url");
+    var mongo_credentials_1 = require_mongo_credentials2();
+    var providers_1 = require_providers3();
+    var client_metadata_1 = require_client_metadata2();
+    var compression_1 = require_compression2();
+    var encrypter_1 = require_encrypter2();
+    var error_1 = require_error3();
+    var mongo_client_1 = require_mongo_client2();
+    var mongo_logger_1 = require_mongo_logger2();
+    var read_concern_1 = require_read_concern2();
+    var read_preference_1 = require_read_preference2();
+    var monitor_1 = require_monitor2();
+    var utils_1 = require_utils5();
+    var write_concern_1 = require_write_concern2();
+    var VALID_TXT_RECORDS = ["authSource", "replicaSet", "loadBalanced"];
+    var LB_SINGLE_HOST_ERROR = "loadBalanced option only supported with a single host in the URI";
+    var LB_REPLICA_SET_ERROR = "loadBalanced option not supported with a replicaSet option";
+    var LB_DIRECT_CONNECTION_ERROR = "loadBalanced option not supported when directConnection is provided";
+    async function resolveSRVRecord(options) {
+      if (typeof options.srvHost !== "string") {
+        throw new error_1.MongoAPIError('Option "srvHost" must not be empty');
+      }
+      if (options.srvHost.split(".").length < 3) {
+        throw new error_1.MongoAPIError("URI must include hostname, domain name, and tld");
+      }
+      const lookupAddress = options.srvHost;
+      const txtResolutionPromise = dns.promises.resolveTxt(lookupAddress);
+      txtResolutionPromise.then(void 0, utils_1.squashError);
+      const addresses = await dns.promises.resolveSrv(`_${options.srvServiceName}._tcp.${lookupAddress}`);
+      if (addresses.length === 0) {
+        throw new error_1.MongoAPIError("No addresses found at host");
+      }
+      for (const { name } of addresses) {
+        if (!(0, utils_1.matchesParentDomain)(name, lookupAddress)) {
+          throw new error_1.MongoAPIError("Server record does not share hostname with parent URI");
+        }
+      }
+      const hostAddresses = addresses.map((r) => utils_1.HostAddress.fromString(`${r.name}:${r.port ?? 27017}`));
+      validateLoadBalancedOptions(hostAddresses, options, true);
+      let record;
+      try {
+        record = await txtResolutionPromise;
+      } catch (error) {
+        if (error.code !== "ENODATA" && error.code !== "ENOTFOUND") {
+          throw error;
+        }
+        return hostAddresses;
+      }
+      if (record.length > 1) {
+        throw new error_1.MongoParseError("Multiple text records not allowed");
+      }
+      const txtRecordOptions = new url_1.URLSearchParams(record[0].join(""));
+      const txtRecordOptionKeys = [...txtRecordOptions.keys()];
+      if (txtRecordOptionKeys.some((key) => !VALID_TXT_RECORDS.includes(key))) {
+        throw new error_1.MongoParseError(`Text record may only set any of: ${VALID_TXT_RECORDS.join(", ")}`);
+      }
+      if (VALID_TXT_RECORDS.some((option) => txtRecordOptions.get(option) === "")) {
+        throw new error_1.MongoParseError("Cannot have empty URI params in DNS TXT Record");
+      }
+      const source = txtRecordOptions.get("authSource") ?? void 0;
+      const replicaSet = txtRecordOptions.get("replicaSet") ?? void 0;
+      const loadBalanced = txtRecordOptions.get("loadBalanced") ?? void 0;
+      if (!options.userSpecifiedAuthSource && source && options.credentials && !providers_1.AUTH_MECHS_AUTH_SRC_EXTERNAL.has(options.credentials.mechanism)) {
+        options.credentials = mongo_credentials_1.MongoCredentials.merge(options.credentials, { source });
+      }
+      if (!options.userSpecifiedReplicaSet && replicaSet) {
+        options.replicaSet = replicaSet;
+      }
+      if (loadBalanced === "true") {
+        options.loadBalanced = true;
+      }
+      if (options.replicaSet && options.srvMaxHosts > 0) {
+        throw new error_1.MongoParseError("Cannot combine replicaSet option with srvMaxHosts");
+      }
+      validateLoadBalancedOptions(hostAddresses, options, true);
+      return hostAddresses;
+    }
+    exports.resolveSRVRecord = resolveSRVRecord;
+    function checkTLSOptions(allOptions) {
+      if (!allOptions)
+        return;
+      const check = (a, b) => {
+        if (allOptions.has(a) && allOptions.has(b)) {
+          throw new error_1.MongoAPIError(`The '${a}' option cannot be used with the '${b}' option`);
+        }
+      };
+      check("tlsInsecure", "tlsAllowInvalidCertificates");
+      check("tlsInsecure", "tlsAllowInvalidHostnames");
+      check("tlsInsecure", "tlsDisableCertificateRevocationCheck");
+      check("tlsInsecure", "tlsDisableOCSPEndpointCheck");
+      check("tlsAllowInvalidCertificates", "tlsDisableCertificateRevocationCheck");
+      check("tlsAllowInvalidCertificates", "tlsDisableOCSPEndpointCheck");
+      check("tlsDisableCertificateRevocationCheck", "tlsDisableOCSPEndpointCheck");
+    }
+    function getBoolean(name, value) {
+      if (typeof value === "boolean")
+        return value;
+      switch (value) {
+        case "true":
+          return true;
+        case "false":
+          return false;
+        default:
+          throw new error_1.MongoParseError(`${name} must be either "true" or "false"`);
+      }
+    }
+    function getIntFromOptions(name, value) {
+      const parsedInt = (0, utils_1.parseInteger)(value);
+      if (parsedInt != null) {
+        return parsedInt;
+      }
+      throw new error_1.MongoParseError(`Expected ${name} to be stringified int value, got: ${value}`);
+    }
+    function getUIntFromOptions(name, value) {
+      const parsedValue = getIntFromOptions(name, value);
+      if (parsedValue < 0) {
+        throw new error_1.MongoParseError(`${name} can only be a positive int value, got: ${value}`);
+      }
+      return parsedValue;
+    }
+    function* entriesFromString(value) {
+      if (value === "") {
+        return;
+      }
+      const keyValuePairs = value.split(",");
+      for (const keyValue of keyValuePairs) {
+        const [key, value2] = keyValue.split(/:(.*)/);
+        if (value2 == null) {
+          throw new error_1.MongoParseError("Cannot have undefined values in key value pairs");
+        }
+        yield [key, value2];
+      }
+    }
+    var CaseInsensitiveMap = class extends Map {
+      constructor(entries = []) {
+        super(entries.map(([k, v]) => [k.toLowerCase(), v]));
+      }
+      has(k) {
+        return super.has(k.toLowerCase());
+      }
+      get(k) {
+        return super.get(k.toLowerCase());
+      }
+      set(k, v) {
+        return super.set(k.toLowerCase(), v);
+      }
+      delete(k) {
+        return super.delete(k.toLowerCase());
+      }
+    };
+    function parseOptions(uri, mongoClient = void 0, options = {}) {
+      if (mongoClient != null && !(mongoClient instanceof mongo_client_1.MongoClient)) {
+        options = mongoClient;
+        mongoClient = void 0;
+      }
+      if (options.useBigInt64 && typeof options.promoteLongs === "boolean" && !options.promoteLongs) {
+        throw new error_1.MongoAPIError("Must request either bigint or Long for int64 deserialization");
+      }
+      if (options.useBigInt64 && typeof options.promoteValues === "boolean" && !options.promoteValues) {
+        throw new error_1.MongoAPIError("Must request either bigint or Long for int64 deserialization");
+      }
+      const url = new mongodb_connection_string_url_1.default(uri);
+      const { hosts, isSRV } = url;
+      const mongoOptions = /* @__PURE__ */ Object.create(null);
+      for (const flag of Object.getOwnPropertySymbols(options)) {
+        if (exports.FEATURE_FLAGS.has(flag)) {
+          mongoOptions[flag] = options[flag];
+        }
+      }
+      mongoOptions.hosts = isSRV ? [] : hosts.map(utils_1.HostAddress.fromString);
+      const urlOptions = new CaseInsensitiveMap();
+      if (url.pathname !== "/" && url.pathname !== "") {
+        const dbName = decodeURIComponent(url.pathname[0] === "/" ? url.pathname.slice(1) : url.pathname);
+        if (dbName) {
+          urlOptions.set("dbName", [dbName]);
+        }
+      }
+      if (url.username !== "") {
+        const auth = {
+          username: decodeURIComponent(url.username)
+        };
+        if (typeof url.password === "string") {
+          auth.password = decodeURIComponent(url.password);
+        }
+        urlOptions.set("auth", [auth]);
+      }
+      for (const key of url.searchParams.keys()) {
+        const values = url.searchParams.getAll(key);
+        const isReadPreferenceTags = /readPreferenceTags/i.test(key);
+        if (!isReadPreferenceTags && values.length > 1) {
+          throw new error_1.MongoInvalidArgumentError(`URI option "${key}" cannot appear more than once in the connection string`);
+        }
+        if (!isReadPreferenceTags && values.includes("")) {
+          throw new error_1.MongoAPIError(`URI option "${key}" cannot be specified with no value`);
+        }
+        if (!urlOptions.has(key)) {
+          urlOptions.set(key, values);
+        }
+      }
+      const objectOptions = new CaseInsensitiveMap(Object.entries(options).filter(([, v]) => v != null));
+      if (urlOptions.has("serverApi")) {
+        throw new error_1.MongoParseError("URI cannot contain `serverApi`, it can only be passed to the client");
+      }
+      const uriMechanismProperties = urlOptions.get("authMechanismProperties");
+      if (uriMechanismProperties) {
+        for (const property of uriMechanismProperties) {
+          if (/(^|,)ALLOWED_HOSTS:/.test(property)) {
+            throw new error_1.MongoParseError("Auth mechanism property ALLOWED_HOSTS is not allowed in the connection string.");
+          }
+        }
+      }
+      if (objectOptions.has("loadBalanced")) {
+        throw new error_1.MongoParseError("loadBalanced is only a valid option in the URI");
+      }
+      const allProvidedOptions = new CaseInsensitiveMap();
+      const allProvidedKeys = /* @__PURE__ */ new Set([...urlOptions.keys(), ...objectOptions.keys()]);
+      for (const key of allProvidedKeys) {
+        const values = [];
+        const objectOptionValue = objectOptions.get(key);
+        if (objectOptionValue != null) {
+          values.push(objectOptionValue);
+        }
+        const urlValues = urlOptions.get(key) ?? [];
+        values.push(...urlValues);
+        allProvidedOptions.set(key, values);
+      }
+      if (allProvidedOptions.has("tls") || allProvidedOptions.has("ssl")) {
+        const tlsAndSslOpts = (allProvidedOptions.get("tls") || []).concat(allProvidedOptions.get("ssl") || []).map(getBoolean.bind(null, "tls/ssl"));
+        if (new Set(tlsAndSslOpts).size !== 1) {
+          throw new error_1.MongoParseError("All values of tls/ssl must be the same.");
+        }
+      }
+      checkTLSOptions(allProvidedOptions);
+      const unsupportedOptions = (0, utils_1.setDifference)(allProvidedKeys, Array.from(Object.keys(exports.OPTIONS)).map((s) => s.toLowerCase()));
+      if (unsupportedOptions.size !== 0) {
+        const optionWord = unsupportedOptions.size > 1 ? "options" : "option";
+        const isOrAre = unsupportedOptions.size > 1 ? "are" : "is";
+        throw new error_1.MongoParseError(`${optionWord} ${Array.from(unsupportedOptions).join(", ")} ${isOrAre} not supported`);
+      }
+      for (const [key, descriptor] of Object.entries(exports.OPTIONS)) {
+        const values = allProvidedOptions.get(key);
+        if (!values || values.length === 0) {
+          if (exports.DEFAULT_OPTIONS.has(key)) {
+            setOption(mongoOptions, key, descriptor, [exports.DEFAULT_OPTIONS.get(key)]);
+          }
+        } else {
+          const { deprecated } = descriptor;
+          if (deprecated) {
+            const deprecatedMsg = typeof deprecated === "string" ? `: ${deprecated}` : "";
+            (0, utils_1.emitWarning)(`${key} is a deprecated option${deprecatedMsg}`);
+          }
+          setOption(mongoOptions, key, descriptor, values);
+        }
+      }
+      if (mongoOptions.credentials) {
+        const isGssapi = mongoOptions.credentials.mechanism === providers_1.AuthMechanism.MONGODB_GSSAPI;
+        const isX509 = mongoOptions.credentials.mechanism === providers_1.AuthMechanism.MONGODB_X509;
+        const isAws = mongoOptions.credentials.mechanism === providers_1.AuthMechanism.MONGODB_AWS;
+        const isOidc = mongoOptions.credentials.mechanism === providers_1.AuthMechanism.MONGODB_OIDC;
+        if ((isGssapi || isX509) && allProvidedOptions.has("authSource") && mongoOptions.credentials.source !== "$external") {
+          throw new error_1.MongoParseError(`authMechanism ${mongoOptions.credentials.mechanism} requires an authSource of '$external'`);
+        }
+        if (!(isGssapi || isX509 || isAws || isOidc) && mongoOptions.dbName && !allProvidedOptions.has("authSource")) {
+          mongoOptions.credentials = mongo_credentials_1.MongoCredentials.merge(mongoOptions.credentials, {
+            source: mongoOptions.dbName
+          });
+        }
+        if (isAws && mongoOptions.credentials.username && !mongoOptions.credentials.password) {
+          throw new error_1.MongoMissingCredentialsError(`When using ${mongoOptions.credentials.mechanism} password must be set when a username is specified`);
+        }
+        mongoOptions.credentials.validate();
+        if (mongoOptions.credentials.password === "" && mongoOptions.credentials.username === "" && mongoOptions.credentials.mechanism === providers_1.AuthMechanism.MONGODB_DEFAULT && Object.keys(mongoOptions.credentials.mechanismProperties).length === 0) {
+          delete mongoOptions.credentials;
+        }
+      }
+      if (!mongoOptions.dbName) {
+        mongoOptions.dbName = "test";
+      }
+      validateLoadBalancedOptions(hosts, mongoOptions, isSRV);
+      if (mongoClient && mongoOptions.autoEncryption) {
+        encrypter_1.Encrypter.checkForMongoCrypt();
+        mongoOptions.encrypter = new encrypter_1.Encrypter(mongoClient, uri, options);
+        mongoOptions.autoEncrypter = mongoOptions.encrypter.autoEncrypter;
+      }
+      mongoOptions.userSpecifiedAuthSource = objectOptions.has("authSource") || urlOptions.has("authSource");
+      mongoOptions.userSpecifiedReplicaSet = objectOptions.has("replicaSet") || urlOptions.has("replicaSet");
+      if (isSRV) {
+        mongoOptions.srvHost = hosts[0];
+        if (mongoOptions.directConnection) {
+          throw new error_1.MongoAPIError("SRV URI does not support directConnection");
+        }
+        if (mongoOptions.srvMaxHosts > 0 && typeof mongoOptions.replicaSet === "string") {
+          throw new error_1.MongoParseError("Cannot use srvMaxHosts option with replicaSet");
+        }
+        const noUserSpecifiedTLS = !objectOptions.has("tls") && !urlOptions.has("tls");
+        const noUserSpecifiedSSL = !objectOptions.has("ssl") && !urlOptions.has("ssl");
+        if (noUserSpecifiedTLS && noUserSpecifiedSSL) {
+          mongoOptions.tls = true;
+        }
+      } else {
+        const userSpecifiedSrvOptions = urlOptions.has("srvMaxHosts") || objectOptions.has("srvMaxHosts") || urlOptions.has("srvServiceName") || objectOptions.has("srvServiceName");
+        if (userSpecifiedSrvOptions) {
+          throw new error_1.MongoParseError("Cannot use srvMaxHosts or srvServiceName with a non-srv connection string");
+        }
+      }
+      if (mongoOptions.directConnection && mongoOptions.hosts.length !== 1) {
+        throw new error_1.MongoParseError("directConnection option requires exactly one host");
+      }
+      if (!mongoOptions.proxyHost && (mongoOptions.proxyPort || mongoOptions.proxyUsername || mongoOptions.proxyPassword)) {
+        throw new error_1.MongoParseError("Must specify proxyHost if other proxy options are passed");
+      }
+      if (mongoOptions.proxyUsername && !mongoOptions.proxyPassword || !mongoOptions.proxyUsername && mongoOptions.proxyPassword) {
+        throw new error_1.MongoParseError("Can only specify both of proxy username/password or neither");
+      }
+      const proxyOptions = ["proxyHost", "proxyPort", "proxyUsername", "proxyPassword"].map((key) => urlOptions.get(key) ?? []);
+      if (proxyOptions.some((options2) => options2.length > 1)) {
+        throw new error_1.MongoParseError("Proxy options cannot be specified multiple times in the connection string");
+      }
+      const loggerFeatureFlag = Symbol.for("@@mdb.enableMongoLogger");
+      mongoOptions[loggerFeatureFlag] = mongoOptions[loggerFeatureFlag] ?? false;
+      let loggerEnvOptions = {};
+      let loggerClientOptions = {};
+      if (mongoOptions[loggerFeatureFlag]) {
+        loggerEnvOptions = {
+          MONGODB_LOG_COMMAND: process.env.MONGODB_LOG_COMMAND,
+          MONGODB_LOG_TOPOLOGY: process.env.MONGODB_LOG_TOPOLOGY,
+          MONGODB_LOG_SERVER_SELECTION: process.env.MONGODB_LOG_SERVER_SELECTION,
+          MONGODB_LOG_CONNECTION: process.env.MONGODB_LOG_CONNECTION,
+          MONGODB_LOG_CLIENT: process.env.MONGODB_LOG_CLIENT,
+          MONGODB_LOG_ALL: process.env.MONGODB_LOG_ALL,
+          MONGODB_LOG_MAX_DOCUMENT_LENGTH: process.env.MONGODB_LOG_MAX_DOCUMENT_LENGTH,
+          MONGODB_LOG_PATH: process.env.MONGODB_LOG_PATH,
+          ...mongoOptions[Symbol.for("@@mdb.internalLoggerConfig")]
+        };
+        loggerClientOptions = {
+          mongodbLogPath: mongoOptions.mongodbLogPath,
+          mongodbLogComponentSeverities: mongoOptions.mongodbLogComponentSeverities,
+          mongodbLogMaxDocumentLength: mongoOptions.mongodbLogMaxDocumentLength
+        };
+      }
+      mongoOptions.mongoLoggerOptions = mongo_logger_1.MongoLogger.resolveOptions(loggerEnvOptions, loggerClientOptions);
+      mongoOptions.metadata = (0, client_metadata_1.makeClientMetadata)(mongoOptions);
+      mongoOptions.extendedMetadata = (0, client_metadata_1.addContainerMetadata)(mongoOptions.metadata).then(void 0, utils_1.squashError);
+      return mongoOptions;
+    }
+    exports.parseOptions = parseOptions;
+    function validateLoadBalancedOptions(hosts, mongoOptions, isSrv) {
+      if (mongoOptions.loadBalanced) {
+        if (hosts.length > 1) {
+          throw new error_1.MongoParseError(LB_SINGLE_HOST_ERROR);
+        }
+        if (mongoOptions.replicaSet) {
+          throw new error_1.MongoParseError(LB_REPLICA_SET_ERROR);
+        }
+        if (mongoOptions.directConnection) {
+          throw new error_1.MongoParseError(LB_DIRECT_CONNECTION_ERROR);
+        }
+        if (isSrv && mongoOptions.srvMaxHosts > 0) {
+          throw new error_1.MongoParseError("Cannot limit srv hosts with loadBalanced enabled");
+        }
+      }
+      return;
+    }
+    function setOption(mongoOptions, key, descriptor, values) {
+      const { target, type, transform } = descriptor;
+      const name = target ?? key;
+      switch (type) {
+        case "boolean":
+          mongoOptions[name] = getBoolean(name, values[0]);
+          break;
+        case "int":
+          mongoOptions[name] = getIntFromOptions(name, values[0]);
+          break;
+        case "uint":
+          mongoOptions[name] = getUIntFromOptions(name, values[0]);
+          break;
+        case "string":
+          if (values[0] == null) {
+            break;
+          }
+          mongoOptions[name] = String(values[0]);
+          break;
+        case "record":
+          if (!(0, utils_1.isRecord)(values[0])) {
+            throw new error_1.MongoParseError(`${name} must be an object`);
+          }
+          mongoOptions[name] = values[0];
+          break;
+        case "any":
+          mongoOptions[name] = values[0];
+          break;
+        default: {
+          if (!transform) {
+            throw new error_1.MongoParseError("Descriptors missing a type must define a transform");
+          }
+          const transformValue = transform({ name, options: mongoOptions, values });
+          mongoOptions[name] = transformValue;
+          break;
+        }
+      }
+    }
+    exports.OPTIONS = {
+      appName: {
+        type: "string"
+      },
+      auth: {
+        target: "credentials",
+        transform({ name, options, values: [value] }) {
+          if (!(0, utils_1.isRecord)(value, ["username", "password"])) {
+            throw new error_1.MongoParseError(`${name} must be an object with 'username' and 'password' properties`);
+          }
+          return mongo_credentials_1.MongoCredentials.merge(options.credentials, {
+            username: value.username,
+            password: value.password
+          });
+        }
+      },
+      authMechanism: {
+        target: "credentials",
+        transform({ options, values: [value] }) {
+          const mechanisms = Object.values(providers_1.AuthMechanism);
+          const [mechanism] = mechanisms.filter((m) => m.match(RegExp(String.raw`\b${value}\b`, "i")));
+          if (!mechanism) {
+            throw new error_1.MongoParseError(`authMechanism one of ${mechanisms}, got ${value}`);
+          }
+          let source = options.credentials?.source;
+          if (mechanism === providers_1.AuthMechanism.MONGODB_PLAIN || providers_1.AUTH_MECHS_AUTH_SRC_EXTERNAL.has(mechanism)) {
+            source = "$external";
+          }
+          let password = options.credentials?.password;
+          if (mechanism === providers_1.AuthMechanism.MONGODB_X509 && password === "") {
+            password = void 0;
+          }
+          return mongo_credentials_1.MongoCredentials.merge(options.credentials, {
+            mechanism,
+            source,
+            password
+          });
+        }
+      },
+      authMechanismProperties: {
+        target: "credentials",
+        transform({ options, values }) {
+          let mechanismProperties = /* @__PURE__ */ Object.create(null);
+          for (const optionValue of values) {
+            if (typeof optionValue === "string") {
+              for (const [key, value] of entriesFromString(optionValue)) {
+                try {
+                  mechanismProperties[key] = getBoolean(key, value);
+                } catch {
+                  mechanismProperties[key] = value;
+                }
+              }
+            } else {
+              if (!(0, utils_1.isRecord)(optionValue)) {
+                throw new error_1.MongoParseError("AuthMechanismProperties must be an object");
+              }
+              mechanismProperties = { ...optionValue };
+            }
+          }
+          return mongo_credentials_1.MongoCredentials.merge(options.credentials, {
+            mechanismProperties
+          });
+        }
+      },
+      authSource: {
+        target: "credentials",
+        transform({ options, values: [value] }) {
+          const source = String(value);
+          return mongo_credentials_1.MongoCredentials.merge(options.credentials, { source });
+        }
+      },
+      autoEncryption: {
+        type: "record"
+      },
+      bsonRegExp: {
+        type: "boolean"
+      },
+      serverApi: {
+        target: "serverApi",
+        transform({ values: [version] }) {
+          const serverApiToValidate = typeof version === "string" ? { version } : version;
+          const versionToValidate = serverApiToValidate && serverApiToValidate.version;
+          if (!versionToValidate) {
+            throw new error_1.MongoParseError(`Invalid \`serverApi\` property; must specify a version from the following enum: ["${Object.values(mongo_client_1.ServerApiVersion).join('", "')}"]`);
+          }
+          if (!Object.values(mongo_client_1.ServerApiVersion).some((v) => v === versionToValidate)) {
+            throw new error_1.MongoParseError(`Invalid server API version=${versionToValidate}; must be in the following enum: ["${Object.values(mongo_client_1.ServerApiVersion).join('", "')}"]`);
+          }
+          return serverApiToValidate;
+        }
+      },
+      checkKeys: {
+        type: "boolean"
+      },
+      compressors: {
+        default: "none",
+        target: "compressors",
+        transform({ values }) {
+          const compressionList = /* @__PURE__ */ new Set();
+          for (const compVal of values) {
+            const compValArray = typeof compVal === "string" ? compVal.split(",") : compVal;
+            if (!Array.isArray(compValArray)) {
+              throw new error_1.MongoInvalidArgumentError("compressors must be an array or a comma-delimited list of strings");
+            }
+            for (const c of compValArray) {
+              if (Object.keys(compression_1.Compressor).includes(String(c))) {
+                compressionList.add(String(c));
+              } else {
+                throw new error_1.MongoInvalidArgumentError(`${c} is not a valid compression mechanism. Must be one of: ${Object.keys(compression_1.Compressor)}.`);
+              }
+            }
+          }
+          return [...compressionList];
+        }
+      },
+      connectTimeoutMS: {
+        default: 3e4,
+        type: "uint"
+      },
+      dbName: {
+        type: "string"
+      },
+      directConnection: {
+        default: false,
+        type: "boolean"
+      },
+      driverInfo: {
+        default: {},
+        type: "record"
+      },
+      enableUtf8Validation: { type: "boolean", default: true },
+      family: {
+        transform({ name, values: [value] }) {
+          const transformValue = getIntFromOptions(name, value);
+          if (transformValue === 4 || transformValue === 6) {
+            return transformValue;
+          }
+          throw new error_1.MongoParseError(`Option 'family' must be 4 or 6 got ${transformValue}.`);
+        }
+      },
+      fieldsAsRaw: {
+        type: "record"
+      },
+      forceServerObjectId: {
+        default: false,
+        type: "boolean"
+      },
+      fsync: {
+        deprecated: "Please use journal instead",
+        target: "writeConcern",
+        transform({ name, options, values: [value] }) {
+          const wc = write_concern_1.WriteConcern.fromOptions({
+            writeConcern: {
+              ...options.writeConcern,
+              fsync: getBoolean(name, value)
+            }
+          });
+          if (!wc)
+            throw new error_1.MongoParseError(`Unable to make a writeConcern from fsync=${value}`);
+          return wc;
+        }
+      },
+      heartbeatFrequencyMS: {
+        default: 1e4,
+        type: "uint"
+      },
+      ignoreUndefined: {
+        type: "boolean"
+      },
+      j: {
+        deprecated: "Please use journal instead",
+        target: "writeConcern",
+        transform({ name, options, values: [value] }) {
+          const wc = write_concern_1.WriteConcern.fromOptions({
+            writeConcern: {
+              ...options.writeConcern,
+              journal: getBoolean(name, value)
+            }
+          });
+          if (!wc)
+            throw new error_1.MongoParseError(`Unable to make a writeConcern from journal=${value}`);
+          return wc;
+        }
+      },
+      journal: {
+        target: "writeConcern",
+        transform({ name, options, values: [value] }) {
+          const wc = write_concern_1.WriteConcern.fromOptions({
+            writeConcern: {
+              ...options.writeConcern,
+              journal: getBoolean(name, value)
+            }
+          });
+          if (!wc)
+            throw new error_1.MongoParseError(`Unable to make a writeConcern from journal=${value}`);
+          return wc;
+        }
+      },
+      loadBalanced: {
+        default: false,
+        type: "boolean"
+      },
+      localThresholdMS: {
+        default: 15,
+        type: "uint"
+      },
+      maxConnecting: {
+        default: 2,
+        transform({ name, values: [value] }) {
+          const maxConnecting = getUIntFromOptions(name, value);
+          if (maxConnecting === 0) {
+            throw new error_1.MongoInvalidArgumentError("maxConnecting must be > 0 if specified");
+          }
+          return maxConnecting;
+        }
+      },
+      maxIdleTimeMS: {
+        default: 0,
+        type: "uint"
+      },
+      maxPoolSize: {
+        default: 100,
+        type: "uint"
+      },
+      maxStalenessSeconds: {
+        target: "readPreference",
+        transform({ name, options, values: [value] }) {
+          const maxStalenessSeconds = getUIntFromOptions(name, value);
+          if (options.readPreference) {
+            return read_preference_1.ReadPreference.fromOptions({
+              readPreference: { ...options.readPreference, maxStalenessSeconds }
+            });
+          } else {
+            return new read_preference_1.ReadPreference("secondary", void 0, { maxStalenessSeconds });
+          }
+        }
+      },
+      minInternalBufferSize: {
+        type: "uint"
+      },
+      minPoolSize: {
+        default: 0,
+        type: "uint"
+      },
+      minHeartbeatFrequencyMS: {
+        default: 500,
+        type: "uint"
+      },
+      monitorCommands: {
+        default: false,
+        type: "boolean"
+      },
+      name: {
+        target: "driverInfo",
+        transform({ values: [value], options }) {
+          return { ...options.driverInfo, name: String(value) };
+        }
+      },
+      noDelay: {
+        default: true,
+        type: "boolean"
+      },
+      pkFactory: {
+        default: utils_1.DEFAULT_PK_FACTORY,
+        transform({ values: [value] }) {
+          if ((0, utils_1.isRecord)(value, ["createPk"]) && typeof value.createPk === "function") {
+            return value;
+          }
+          throw new error_1.MongoParseError(`Option pkFactory must be an object with a createPk function, got ${value}`);
+        }
+      },
+      promoteBuffers: {
+        type: "boolean"
+      },
+      promoteLongs: {
+        type: "boolean"
+      },
+      promoteValues: {
+        type: "boolean"
+      },
+      useBigInt64: {
+        type: "boolean"
+      },
+      proxyHost: {
+        type: "string"
+      },
+      proxyPassword: {
+        type: "string"
+      },
+      proxyPort: {
+        type: "uint"
+      },
+      proxyUsername: {
+        type: "string"
+      },
+      raw: {
+        default: false,
+        type: "boolean"
+      },
+      readConcern: {
+        transform({ values: [value], options }) {
+          if (value instanceof read_concern_1.ReadConcern || (0, utils_1.isRecord)(value, ["level"])) {
+            return read_concern_1.ReadConcern.fromOptions({ ...options.readConcern, ...value });
+          }
+          throw new error_1.MongoParseError(`ReadConcern must be an object, got ${JSON.stringify(value)}`);
+        }
+      },
+      readConcernLevel: {
+        target: "readConcern",
+        transform({ values: [level], options }) {
+          return read_concern_1.ReadConcern.fromOptions({
+            ...options.readConcern,
+            level
+          });
+        }
+      },
+      readPreference: {
+        default: read_preference_1.ReadPreference.primary,
+        transform({ values: [value], options }) {
+          if (value instanceof read_preference_1.ReadPreference) {
+            return read_preference_1.ReadPreference.fromOptions({
+              readPreference: { ...options.readPreference, ...value },
+              ...value
+            });
+          }
+          if ((0, utils_1.isRecord)(value, ["mode"])) {
+            const rp = read_preference_1.ReadPreference.fromOptions({
+              readPreference: { ...options.readPreference, ...value },
+              ...value
+            });
+            if (rp)
+              return rp;
+            else
+              throw new error_1.MongoParseError(`Cannot make read preference from ${JSON.stringify(value)}`);
+          }
+          if (typeof value === "string") {
+            const rpOpts = {
+              hedge: options.readPreference?.hedge,
+              maxStalenessSeconds: options.readPreference?.maxStalenessSeconds
+            };
+            return new read_preference_1.ReadPreference(value, options.readPreference?.tags, rpOpts);
+          }
+          throw new error_1.MongoParseError(`Unknown ReadPreference value: ${value}`);
+        }
+      },
+      readPreferenceTags: {
+        target: "readPreference",
+        transform({ values, options }) {
+          const tags = Array.isArray(values[0]) ? values[0] : values;
+          const readPreferenceTags = [];
+          for (const tag of tags) {
+            const readPreferenceTag = /* @__PURE__ */ Object.create(null);
+            if (typeof tag === "string") {
+              for (const [k, v] of entriesFromString(tag)) {
+                readPreferenceTag[k] = v;
+              }
+            }
+            if ((0, utils_1.isRecord)(tag)) {
+              for (const [k, v] of Object.entries(tag)) {
+                readPreferenceTag[k] = v;
+              }
+            }
+            readPreferenceTags.push(readPreferenceTag);
+          }
+          return read_preference_1.ReadPreference.fromOptions({
+            readPreference: options.readPreference,
+            readPreferenceTags
+          });
+        }
+      },
+      replicaSet: {
+        type: "string"
+      },
+      retryReads: {
+        default: true,
+        type: "boolean"
+      },
+      retryWrites: {
+        default: true,
+        type: "boolean"
+      },
+      serializeFunctions: {
+        type: "boolean"
+      },
+      serverMonitoringMode: {
+        default: "auto",
+        transform({ values: [value] }) {
+          if (!Object.values(monitor_1.ServerMonitoringMode).includes(value)) {
+            throw new error_1.MongoParseError("serverMonitoringMode must be one of `auto`, `poll`, or `stream`");
+          }
+          return value;
+        }
+      },
+      serverSelectionTimeoutMS: {
+        default: 3e4,
+        type: "uint"
+      },
+      servername: {
+        type: "string"
+      },
+      socketTimeoutMS: {
+        default: 0,
+        type: "uint"
+      },
+      srvMaxHosts: {
+        type: "uint",
+        default: 0
+      },
+      srvServiceName: {
+        type: "string",
+        default: "mongodb"
+      },
+      ssl: {
+        target: "tls",
+        type: "boolean"
+      },
+      timeoutMS: {
+        type: "uint"
+      },
+      tls: {
+        type: "boolean"
+      },
+      tlsAllowInvalidCertificates: {
+        target: "rejectUnauthorized",
+        transform({ name, values: [value] }) {
+          return !getBoolean(name, value);
+        }
+      },
+      tlsAllowInvalidHostnames: {
+        target: "checkServerIdentity",
+        transform({ name, values: [value] }) {
+          return getBoolean(name, value) ? () => void 0 : void 0;
+        }
+      },
+      tlsCAFile: {
+        type: "string"
+      },
+      tlsCRLFile: {
+        type: "string"
+      },
+      tlsCertificateKeyFile: {
+        type: "string"
+      },
+      tlsCertificateKeyFilePassword: {
+        target: "passphrase",
+        type: "any"
+      },
+      tlsInsecure: {
+        transform({ name, options, values: [value] }) {
+          const tlsInsecure = getBoolean(name, value);
+          if (tlsInsecure) {
+            options.checkServerIdentity = () => void 0;
+            options.rejectUnauthorized = false;
+          } else {
+            options.checkServerIdentity = options.tlsAllowInvalidHostnames ? () => void 0 : void 0;
+            options.rejectUnauthorized = options.tlsAllowInvalidCertificates ? false : true;
+          }
+          return tlsInsecure;
+        }
+      },
+      w: {
+        target: "writeConcern",
+        transform({ values: [value], options }) {
+          return write_concern_1.WriteConcern.fromOptions({ writeConcern: { ...options.writeConcern, w: value } });
+        }
+      },
+      waitQueueTimeoutMS: {
+        default: 0,
+        type: "uint"
+      },
+      writeConcern: {
+        target: "writeConcern",
+        transform({ values: [value], options }) {
+          if ((0, utils_1.isRecord)(value) || value instanceof write_concern_1.WriteConcern) {
+            return write_concern_1.WriteConcern.fromOptions({
+              writeConcern: {
+                ...options.writeConcern,
+                ...value
+              }
+            });
+          } else if (value === "majority" || typeof value === "number") {
+            return write_concern_1.WriteConcern.fromOptions({
+              writeConcern: {
+                ...options.writeConcern,
+                w: value
+              }
+            });
+          }
+          throw new error_1.MongoParseError(`Invalid WriteConcern cannot parse: ${JSON.stringify(value)}`);
+        }
+      },
+      wtimeout: {
+        deprecated: "Please use wtimeoutMS instead",
+        target: "writeConcern",
+        transform({ values: [value], options }) {
+          const wc = write_concern_1.WriteConcern.fromOptions({
+            writeConcern: {
+              ...options.writeConcern,
+              wtimeout: getUIntFromOptions("wtimeout", value)
+            }
+          });
+          if (wc)
+            return wc;
+          throw new error_1.MongoParseError(`Cannot make WriteConcern from wtimeout`);
+        }
+      },
+      wtimeoutMS: {
+        target: "writeConcern",
+        transform({ values: [value], options }) {
+          const wc = write_concern_1.WriteConcern.fromOptions({
+            writeConcern: {
+              ...options.writeConcern,
+              wtimeoutMS: getUIntFromOptions("wtimeoutMS", value)
+            }
+          });
+          if (wc)
+            return wc;
+          throw new error_1.MongoParseError(`Cannot make WriteConcern from wtimeout`);
+        }
+      },
+      zlibCompressionLevel: {
+        default: 0,
+        type: "int"
+      },
+      connectionType: { type: "any" },
+      srvPoller: { type: "any" },
+      minDHSize: { type: "any" },
+      pskCallback: { type: "any" },
+      secureContext: { type: "any" },
+      enableTrace: { type: "any" },
+      requestCert: { type: "any" },
+      rejectUnauthorized: { type: "any" },
+      checkServerIdentity: { type: "any" },
+      ALPNProtocols: { type: "any" },
+      SNICallback: { type: "any" },
+      session: { type: "any" },
+      requestOCSP: { type: "any" },
+      localAddress: { type: "any" },
+      localPort: { type: "any" },
+      hints: { type: "any" },
+      lookup: { type: "any" },
+      ca: { type: "any" },
+      cert: { type: "any" },
+      ciphers: { type: "any" },
+      crl: { type: "any" },
+      ecdhCurve: { type: "any" },
+      key: { type: "any" },
+      passphrase: { type: "any" },
+      pfx: { type: "any" },
+      secureProtocol: { type: "any" },
+      index: { type: "any" },
+      useNewUrlParser: {
+        type: "boolean",
+        deprecated: "useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version"
+      },
+      useUnifiedTopology: {
+        type: "boolean",
+        deprecated: "useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version"
+      },
+      mongodbLogPath: {
+        transform({ values: [value] }) {
+          if (!(typeof value === "string" && ["stderr", "stdout"].includes(value) || value && typeof value === "object" && "write" in value && typeof value.write === "function")) {
+            throw new error_1.MongoAPIError(`Option 'mongodbLogPath' must be of type 'stderr' | 'stdout' | MongoDBLogWritable`);
+          }
+          return value;
+        }
+      },
+      mongodbLogComponentSeverities: {
+        transform({ values: [value] }) {
+          if (typeof value !== "object" || !value) {
+            throw new error_1.MongoAPIError(`Option 'mongodbLogComponentSeverities' must be a non-null object`);
+          }
+          for (const [k, v] of Object.entries(value)) {
+            if (typeof v !== "string" || typeof k !== "string") {
+              throw new error_1.MongoAPIError(`User input for option 'mongodbLogComponentSeverities' object cannot include a non-string key or value`);
+            }
+            if (!Object.values(mongo_logger_1.MongoLoggableComponent).some((val) => val === k) && k !== "default") {
+              throw new error_1.MongoAPIError(`User input for option 'mongodbLogComponentSeverities' contains invalid key: ${k}`);
+            }
+            if (!Object.values(mongo_logger_1.SeverityLevel).some((val) => val === v)) {
+              throw new error_1.MongoAPIError(`Option 'mongodbLogComponentSeverities' does not support ${v} as a value for ${k}`);
+            }
+          }
+          return value;
+        }
+      },
+      mongodbLogMaxDocumentLength: { type: "uint" }
+    };
+    exports.DEFAULT_OPTIONS = new CaseInsensitiveMap(Object.entries(exports.OPTIONS).filter(([, descriptor]) => descriptor.default != null).map(([k, d]) => [k, d.default]));
+    exports.FEATURE_FLAGS = /* @__PURE__ */ new Set([
+      Symbol.for("@@mdb.skipPingOnConnect"),
+      Symbol.for("@@mdb.enableMongoLogger"),
+      Symbol.for("@@mdb.internalLoggerConfig")
+    ]);
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongocr.js
+var require_mongocr2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongocr.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MongoCR = void 0;
+    var crypto = require("crypto");
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var auth_provider_1 = require_auth_provider2();
+    var MongoCR = class extends auth_provider_1.AuthProvider {
+      async auth(authContext) {
+        const { connection, credentials } = authContext;
+        if (!credentials) {
+          throw new error_1.MongoMissingCredentialsError("AuthContext must provide credentials.");
+        }
+        const { username, password, source } = credentials;
+        const { nonce } = await connection.command((0, utils_1.ns)(`${source}.$cmd`), { getnonce: 1 }, void 0);
+        const hashPassword = crypto.createHash("md5").update(`${username}:mongo:${password}`, "utf8").digest("hex");
+        const key = crypto.createHash("md5").update(`${nonce}${username}${hashPassword}`, "utf8").digest("hex");
+        const authenticateCommand = {
+          authenticate: 1,
+          user: username,
+          nonce,
+          key
+        };
+        await connection.command((0, utils_1.ns)(`${source}.$cmd`), authenticateCommand, void 0);
+      }
+    };
+    exports.MongoCR = MongoCR;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_aws.js
+var require_mongodb_aws2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_aws.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MongoDBAWS = void 0;
+    var BSON = require_bson3();
+    var deps_1 = require_deps2();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var auth_provider_1 = require_auth_provider2();
+    var aws_temporary_credentials_1 = require_aws_temporary_credentials2();
+    var mongo_credentials_1 = require_mongo_credentials2();
+    var providers_1 = require_providers3();
+    var ASCII_N = 110;
+    var bsonOptions = {
+      useBigInt64: false,
+      promoteLongs: true,
+      promoteValues: true,
+      promoteBuffers: false,
+      bsonRegExp: false
+    };
+    var MongoDBAWS = class extends auth_provider_1.AuthProvider {
+      constructor() {
+        super();
+        this.credentialFetcher = aws_temporary_credentials_1.AWSTemporaryCredentialProvider.isAWSSDKInstalled ? new aws_temporary_credentials_1.AWSSDKCredentialProvider() : new aws_temporary_credentials_1.LegacyAWSTemporaryCredentialProvider();
+      }
+      async auth(authContext) {
+        const { connection } = authContext;
+        if (!authContext.credentials) {
+          throw new error_1.MongoMissingCredentialsError("AuthContext must provide credentials.");
+        }
+        if ("kModuleError" in deps_1.aws4) {
+          throw deps_1.aws4["kModuleError"];
+        }
+        const { sign } = deps_1.aws4;
+        if ((0, utils_1.maxWireVersion)(connection) < 9) {
+          throw new error_1.MongoCompatibilityError("MONGODB-AWS authentication requires MongoDB version 4.4 or later");
+        }
+        if (!authContext.credentials.username) {
+          authContext.credentials = await makeTempCredentials(authContext.credentials, this.credentialFetcher);
+        }
+        const { credentials } = authContext;
+        const accessKeyId = credentials.username;
+        const secretAccessKey = credentials.password;
+        const sessionToken = credentials.mechanismProperties.AWS_SESSION_TOKEN;
+        const awsCredentials = accessKeyId && secretAccessKey && sessionToken ? { accessKeyId, secretAccessKey, sessionToken } : accessKeyId && secretAccessKey ? { accessKeyId, secretAccessKey } : void 0;
+        const db = credentials.source;
+        const nonce = await (0, utils_1.randomBytes)(32);
+        const saslStart = {
+          saslStart: 1,
+          mechanism: "MONGODB-AWS",
+          payload: BSON.serialize({ r: nonce, p: ASCII_N }, bsonOptions)
+        };
+        const saslStartResponse = await connection.command((0, utils_1.ns)(`${db}.$cmd`), saslStart, void 0);
+        const serverResponse = BSON.deserialize(saslStartResponse.payload.buffer, bsonOptions);
+        const host = serverResponse.h;
+        const serverNonce = serverResponse.s.buffer;
+        if (serverNonce.length !== 64) {
+          throw new error_1.MongoRuntimeError(`Invalid server nonce length ${serverNonce.length}, expected 64`);
+        }
+        if (!utils_1.ByteUtils.equals(serverNonce.subarray(0, nonce.byteLength), nonce)) {
+          throw new error_1.MongoRuntimeError("Server nonce does not begin with client nonce");
+        }
+        if (host.length < 1 || host.length > 255 || host.indexOf("..") !== -1) {
+          throw new error_1.MongoRuntimeError(`Server returned an invalid host: "${host}"`);
+        }
+        const body = "Action=GetCallerIdentity&Version=2011-06-15";
+        const options = sign({
+          method: "POST",
+          host,
+          region: deriveRegion(serverResponse.h),
+          service: "sts",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Length": body.length,
+            "X-MongoDB-Server-Nonce": utils_1.ByteUtils.toBase64(serverNonce),
+            "X-MongoDB-GS2-CB-Flag": "n"
+          },
+          path: "/",
+          body
+        }, awsCredentials);
+        const payload = {
+          a: options.headers.Authorization,
+          d: options.headers["X-Amz-Date"]
+        };
+        if (sessionToken) {
+          payload.t = sessionToken;
+        }
+        const saslContinue = {
+          saslContinue: 1,
+          conversationId: 1,
+          payload: BSON.serialize(payload, bsonOptions)
+        };
+        await connection.command((0, utils_1.ns)(`${db}.$cmd`), saslContinue, void 0);
+      }
+    };
+    exports.MongoDBAWS = MongoDBAWS;
+    async function makeTempCredentials(credentials, awsCredentialFetcher) {
+      function makeMongoCredentialsFromAWSTemp(creds) {
+        if (!creds.AccessKeyId || !creds.SecretAccessKey) {
+          throw new error_1.MongoMissingCredentialsError("Could not obtain temporary MONGODB-AWS credentials");
+        }
+        return new mongo_credentials_1.MongoCredentials({
+          username: creds.AccessKeyId,
+          password: creds.SecretAccessKey,
+          source: credentials.source,
+          mechanism: providers_1.AuthMechanism.MONGODB_AWS,
+          mechanismProperties: {
+            AWS_SESSION_TOKEN: creds.Token
+          }
+        });
+      }
+      const temporaryCredentials = await awsCredentialFetcher.getCredentials();
+      return makeMongoCredentialsFromAWSTemp(temporaryCredentials);
+    }
+    function deriveRegion(host) {
+      const parts = host.split(".");
+      if (parts.length === 1 || parts[1] === "amazonaws") {
+        return "us-east-1";
+      }
+      return parts[1];
+    }
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/command_builders.js
+var require_command_builders2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/command_builders.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.startCommandDocument = exports.finishCommandDocument = void 0;
+    var bson_1 = require_bson();
+    var providers_1 = require_providers3();
+    function finishCommandDocument(token, conversationId) {
+      if (conversationId != null) {
+        return {
+          saslContinue: 1,
+          conversationId,
+          payload: new bson_1.Binary(bson_1.BSON.serialize({ jwt: token }))
+        };
+      }
+      return {
+        saslStart: 1,
+        mechanism: providers_1.AuthMechanism.MONGODB_OIDC,
+        payload: new bson_1.Binary(bson_1.BSON.serialize({ jwt: token }))
+      };
+    }
+    exports.finishCommandDocument = finishCommandDocument;
+    function startCommandDocument(credentials) {
+      const payload = {};
+      if (credentials.username) {
+        payload.n = credentials.username;
+      }
+      return {
+        saslStart: 1,
+        autoAuthorize: 1,
+        mechanism: providers_1.AuthMechanism.MONGODB_OIDC,
+        payload: new bson_1.Binary(bson_1.BSON.serialize(payload))
+      };
+    }
+    exports.startCommandDocument = startCommandDocument;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/machine_workflow.js
+var require_machine_workflow2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/machine_workflow.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MachineWorkflow = void 0;
+    var promises_1 = require("timers/promises");
+    var utils_1 = require_utils5();
+    var command_builders_1 = require_command_builders2();
+    var THROTTLE_MS = 100;
+    var MachineWorkflow = class {
+      constructor(cache) {
+        this.cache = cache;
+        this.callback = this.withLock(this.getToken.bind(this));
+        this.lastExecutionTime = Date.now() - THROTTLE_MS;
+      }
+      async execute(connection, credentials) {
+        const token = await this.getTokenFromCacheOrEnv(connection, credentials);
+        const command = (0, command_builders_1.finishCommandDocument)(token);
+        await connection.command((0, utils_1.ns)(credentials.source), command, void 0);
+      }
+      async reauthenticate(connection, credentials) {
+        if (this.cache.hasAccessToken) {
+          if (connection.accessToken === this.cache.getAccessToken()) {
+            this.cache.removeAccessToken();
+            delete connection.accessToken;
+          } else {
+            connection.accessToken = this.cache.getAccessToken();
+          }
+        }
+        await this.execute(connection, credentials);
+      }
+      async speculativeAuth(connection, credentials) {
+        if (!this.cache.hasAccessToken) {
+          return {};
+        }
+        const token = await this.getTokenFromCacheOrEnv(connection, credentials);
+        const document2 = (0, command_builders_1.finishCommandDocument)(token);
+        document2.db = credentials.source;
+        return { speculativeAuthenticate: document2 };
+      }
+      async getTokenFromCacheOrEnv(connection, credentials) {
+        if (this.cache.hasAccessToken) {
+          return this.cache.getAccessToken();
+        } else {
+          const token = await this.callback(credentials);
+          this.cache.put({ accessToken: token.access_token, expiresInSeconds: token.expires_in });
+          connection.accessToken = token.access_token;
+          return token.access_token;
+        }
+      }
+      withLock(callback2) {
+        let lock = Promise.resolve();
+        return async (credentials) => {
+          await lock;
+          lock = lock.catch(() => null).then(async () => {
+            const difference = Date.now() - this.lastExecutionTime;
+            if (difference <= THROTTLE_MS) {
+              await (0, promises_1.setTimeout)(THROTTLE_MS - difference);
+            }
+            this.lastExecutionTime = Date.now();
+            return await callback2(credentials);
+          });
+          return await lock;
+        };
+      }
+    };
+    exports.MachineWorkflow = MachineWorkflow;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/azure_machine_workflow.js
+var require_azure_machine_workflow2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/azure_machine_workflow.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AzureMachineWorkflow = void 0;
+    var azure_1 = require_azure2();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var machine_workflow_1 = require_machine_workflow2();
+    var AZURE_HEADERS = Object.freeze({ Metadata: "true", Accept: "application/json" });
+    var ENDPOINT_RESULT_ERROR = "Azure endpoint did not return a value with only access_token and expires_in properties";
+    var TOKEN_RESOURCE_MISSING_ERROR = "TOKEN_RESOURCE must be set in the auth mechanism properties when ENVIRONMENT is azure.";
+    var AzureMachineWorkflow = class extends machine_workflow_1.MachineWorkflow {
+      constructor(cache) {
+        super(cache);
+      }
+      async getToken(credentials) {
+        const tokenAudience = credentials?.mechanismProperties.TOKEN_RESOURCE;
+        const username = credentials?.username;
+        if (!tokenAudience) {
+          throw new error_1.MongoAzureError(TOKEN_RESOURCE_MISSING_ERROR);
+        }
+        const response = await getAzureTokenData(tokenAudience, username);
+        if (!isEndpointResultValid(response)) {
+          throw new error_1.MongoAzureError(ENDPOINT_RESULT_ERROR);
+        }
+        return response;
+      }
+    };
+    exports.AzureMachineWorkflow = AzureMachineWorkflow;
+    async function getAzureTokenData(tokenAudience, username) {
+      const url = new URL(azure_1.AZURE_BASE_URL);
+      (0, azure_1.addAzureParams)(url, tokenAudience, username);
+      const response = await (0, utils_1.get)(url, {
+        headers: AZURE_HEADERS
+      });
+      if (response.status !== 200) {
+        throw new error_1.MongoAzureError(`Status code ${response.status} returned from the Azure endpoint. Response body: ${response.body}`);
+      }
+      const result = JSON.parse(response.body);
+      return {
+        access_token: result.access_token,
+        expires_in: Number(result.expires_in)
+      };
+    }
+    function isEndpointResultValid(token) {
+      if (token == null || typeof token !== "object")
+        return false;
+      return "access_token" in token && typeof token.access_token === "string" && "expires_in" in token && typeof token.expires_in === "number";
+    }
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/gcp_machine_workflow.js
+var require_gcp_machine_workflow2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/gcp_machine_workflow.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.GCPMachineWorkflow = void 0;
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var machine_workflow_1 = require_machine_workflow2();
+    var GCP_BASE_URL = "http://metadata/computeMetadata/v1/instance/service-accounts/default/identity";
+    var GCP_HEADERS = Object.freeze({ "Metadata-Flavor": "Google" });
+    var TOKEN_RESOURCE_MISSING_ERROR = "TOKEN_RESOURCE must be set in the auth mechanism properties when ENVIRONMENT is gcp.";
+    var GCPMachineWorkflow = class extends machine_workflow_1.MachineWorkflow {
+      constructor(cache) {
+        super(cache);
+      }
+      async getToken(credentials) {
+        const tokenAudience = credentials?.mechanismProperties.TOKEN_RESOURCE;
+        if (!tokenAudience) {
+          throw new error_1.MongoGCPError(TOKEN_RESOURCE_MISSING_ERROR);
+        }
+        return await getGcpTokenData(tokenAudience);
+      }
+    };
+    exports.GCPMachineWorkflow = GCPMachineWorkflow;
+    async function getGcpTokenData(tokenAudience) {
+      const url = new URL(GCP_BASE_URL);
+      url.searchParams.append("audience", tokenAudience);
+      const response = await (0, utils_1.get)(url, {
+        headers: GCP_HEADERS
+      });
+      if (response.status !== 200) {
+        throw new error_1.MongoGCPError(`Status code ${response.status} returned from the GCP endpoint. Response body: ${response.body}`);
+      }
+      return { access_token: response.body };
+    }
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_cache.js
+var require_token_cache2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_cache.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.TokenCache = void 0;
+    var error_1 = require_error3();
+    var MongoOIDCError = class extends error_1.MongoDriverError {
+    };
+    var TokenCache = class {
+      get hasAccessToken() {
+        return !!this.accessToken;
+      }
+      get hasRefreshToken() {
+        return !!this.refreshToken;
+      }
+      get hasIdpInfo() {
+        return !!this.idpInfo;
+      }
+      getAccessToken() {
+        if (!this.accessToken) {
+          throw new MongoOIDCError("Attempted to get an access token when none exists.");
+        }
+        return this.accessToken;
+      }
+      getRefreshToken() {
+        if (!this.refreshToken) {
+          throw new MongoOIDCError("Attempted to get a refresh token when none exists.");
+        }
+        return this.refreshToken;
+      }
+      getIdpInfo() {
+        if (!this.idpInfo) {
+          throw new MongoOIDCError("Attempted to get IDP information when none exists.");
+        }
+        return this.idpInfo;
+      }
+      put(response, idpInfo) {
+        this.accessToken = response.accessToken;
+        this.refreshToken = response.refreshToken;
+        this.expiresInSeconds = response.expiresInSeconds;
+        if (idpInfo) {
+          this.idpInfo = idpInfo;
+        }
+      }
+      removeAccessToken() {
+        this.accessToken = void 0;
+      }
+      removeRefreshToken() {
+        this.refreshToken = void 0;
+      }
+    };
+    exports.TokenCache = TokenCache;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_machine_workflow.js
+var require_token_machine_workflow2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/token_machine_workflow.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.TokenMachineWorkflow = void 0;
+    var fs = require("fs");
+    var error_1 = require_error3();
+    var machine_workflow_1 = require_machine_workflow2();
+    var TOKEN_MISSING_ERROR = "OIDC_TOKEN_FILE must be set in the environment.";
+    var TokenMachineWorkflow = class extends machine_workflow_1.MachineWorkflow {
+      constructor(cache) {
+        super(cache);
+      }
+      async getToken() {
+        const tokenFile = process.env.OIDC_TOKEN_FILE;
+        if (!tokenFile) {
+          throw new error_1.MongoAWSError(TOKEN_MISSING_ERROR);
+        }
+        const token = await fs.promises.readFile(tokenFile, "utf8");
+        return { access_token: token };
+      }
+    };
+    exports.TokenMachineWorkflow = TokenMachineWorkflow;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_oidc.js
+var require_mongodb_oidc2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MongoDBOIDC = exports.OIDC_WORKFLOWS = exports.OIDC_VERSION = void 0;
+    var error_1 = require_error3();
+    var auth_provider_1 = require_auth_provider2();
+    var azure_machine_workflow_1 = require_azure_machine_workflow2();
+    var gcp_machine_workflow_1 = require_gcp_machine_workflow2();
+    var token_cache_1 = require_token_cache2();
+    var token_machine_workflow_1 = require_token_machine_workflow2();
+    var MISSING_CREDENTIALS_ERROR = "AuthContext must provide credentials.";
+    exports.OIDC_VERSION = 1;
+    exports.OIDC_WORKFLOWS = /* @__PURE__ */ new Map();
+    exports.OIDC_WORKFLOWS.set("test", () => new token_machine_workflow_1.TokenMachineWorkflow(new token_cache_1.TokenCache()));
+    exports.OIDC_WORKFLOWS.set("azure", () => new azure_machine_workflow_1.AzureMachineWorkflow(new token_cache_1.TokenCache()));
+    exports.OIDC_WORKFLOWS.set("gcp", () => new gcp_machine_workflow_1.GCPMachineWorkflow(new token_cache_1.TokenCache()));
+    var MongoDBOIDC = class extends auth_provider_1.AuthProvider {
+      constructor(workflow) {
+        super();
+        if (!workflow) {
+          throw new error_1.MongoInvalidArgumentError("No workflow provided to the OIDC auth provider.");
+        }
+        this.workflow = workflow;
+      }
+      async auth(authContext) {
+        const { connection, reauthenticating, response } = authContext;
+        if (response?.speculativeAuthenticate?.done) {
+          return;
+        }
+        const credentials = getCredentials(authContext);
+        if (reauthenticating) {
+          await this.workflow.reauthenticate(connection, credentials);
+        } else {
+          await this.workflow.execute(connection, credentials, response);
+        }
+      }
+      async prepare(handshakeDoc, authContext) {
+        const { connection } = authContext;
+        const credentials = getCredentials(authContext);
+        const result = await this.workflow.speculativeAuth(connection, credentials);
+        return { ...handshakeDoc, ...result };
+      }
+    };
+    exports.MongoDBOIDC = MongoDBOIDC;
+    function getCredentials(authContext) {
+      const { credentials } = authContext;
+      if (!credentials) {
+        throw new error_1.MongoMissingCredentialsError(MISSING_CREDENTIALS_ERROR);
+      }
+      return credentials;
+    }
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/callback_workflow.js
+var require_callback_workflow2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/callback_workflow.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.CallbackWorkflow = exports.AUTOMATED_TIMEOUT_MS = exports.HUMAN_TIMEOUT_MS = void 0;
+    var promises_1 = require("timers/promises");
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var command_builders_1 = require_command_builders2();
+    exports.HUMAN_TIMEOUT_MS = 3e5;
+    exports.AUTOMATED_TIMEOUT_MS = 6e4;
+    var RESULT_PROPERTIES = ["accessToken", "expiresInSeconds", "refreshToken"];
+    var CALLBACK_RESULT_ERROR = "User provided OIDC callbacks must return a valid object with an accessToken.";
+    var THROTTLE_MS = 100;
+    var CallbackWorkflow = class {
+      constructor(cache, callback2) {
+        this.cache = cache;
+        this.callback = this.withLock(callback2);
+        this.lastExecutionTime = Date.now() - THROTTLE_MS;
+      }
+      async speculativeAuth(connection, credentials) {
+        if (this.cache.hasAccessToken) {
+          const accessToken = this.cache.getAccessToken();
+          connection.accessToken = accessToken;
+          const document2 = (0, command_builders_1.finishCommandDocument)(accessToken);
+          document2.db = credentials.source;
+          return { speculativeAuthenticate: document2 };
+        }
+        return {};
+      }
+      async reauthenticate(connection, credentials) {
+        if (this.cache.hasAccessToken) {
+          if (connection.accessToken === this.cache.getAccessToken()) {
+            this.cache.removeAccessToken();
+            delete connection.accessToken;
+          } else {
+            connection.accessToken = this.cache.getAccessToken();
+          }
+        }
+        await this.execute(connection, credentials);
+      }
+      async startAuthentication(connection, credentials, response) {
+        let result;
+        if (response?.speculativeAuthenticate) {
+          result = response.speculativeAuthenticate;
+        } else {
+          result = await connection.command((0, utils_1.ns)(credentials.source), (0, command_builders_1.startCommandDocument)(credentials), void 0);
+        }
+        return result;
+      }
+      async finishAuthentication(connection, credentials, token, conversationId) {
+        await connection.command((0, utils_1.ns)(credentials.source), (0, command_builders_1.finishCommandDocument)(token, conversationId), void 0);
+      }
+      async executeAndValidateCallback(params) {
+        const result = await this.callback(params);
+        if (isCallbackResultInvalid(result)) {
+          throw new error_1.MongoMissingCredentialsError(CALLBACK_RESULT_ERROR);
+        }
+        return result;
+      }
+      withLock(callback2) {
+        let lock = Promise.resolve();
+        return async (params) => {
+          await lock;
+          lock = lock.catch(() => null).then(async () => {
+            const difference = Date.now() - this.lastExecutionTime;
+            if (difference <= THROTTLE_MS) {
+              await (0, promises_1.setTimeout)(THROTTLE_MS - difference, { signal: params.timeoutContext });
+            }
+            this.lastExecutionTime = Date.now();
+            return await callback2(params);
+          });
+          return await lock;
+        };
+      }
+    };
+    exports.CallbackWorkflow = CallbackWorkflow;
+    function isCallbackResultInvalid(tokenResult) {
+      if (tokenResult == null || typeof tokenResult !== "object")
+        return true;
+      if (!("accessToken" in tokenResult))
+        return true;
+      return !Object.getOwnPropertyNames(tokenResult).every((prop) => RESULT_PROPERTIES.includes(prop));
+    }
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/automated_callback_workflow.js
+var require_automated_callback_workflow2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/automated_callback_workflow.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.AutomatedCallbackWorkflow = void 0;
+    var error_1 = require_error3();
+    var timeout_1 = require_timeout2();
+    var mongodb_oidc_1 = require_mongodb_oidc2();
+    var callback_workflow_1 = require_callback_workflow2();
+    var AutomatedCallbackWorkflow = class extends callback_workflow_1.CallbackWorkflow {
+      constructor(cache, callback2) {
+        super(cache, callback2);
+      }
+      async execute(connection, credentials) {
+        if (this.cache.hasAccessToken) {
+          const token = this.cache.getAccessToken();
+          try {
+            return await this.finishAuthentication(connection, credentials, token);
+          } catch (error) {
+            if (error instanceof error_1.MongoError && error.code === error_1.MONGODB_ERROR_CODES.AuthenticationFailed) {
+              this.cache.removeAccessToken();
+              return await this.execute(connection, credentials);
+            } else {
+              throw error;
+            }
+          }
+        }
+        const response = await this.fetchAccessToken(credentials);
+        this.cache.put(response);
+        connection.accessToken = response.accessToken;
+        await this.finishAuthentication(connection, credentials, response.accessToken);
+      }
+      async fetchAccessToken(credentials) {
+        const controller = new AbortController();
+        const params = {
+          timeoutContext: controller.signal,
+          version: mongodb_oidc_1.OIDC_VERSION
+        };
+        if (credentials.username) {
+          params.username = credentials.username;
+        }
+        const timeout = timeout_1.Timeout.expires(callback_workflow_1.AUTOMATED_TIMEOUT_MS);
+        try {
+          return await Promise.race([this.executeAndValidateCallback(params), timeout]);
+        } catch (error) {
+          if (timeout_1.TimeoutError.is(error)) {
+            controller.abort();
+            throw new error_1.MongoOIDCError(`OIDC callback timed out after ${callback_workflow_1.AUTOMATED_TIMEOUT_MS}ms.`);
+          }
+          throw error;
+        } finally {
+          timeout.clear();
+        }
+      }
+    };
+    exports.AutomatedCallbackWorkflow = AutomatedCallbackWorkflow;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/mongodb_oidc/human_callback_workflow.js
+var require_human_callback_workflow2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/mongodb_oidc/human_callback_workflow.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.HumanCallbackWorkflow = void 0;
+    var bson_1 = require_bson();
+    var error_1 = require_error3();
+    var timeout_1 = require_timeout2();
+    var mongodb_oidc_1 = require_mongodb_oidc2();
+    var callback_workflow_1 = require_callback_workflow2();
+    var HumanCallbackWorkflow = class extends callback_workflow_1.CallbackWorkflow {
+      constructor(cache, callback2) {
+        super(cache, callback2);
+      }
+      async execute(connection, credentials) {
+        if (this.cache.hasAccessToken) {
+          const token = this.cache.getAccessToken();
+          connection.accessToken = token;
+          try {
+            return await this.finishAuthentication(connection, credentials, token);
+          } catch (error) {
+            if (error instanceof error_1.MongoError && error.code === error_1.MONGODB_ERROR_CODES.AuthenticationFailed) {
+              this.cache.removeAccessToken();
+              delete connection.accessToken;
+              return await this.execute(connection, credentials);
+            } else {
+              throw error;
+            }
+          }
+        }
+        if (this.cache.hasRefreshToken) {
+          const refreshToken = this.cache.getRefreshToken();
+          const result = await this.fetchAccessToken(this.cache.getIdpInfo(), credentials, refreshToken);
+          this.cache.put(result);
+          connection.accessToken = result.accessToken;
+          try {
+            return await this.finishAuthentication(connection, credentials, result.accessToken);
+          } catch (error) {
+            if (error instanceof error_1.MongoError && error.code === error_1.MONGODB_ERROR_CODES.AuthenticationFailed) {
+              this.cache.removeRefreshToken();
+              delete connection.accessToken;
+              return await this.execute(connection, credentials);
+            } else {
+              throw error;
+            }
+          }
+        }
+        const startResponse = await this.startAuthentication(connection, credentials);
+        const conversationId = startResponse.conversationId;
+        const idpInfo = bson_1.BSON.deserialize(startResponse.payload.buffer);
+        const callbackResponse = await this.fetchAccessToken(idpInfo, credentials);
+        this.cache.put(callbackResponse, idpInfo);
+        connection.accessToken = callbackResponse.accessToken;
+        return await this.finishAuthentication(connection, credentials, callbackResponse.accessToken, conversationId);
+      }
+      async fetchAccessToken(idpInfo, credentials, refreshToken) {
+        const controller = new AbortController();
+        const params = {
+          timeoutContext: controller.signal,
+          version: mongodb_oidc_1.OIDC_VERSION,
+          idpInfo
+        };
+        if (credentials.username) {
+          params.username = credentials.username;
+        }
+        if (refreshToken) {
+          params.refreshToken = refreshToken;
+        }
+        const timeout = timeout_1.Timeout.expires(callback_workflow_1.HUMAN_TIMEOUT_MS);
+        try {
+          return await Promise.race([this.executeAndValidateCallback(params), timeout]);
+        } catch (error) {
+          if (timeout_1.TimeoutError.is(error)) {
+            controller.abort();
+            throw new error_1.MongoOIDCError(`OIDC callback timed out after ${callback_workflow_1.HUMAN_TIMEOUT_MS}ms.`);
+          }
+          throw error;
+        } finally {
+          timeout.clear();
+        }
+      }
+    };
+    exports.HumanCallbackWorkflow = HumanCallbackWorkflow;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/plain.js
+var require_plain2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/plain.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.Plain = void 0;
+    var bson_1 = require_bson3();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var auth_provider_1 = require_auth_provider2();
+    var Plain = class extends auth_provider_1.AuthProvider {
+      async auth(authContext) {
+        const { connection, credentials } = authContext;
+        if (!credentials) {
+          throw new error_1.MongoMissingCredentialsError("AuthContext must provide credentials.");
+        }
+        const { username, password } = credentials;
+        const payload = new bson_1.Binary(Buffer.from(`\0${username}\0${password}`));
+        const command = {
+          saslStart: 1,
+          mechanism: "PLAIN",
+          payload,
+          autoAuthorize: 1
+        };
+        await connection.command((0, utils_1.ns)("$external.$cmd"), command, void 0);
+      }
+    };
+    exports.Plain = Plain;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/scram.js
+var require_scram2 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/scram.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ScramSHA256 = exports.ScramSHA1 = void 0;
+    var saslprep_1 = require_node();
+    var crypto = require("crypto");
+    var bson_1 = require_bson3();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var auth_provider_1 = require_auth_provider2();
+    var providers_1 = require_providers3();
+    var ScramSHA = class extends auth_provider_1.AuthProvider {
+      constructor(cryptoMethod) {
+        super();
+        this.cryptoMethod = cryptoMethod || "sha1";
+      }
+      async prepare(handshakeDoc, authContext) {
+        const cryptoMethod = this.cryptoMethod;
+        const credentials = authContext.credentials;
+        if (!credentials) {
+          throw new error_1.MongoMissingCredentialsError("AuthContext must provide credentials.");
+        }
+        const nonce = await (0, utils_1.randomBytes)(24);
+        authContext.nonce = nonce;
+        const request = {
+          ...handshakeDoc,
+          speculativeAuthenticate: {
+            ...makeFirstMessage(cryptoMethod, credentials, nonce),
+            db: credentials.source
+          }
+        };
+        return request;
+      }
+      async auth(authContext) {
+        const { reauthenticating, response } = authContext;
+        if (response?.speculativeAuthenticate && !reauthenticating) {
+          return await continueScramConversation(this.cryptoMethod, response.speculativeAuthenticate, authContext);
+        }
+        return await executeScram(this.cryptoMethod, authContext);
+      }
+    };
+    function cleanUsername(username) {
+      return username.replace("=", "=3D").replace(",", "=2C");
+    }
+    function clientFirstMessageBare(username, nonce) {
+      return Buffer.concat([
+        Buffer.from("n=", "utf8"),
+        Buffer.from(username, "utf8"),
+        Buffer.from(",r=", "utf8"),
+        Buffer.from(nonce.toString("base64"), "utf8")
+      ]);
+    }
+    function makeFirstMessage(cryptoMethod, credentials, nonce) {
+      const username = cleanUsername(credentials.username);
+      const mechanism = cryptoMethod === "sha1" ? providers_1.AuthMechanism.MONGODB_SCRAM_SHA1 : providers_1.AuthMechanism.MONGODB_SCRAM_SHA256;
+      return {
+        saslStart: 1,
+        mechanism,
+        payload: new bson_1.Binary(Buffer.concat([Buffer.from("n,,", "utf8"), clientFirstMessageBare(username, nonce)])),
+        autoAuthorize: 1,
+        options: { skipEmptyExchange: true }
+      };
+    }
+    async function executeScram(cryptoMethod, authContext) {
+      const { connection, credentials } = authContext;
+      if (!credentials) {
+        throw new error_1.MongoMissingCredentialsError("AuthContext must provide credentials.");
+      }
+      if (!authContext.nonce) {
+        throw new error_1.MongoInvalidArgumentError("AuthContext must contain a valid nonce property");
+      }
+      const nonce = authContext.nonce;
+      const db = credentials.source;
+      const saslStartCmd = makeFirstMessage(cryptoMethod, credentials, nonce);
+      const response = await connection.command((0, utils_1.ns)(`${db}.$cmd`), saslStartCmd, void 0);
+      await continueScramConversation(cryptoMethod, response, authContext);
+    }
+    async function continueScramConversation(cryptoMethod, response, authContext) {
+      const connection = authContext.connection;
+      const credentials = authContext.credentials;
+      if (!credentials) {
+        throw new error_1.MongoMissingCredentialsError("AuthContext must provide credentials.");
+      }
+      if (!authContext.nonce) {
+        throw new error_1.MongoInvalidArgumentError("Unable to continue SCRAM without valid nonce");
+      }
+      const nonce = authContext.nonce;
+      const db = credentials.source;
+      const username = cleanUsername(credentials.username);
+      const password = credentials.password;
+      const processedPassword = cryptoMethod === "sha256" ? (0, saslprep_1.saslprep)(password) : passwordDigest(username, password);
+      const payload = Buffer.isBuffer(response.payload) ? new bson_1.Binary(response.payload) : response.payload;
+      const dict = parsePayload(payload);
+      const iterations = parseInt(dict.i, 10);
+      if (iterations && iterations < 4096) {
+        throw new error_1.MongoRuntimeError(`Server returned an invalid iteration count ${iterations}`);
+      }
+      const salt = dict.s;
+      const rnonce = dict.r;
+      if (rnonce.startsWith("nonce")) {
+        throw new error_1.MongoRuntimeError(`Server returned an invalid nonce: ${rnonce}`);
+      }
+      const withoutProof = `c=biws,r=${rnonce}`;
+      const saltedPassword = HI(processedPassword, Buffer.from(salt, "base64"), iterations, cryptoMethod);
+      const clientKey = HMAC(cryptoMethod, saltedPassword, "Client Key");
+      const serverKey = HMAC(cryptoMethod, saltedPassword, "Server Key");
+      const storedKey = H(cryptoMethod, clientKey);
+      const authMessage = [
+        clientFirstMessageBare(username, nonce),
+        payload.toString("utf8"),
+        withoutProof
+      ].join(",");
+      const clientSignature = HMAC(cryptoMethod, storedKey, authMessage);
+      const clientProof = `p=${xor(clientKey, clientSignature)}`;
+      const clientFinal = [withoutProof, clientProof].join(",");
+      const serverSignature = HMAC(cryptoMethod, serverKey, authMessage);
+      const saslContinueCmd = {
+        saslContinue: 1,
+        conversationId: response.conversationId,
+        payload: new bson_1.Binary(Buffer.from(clientFinal))
+      };
+      const r = await connection.command((0, utils_1.ns)(`${db}.$cmd`), saslContinueCmd, void 0);
+      const parsedResponse = parsePayload(r.payload);
+      if (!compareDigest(Buffer.from(parsedResponse.v, "base64"), serverSignature)) {
+        throw new error_1.MongoRuntimeError("Server returned an invalid signature");
+      }
+      if (r.done !== false) {
+        return;
+      }
+      const retrySaslContinueCmd = {
+        saslContinue: 1,
+        conversationId: r.conversationId,
+        payload: Buffer.alloc(0)
+      };
+      await connection.command((0, utils_1.ns)(`${db}.$cmd`), retrySaslContinueCmd, void 0);
+    }
+    function parsePayload(payload) {
+      const payloadStr = payload.toString("utf8");
+      const dict = {};
+      const parts = payloadStr.split(",");
+      for (let i = 0; i < parts.length; i++) {
+        const valueParts = (parts[i].match(/^([^=]*)=(.*)$/) ?? []).slice(1);
+        dict[valueParts[0]] = valueParts[1];
+      }
+      return dict;
+    }
+    function passwordDigest(username, password) {
+      if (typeof username !== "string") {
+        throw new error_1.MongoInvalidArgumentError("Username must be a string");
+      }
+      if (typeof password !== "string") {
+        throw new error_1.MongoInvalidArgumentError("Password must be a string");
+      }
+      if (password.length === 0) {
+        throw new error_1.MongoInvalidArgumentError("Password cannot be empty");
+      }
+      let md5;
+      try {
+        md5 = crypto.createHash("md5");
+      } catch (err) {
+        if (crypto.getFips()) {
+          throw new Error("Auth mechanism SCRAM-SHA-1 is not supported in FIPS mode");
+        }
+        throw err;
+      }
+      md5.update(`${username}:mongo:${password}`, "utf8");
+      return md5.digest("hex");
+    }
+    function xor(a, b) {
+      if (!Buffer.isBuffer(a)) {
+        a = Buffer.from(a);
+      }
+      if (!Buffer.isBuffer(b)) {
+        b = Buffer.from(b);
+      }
+      const length = Math.max(a.length, b.length);
+      const res = [];
+      for (let i = 0; i < length; i += 1) {
+        res.push(a[i] ^ b[i]);
+      }
+      return Buffer.from(res).toString("base64");
+    }
+    function H(method, text) {
+      return crypto.createHash(method).update(text).digest();
+    }
+    function HMAC(method, key, text) {
+      return crypto.createHmac(method, key).update(text).digest();
+    }
+    var _hiCache = {};
+    var _hiCacheCount = 0;
+    function _hiCachePurge() {
+      _hiCache = {};
+      _hiCacheCount = 0;
+    }
+    var hiLengthMap = {
+      sha256: 32,
+      sha1: 20
+    };
+    function HI(data, salt, iterations, cryptoMethod) {
+      const key = [data, salt.toString("base64"), iterations].join("_");
+      if (_hiCache[key] != null) {
+        return _hiCache[key];
+      }
+      const saltedData = crypto.pbkdf2Sync(data, salt, iterations, hiLengthMap[cryptoMethod], cryptoMethod);
+      if (_hiCacheCount >= 200) {
+        _hiCachePurge();
+      }
+      _hiCache[key] = saltedData;
+      _hiCacheCount += 1;
+      return saltedData;
+    }
+    function compareDigest(lhs, rhs) {
+      if (lhs.length !== rhs.length) {
+        return false;
+      }
+      if (typeof crypto.timingSafeEqual === "function") {
+        return crypto.timingSafeEqual(lhs, rhs);
+      }
+      let result = 0;
+      for (let i = 0; i < lhs.length; i++) {
+        result |= lhs[i] ^ rhs[i];
+      }
+      return result === 0;
+    }
+    var ScramSHA1 = class extends ScramSHA {
+      constructor() {
+        super("sha1");
+      }
+    };
+    exports.ScramSHA1 = ScramSHA1;
+    var ScramSHA256 = class extends ScramSHA {
+      constructor() {
+        super("sha256");
+      }
+    };
+    exports.ScramSHA256 = ScramSHA256;
+  }
+});
+
+// node_modules/mongodb/lib/cmap/auth/x509.js
+var require_x5092 = __commonJS({
+  "node_modules/mongodb/lib/cmap/auth/x509.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.X509 = void 0;
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var auth_provider_1 = require_auth_provider2();
+    var X509 = class extends auth_provider_1.AuthProvider {
+      async prepare(handshakeDoc, authContext) {
+        const { credentials } = authContext;
+        if (!credentials) {
+          throw new error_1.MongoMissingCredentialsError("AuthContext must provide credentials.");
+        }
+        return { ...handshakeDoc, speculativeAuthenticate: x509AuthenticateCommand(credentials) };
+      }
+      async auth(authContext) {
+        const connection = authContext.connection;
+        const credentials = authContext.credentials;
+        if (!credentials) {
+          throw new error_1.MongoMissingCredentialsError("AuthContext must provide credentials.");
+        }
+        const response = authContext.response;
+        if (response?.speculativeAuthenticate) {
+          return;
+        }
+        await connection.command((0, utils_1.ns)("$external.$cmd"), x509AuthenticateCommand(credentials), void 0);
+      }
+    };
+    exports.X509 = X509;
+    function x509AuthenticateCommand(credentials) {
+      const command = { authenticate: 1, mechanism: "MONGODB-X509" };
+      if (credentials.username) {
+        command.user = credentials.username;
+      }
+      return command;
+    }
+  }
+});
+
+// node_modules/mongodb/lib/mongo_client_auth_providers.js
+var require_mongo_client_auth_providers2 = __commonJS({
+  "node_modules/mongodb/lib/mongo_client_auth_providers.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MongoClientAuthProviders = void 0;
+    var gssapi_1 = require_gssapi2();
+    var mongocr_1 = require_mongocr2();
+    var mongodb_aws_1 = require_mongodb_aws2();
+    var mongodb_oidc_1 = require_mongodb_oidc2();
+    var automated_callback_workflow_1 = require_automated_callback_workflow2();
+    var human_callback_workflow_1 = require_human_callback_workflow2();
+    var token_cache_1 = require_token_cache2();
+    var plain_1 = require_plain2();
+    var providers_1 = require_providers3();
+    var scram_1 = require_scram2();
+    var x509_1 = require_x5092();
+    var error_1 = require_error3();
+    var AUTH_PROVIDERS = /* @__PURE__ */ new Map([
+      [providers_1.AuthMechanism.MONGODB_AWS, () => new mongodb_aws_1.MongoDBAWS()],
+      [providers_1.AuthMechanism.MONGODB_CR, () => new mongocr_1.MongoCR()],
+      [providers_1.AuthMechanism.MONGODB_GSSAPI, () => new gssapi_1.GSSAPI()],
+      [providers_1.AuthMechanism.MONGODB_OIDC, (workflow) => new mongodb_oidc_1.MongoDBOIDC(workflow)],
+      [providers_1.AuthMechanism.MONGODB_PLAIN, () => new plain_1.Plain()],
+      [providers_1.AuthMechanism.MONGODB_SCRAM_SHA1, () => new scram_1.ScramSHA1()],
+      [providers_1.AuthMechanism.MONGODB_SCRAM_SHA256, () => new scram_1.ScramSHA256()],
+      [providers_1.AuthMechanism.MONGODB_X509, () => new x509_1.X509()]
+    ]);
+    var MongoClientAuthProviders = class {
+      constructor() {
+        this.existingProviders = /* @__PURE__ */ new Map();
+      }
+      getOrCreateProvider(name, authMechanismProperties) {
+        const authProvider = this.existingProviders.get(name);
+        if (authProvider) {
+          return authProvider;
+        }
+        const providerFunction = AUTH_PROVIDERS.get(name);
+        if (!providerFunction) {
+          throw new error_1.MongoInvalidArgumentError(`authMechanism ${name} not supported`);
+        }
+        let provider;
+        if (name === providers_1.AuthMechanism.MONGODB_OIDC) {
+          provider = providerFunction(this.getWorkflow(authMechanismProperties));
+        } else {
+          provider = providerFunction();
+        }
+        this.existingProviders.set(name, provider);
+        return provider;
+      }
+      getWorkflow(authMechanismProperties) {
+        if (authMechanismProperties.OIDC_HUMAN_CALLBACK) {
+          return new human_callback_workflow_1.HumanCallbackWorkflow(new token_cache_1.TokenCache(), authMechanismProperties.OIDC_HUMAN_CALLBACK);
+        } else if (authMechanismProperties.OIDC_CALLBACK) {
+          return new automated_callback_workflow_1.AutomatedCallbackWorkflow(new token_cache_1.TokenCache(), authMechanismProperties.OIDC_CALLBACK);
+        } else {
+          const environment = authMechanismProperties.ENVIRONMENT;
+          const workflow = mongodb_oidc_1.OIDC_WORKFLOWS.get(environment)?.();
+          if (!workflow) {
+            throw new error_1.MongoInvalidArgumentError(`Could not load workflow for environment ${authMechanismProperties.ENVIRONMENT}`);
+          }
+          return workflow;
+        }
+      }
+    };
+    exports.MongoClientAuthProviders = MongoClientAuthProviders;
+  }
+});
+
+// node_modules/mongodb/lib/sdam/server_selection_events.js
+var require_server_selection_events2 = __commonJS({
+  "node_modules/mongodb/lib/sdam/server_selection_events.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.WaitingForSuitableServerEvent = exports.ServerSelectionSucceededEvent = exports.ServerSelectionFailedEvent = exports.ServerSelectionStartedEvent = exports.ServerSelectionEvent = void 0;
+    var utils_1 = require_utils5();
+    var constants_1 = require_constants5();
+    var ServerSelectionEvent = class {
+      constructor(selector, topologyDescription, operation) {
+        this.selector = selector;
+        this.operation = operation;
+        this.topologyDescription = topologyDescription;
+      }
+    };
+    exports.ServerSelectionEvent = ServerSelectionEvent;
+    var ServerSelectionStartedEvent = class extends ServerSelectionEvent {
+      constructor(selector, topologyDescription, operation) {
+        super(selector, topologyDescription, operation);
+        this.name = constants_1.SERVER_SELECTION_STARTED;
+        this.message = "Server selection started";
+      }
+    };
+    exports.ServerSelectionStartedEvent = ServerSelectionStartedEvent;
+    var ServerSelectionFailedEvent = class extends ServerSelectionEvent {
+      constructor(selector, topologyDescription, error, operation) {
+        super(selector, topologyDescription, operation);
+        this.name = constants_1.SERVER_SELECTION_FAILED;
+        this.message = "Server selection failed";
+        this.failure = error;
+      }
+    };
+    exports.ServerSelectionFailedEvent = ServerSelectionFailedEvent;
+    var ServerSelectionSucceededEvent = class extends ServerSelectionEvent {
+      constructor(selector, topologyDescription, address, operation) {
+        super(selector, topologyDescription, operation);
+        this.name = constants_1.SERVER_SELECTION_SUCCEEDED;
+        this.message = "Server selection succeeded";
+        const { host, port } = utils_1.HostAddress.fromString(address).toHostPort();
+        this.serverHost = host;
+        this.serverPort = port;
+      }
+    };
+    exports.ServerSelectionSucceededEvent = ServerSelectionSucceededEvent;
+    var WaitingForSuitableServerEvent = class extends ServerSelectionEvent {
+      constructor(selector, topologyDescription, remainingTimeMS, operation) {
+        super(selector, topologyDescription, operation);
+        this.name = constants_1.WAITING_FOR_SUITABLE_SERVER;
+        this.message = "Waiting for suitable server to become available";
+        this.remainingTimeMS = remainingTimeMS;
+      }
+    };
+    exports.WaitingForSuitableServerEvent = WaitingForSuitableServerEvent;
+  }
+});
+
+// node_modules/mongodb/lib/sdam/srv_polling.js
+var require_srv_polling2 = __commonJS({
+  "node_modules/mongodb/lib/sdam/srv_polling.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.SrvPoller = exports.SrvPollingEvent = void 0;
+    var dns = require("dns");
+    var timers_1 = require("timers");
+    var error_1 = require_error3();
+    var mongo_types_1 = require_mongo_types2();
+    var utils_1 = require_utils5();
+    var SrvPollingEvent = class {
+      constructor(srvRecords) {
+        this.srvRecords = srvRecords;
+      }
+      hostnames() {
+        return new Set(this.srvRecords.map((r) => utils_1.HostAddress.fromSrvRecord(r).toString()));
+      }
+    };
+    exports.SrvPollingEvent = SrvPollingEvent;
+    var SrvPoller = class extends mongo_types_1.TypedEventEmitter {
+      constructor(options) {
+        super();
+        if (!options || !options.srvHost) {
+          throw new error_1.MongoRuntimeError("Options for SrvPoller must exist and include srvHost");
+        }
+        this.srvHost = options.srvHost;
+        this.srvMaxHosts = options.srvMaxHosts ?? 0;
+        this.srvServiceName = options.srvServiceName ?? "mongodb";
+        this.rescanSrvIntervalMS = 6e4;
+        this.heartbeatFrequencyMS = options.heartbeatFrequencyMS ?? 1e4;
+        this.haMode = false;
+        this.generation = 0;
+        this._timeout = void 0;
+      }
+      get srvAddress() {
+        return `_${this.srvServiceName}._tcp.${this.srvHost}`;
+      }
+      get intervalMS() {
+        return this.haMode ? this.heartbeatFrequencyMS : this.rescanSrvIntervalMS;
+      }
+      start() {
+        if (!this._timeout) {
+          this.schedule();
+        }
+      }
+      stop() {
+        if (this._timeout) {
+          (0, timers_1.clearTimeout)(this._timeout);
+          this.generation += 1;
+          this._timeout = void 0;
+        }
+      }
+      schedule() {
+        if (this._timeout) {
+          (0, timers_1.clearTimeout)(this._timeout);
+        }
+        this._timeout = (0, timers_1.setTimeout)(() => {
+          this._poll().then(void 0, utils_1.squashError);
+        }, this.intervalMS);
+      }
+      success(srvRecords) {
+        this.haMode = false;
+        this.schedule();
+        this.emit(SrvPoller.SRV_RECORD_DISCOVERY, new SrvPollingEvent(srvRecords));
+      }
+      failure() {
+        this.haMode = true;
+        this.schedule();
+      }
+      async _poll() {
+        const generation = this.generation;
+        let srvRecords;
+        try {
+          srvRecords = await dns.promises.resolveSrv(this.srvAddress);
+        } catch (dnsError) {
+          this.failure();
+          return;
+        }
+        if (generation !== this.generation) {
+          return;
+        }
+        const finalAddresses = [];
+        for (const record of srvRecords) {
+          if ((0, utils_1.matchesParentDomain)(record.name, this.srvHost)) {
+            finalAddresses.push(record);
+          }
+        }
+        if (!finalAddresses.length) {
+          this.failure();
+          return;
+        }
+        this.success(finalAddresses);
+      }
+    };
+    SrvPoller.SRV_RECORD_DISCOVERY = "srvRecordDiscovery";
+    exports.SrvPoller = SrvPoller;
+  }
+});
+
+// node_modules/mongodb/lib/sdam/topology.js
+var require_topology2 = __commonJS({
+  "node_modules/mongodb/lib/sdam/topology.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ServerCapabilities = exports.Topology = void 0;
+    var connection_string_1 = require_connection_string2();
+    var constants_1 = require_constants5();
+    var error_1 = require_error3();
+    var mongo_logger_1 = require_mongo_logger2();
+    var mongo_types_1 = require_mongo_types2();
+    var read_preference_1 = require_read_preference2();
+    var timeout_1 = require_timeout2();
+    var utils_1 = require_utils5();
+    var common_1 = require_common5();
+    var events_1 = require_events2();
+    var server_1 = require_server2();
+    var server_description_1 = require_server_description2();
+    var server_selection_1 = require_server_selection2();
+    var server_selection_events_1 = require_server_selection_events2();
+    var srv_polling_1 = require_srv_polling2();
+    var topology_description_1 = require_topology_description2();
+    var globalTopologyCounter = 0;
+    var stateTransition = (0, utils_1.makeStateMachine)({
+      [common_1.STATE_CLOSED]: [common_1.STATE_CLOSED, common_1.STATE_CONNECTING],
+      [common_1.STATE_CONNECTING]: [common_1.STATE_CONNECTING, common_1.STATE_CLOSING, common_1.STATE_CONNECTED, common_1.STATE_CLOSED],
+      [common_1.STATE_CONNECTED]: [common_1.STATE_CONNECTED, common_1.STATE_CLOSING, common_1.STATE_CLOSED],
+      [common_1.STATE_CLOSING]: [common_1.STATE_CLOSING, common_1.STATE_CLOSED]
+    });
+    var kCancelled = Symbol("cancelled");
+    var kWaitQueue = Symbol("waitQueue");
+    var Topology = class extends mongo_types_1.TypedEventEmitter {
+      constructor(client, seeds, options) {
+        super();
+        this.client = client;
+        options = options ?? {
+          hosts: [utils_1.HostAddress.fromString("localhost:27017")],
+          ...Object.fromEntries(connection_string_1.DEFAULT_OPTIONS.entries()),
+          ...Object.fromEntries(connection_string_1.FEATURE_FLAGS.entries())
+        };
+        if (typeof seeds === "string") {
+          seeds = [utils_1.HostAddress.fromString(seeds)];
+        } else if (!Array.isArray(seeds)) {
+          seeds = [seeds];
+        }
+        const seedlist = [];
+        for (const seed of seeds) {
+          if (typeof seed === "string") {
+            seedlist.push(utils_1.HostAddress.fromString(seed));
+          } else if (seed instanceof utils_1.HostAddress) {
+            seedlist.push(seed);
+          } else {
+            throw new error_1.MongoRuntimeError(`Topology cannot be constructed from ${JSON.stringify(seed)}`);
+          }
+        }
+        const topologyType = topologyTypeFromOptions(options);
+        const topologyId = globalTopologyCounter++;
+        const selectedHosts = options.srvMaxHosts == null || options.srvMaxHosts === 0 || options.srvMaxHosts >= seedlist.length ? seedlist : (0, utils_1.shuffle)(seedlist, options.srvMaxHosts);
+        const serverDescriptions = /* @__PURE__ */ new Map();
+        for (const hostAddress of selectedHosts) {
+          serverDescriptions.set(hostAddress.toString(), new server_description_1.ServerDescription(hostAddress));
+        }
+        this[kWaitQueue] = new utils_1.List();
+        this.s = {
+          id: topologyId,
+          options,
+          seedlist,
+          state: common_1.STATE_CLOSED,
+          description: new topology_description_1.TopologyDescription(topologyType, serverDescriptions, options.replicaSet, void 0, void 0, void 0, options),
+          serverSelectionTimeoutMS: options.serverSelectionTimeoutMS,
+          heartbeatFrequencyMS: options.heartbeatFrequencyMS,
+          minHeartbeatFrequencyMS: options.minHeartbeatFrequencyMS,
+          servers: /* @__PURE__ */ new Map(),
+          credentials: options?.credentials,
+          clusterTime: void 0,
+          connectionTimers: /* @__PURE__ */ new Set(),
+          detectShardedTopology: (ev) => this.detectShardedTopology(ev),
+          detectSrvRecords: (ev) => this.detectSrvRecords(ev)
+        };
+        this.mongoLogger = client.mongoLogger;
+        this.component = "topology";
+        if (options.srvHost && !options.loadBalanced) {
+          this.s.srvPoller = options.srvPoller ?? new srv_polling_1.SrvPoller({
+            heartbeatFrequencyMS: this.s.heartbeatFrequencyMS,
+            srvHost: options.srvHost,
+            srvMaxHosts: options.srvMaxHosts,
+            srvServiceName: options.srvServiceName
+          });
+          this.on(Topology.TOPOLOGY_DESCRIPTION_CHANGED, this.s.detectShardedTopology);
+        }
+        this.connectionLock = void 0;
+      }
+      detectShardedTopology(event) {
+        const previousType = event.previousDescription.type;
+        const newType = event.newDescription.type;
+        const transitionToSharded = previousType !== common_1.TopologyType.Sharded && newType === common_1.TopologyType.Sharded;
+        const srvListeners = this.s.srvPoller?.listeners(srv_polling_1.SrvPoller.SRV_RECORD_DISCOVERY);
+        const listeningToSrvPolling = !!srvListeners?.includes(this.s.detectSrvRecords);
+        if (transitionToSharded && !listeningToSrvPolling) {
+          this.s.srvPoller?.on(srv_polling_1.SrvPoller.SRV_RECORD_DISCOVERY, this.s.detectSrvRecords);
+          this.s.srvPoller?.start();
+        }
+      }
+      detectSrvRecords(ev) {
+        const previousTopologyDescription = this.s.description;
+        this.s.description = this.s.description.updateFromSrvPollingEvent(ev, this.s.options.srvMaxHosts);
+        if (this.s.description === previousTopologyDescription) {
+          return;
+        }
+        updateServers(this);
+        this.emitAndLog(Topology.TOPOLOGY_DESCRIPTION_CHANGED, new events_1.TopologyDescriptionChangedEvent(this.s.id, previousTopologyDescription, this.s.description));
+      }
+      get description() {
+        return this.s.description;
+      }
+      get loadBalanced() {
+        return this.s.options.loadBalanced;
+      }
+      get serverApi() {
+        return this.s.options.serverApi;
+      }
+      get capabilities() {
+        return new ServerCapabilities(this.lastHello());
+      }
+      async connect(options) {
+        this.connectionLock ??= this._connect(options);
+        try {
+          await this.connectionLock;
+          return this;
+        } finally {
+          this.connectionLock = void 0;
+        }
+        return this;
+      }
+      async _connect(options) {
+        options = options ?? {};
+        if (this.s.state === common_1.STATE_CONNECTED) {
+          return this;
+        }
+        stateTransition(this, common_1.STATE_CONNECTING);
+        this.emitAndLog(Topology.TOPOLOGY_OPENING, new events_1.TopologyOpeningEvent(this.s.id));
+        this.emitAndLog(Topology.TOPOLOGY_DESCRIPTION_CHANGED, new events_1.TopologyDescriptionChangedEvent(
+          this.s.id,
+          new topology_description_1.TopologyDescription(common_1.TopologyType.Unknown),
+          this.s.description
+        ));
+        const serverDescriptions = Array.from(this.s.description.servers.values());
+        this.s.servers = new Map(serverDescriptions.map((serverDescription) => [
+          serverDescription.address,
+          createAndConnectServer(this, serverDescription)
+        ]));
+        if (this.s.options.loadBalanced) {
+          for (const description of serverDescriptions) {
+            const newDescription = new server_description_1.ServerDescription(description.hostAddress, void 0, {
+              loadBalanced: this.s.options.loadBalanced
+            });
+            this.serverUpdateHandler(newDescription);
+          }
+        }
+        const readPreference = options.readPreference ?? read_preference_1.ReadPreference.primary;
+        const selectServerOptions = { operationName: "ping", ...options };
+        try {
+          const server = await this.selectServer((0, server_selection_1.readPreferenceServerSelector)(readPreference), selectServerOptions);
+          const skipPingOnConnect = this.s.options[Symbol.for("@@mdb.skipPingOnConnect")] === true;
+          if (!skipPingOnConnect && server && this.s.credentials) {
+            await server.command((0, utils_1.ns)("admin.$cmd"), { ping: 1 }, {});
+            stateTransition(this, common_1.STATE_CONNECTED);
+            this.emit(Topology.OPEN, this);
+            this.emit(Topology.CONNECT, this);
+            return this;
+          }
+          stateTransition(this, common_1.STATE_CONNECTED);
+          this.emit(Topology.OPEN, this);
+          this.emit(Topology.CONNECT, this);
+          return this;
+        } catch (error) {
+          this.close();
+          throw error;
+        }
+      }
+      close() {
+        if (this.s.state === common_1.STATE_CLOSED || this.s.state === common_1.STATE_CLOSING) {
+          return;
+        }
+        for (const server of this.s.servers.values()) {
+          destroyServer(server, this);
+        }
+        this.s.servers.clear();
+        stateTransition(this, common_1.STATE_CLOSING);
+        drainWaitQueue(this[kWaitQueue], new error_1.MongoTopologyClosedError());
+        (0, common_1.drainTimerQueue)(this.s.connectionTimers);
+        if (this.s.srvPoller) {
+          this.s.srvPoller.stop();
+          this.s.srvPoller.removeListener(srv_polling_1.SrvPoller.SRV_RECORD_DISCOVERY, this.s.detectSrvRecords);
+        }
+        this.removeListener(Topology.TOPOLOGY_DESCRIPTION_CHANGED, this.s.detectShardedTopology);
+        stateTransition(this, common_1.STATE_CLOSED);
+        this.emitAndLog(Topology.TOPOLOGY_CLOSED, new events_1.TopologyClosedEvent(this.s.id));
+      }
+      async selectServer(selector, options) {
+        let serverSelector;
+        if (typeof selector !== "function") {
+          if (typeof selector === "string") {
+            serverSelector = (0, server_selection_1.readPreferenceServerSelector)(read_preference_1.ReadPreference.fromString(selector));
+          } else {
+            let readPreference;
+            if (selector instanceof read_preference_1.ReadPreference) {
+              readPreference = selector;
+            } else {
+              read_preference_1.ReadPreference.translate(options);
+              readPreference = options.readPreference || read_preference_1.ReadPreference.primary;
+            }
+            serverSelector = (0, server_selection_1.readPreferenceServerSelector)(readPreference);
+          }
+        } else {
+          serverSelector = selector;
+        }
+        options = { serverSelectionTimeoutMS: this.s.serverSelectionTimeoutMS, ...options };
+        if (this.client.mongoLogger?.willLog(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, mongo_logger_1.SeverityLevel.DEBUG)) {
+          this.client.mongoLogger?.debug(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, new server_selection_events_1.ServerSelectionStartedEvent(selector, this.description, options.operationName));
+        }
+        const isSharded = this.description.type === common_1.TopologyType.Sharded;
+        const session = options.session;
+        const transaction = session && session.transaction;
+        if (isSharded && transaction && transaction.server) {
+          if (this.client.mongoLogger?.willLog(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, mongo_logger_1.SeverityLevel.DEBUG)) {
+            this.client.mongoLogger?.debug(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, new server_selection_events_1.ServerSelectionSucceededEvent(selector, this.description, transaction.server.pool.address, options.operationName));
+          }
+          return transaction.server;
+        }
+        const { promise: serverPromise, resolve, reject } = (0, utils_1.promiseWithResolvers)();
+        const timeout = timeout_1.Timeout.expires(options.serverSelectionTimeoutMS ?? 0);
+        const waitQueueMember = {
+          serverSelector,
+          topologyDescription: this.description,
+          mongoLogger: this.client.mongoLogger,
+          transaction,
+          resolve,
+          reject,
+          timeout,
+          startTime: (0, utils_1.now)(),
+          operationName: options.operationName,
+          waitingLogged: false,
+          previousServer: options.previousServer
+        };
+        this[kWaitQueue].push(waitQueueMember);
+        processWaitQueue(this);
+        try {
+          return await Promise.race([serverPromise, waitQueueMember.timeout]);
+        } catch (error) {
+          if (timeout_1.TimeoutError.is(error)) {
+            waitQueueMember[kCancelled] = true;
+            timeout.clear();
+            const timeoutError = new error_1.MongoServerSelectionError(`Server selection timed out after ${options.serverSelectionTimeoutMS} ms`, this.description);
+            if (this.client.mongoLogger?.willLog(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, mongo_logger_1.SeverityLevel.DEBUG)) {
+              this.client.mongoLogger?.debug(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, new server_selection_events_1.ServerSelectionFailedEvent(selector, this.description, timeoutError, options.operationName));
+            }
+            throw timeoutError;
+          }
+          throw error;
+        }
+      }
+      serverUpdateHandler(serverDescription) {
+        if (!this.s.description.hasServer(serverDescription.address)) {
+          return;
+        }
+        if (isStaleServerDescription(this.s.description, serverDescription)) {
+          return;
+        }
+        const previousTopologyDescription = this.s.description;
+        const previousServerDescription = this.s.description.servers.get(serverDescription.address);
+        if (!previousServerDescription) {
+          return;
+        }
+        const clusterTime = serverDescription.$clusterTime;
+        if (clusterTime) {
+          (0, common_1._advanceClusterTime)(this, clusterTime);
+        }
+        const equalDescriptions = previousServerDescription && previousServerDescription.equals(serverDescription);
+        this.s.description = this.s.description.update(serverDescription);
+        if (this.s.description.compatibilityError) {
+          this.emit(Topology.ERROR, new error_1.MongoCompatibilityError(this.s.description.compatibilityError));
+          return;
+        }
+        if (!equalDescriptions) {
+          const newDescription = this.s.description.servers.get(serverDescription.address);
+          if (newDescription) {
+            this.emit(Topology.SERVER_DESCRIPTION_CHANGED, new events_1.ServerDescriptionChangedEvent(this.s.id, serverDescription.address, previousServerDescription, newDescription));
+          }
+        }
+        updateServers(this, serverDescription);
+        if (this[kWaitQueue].length > 0) {
+          processWaitQueue(this);
+        }
+        if (!equalDescriptions) {
+          this.emitAndLog(Topology.TOPOLOGY_DESCRIPTION_CHANGED, new events_1.TopologyDescriptionChangedEvent(this.s.id, previousTopologyDescription, this.s.description));
+        }
+      }
+      auth(credentials, callback2) {
+        if (typeof credentials === "function")
+          callback2 = credentials, credentials = void 0;
+        if (typeof callback2 === "function")
+          callback2(void 0, true);
+      }
+      get clientMetadata() {
+        return this.s.options.metadata;
+      }
+      isConnected() {
+        return this.s.state === common_1.STATE_CONNECTED;
+      }
+      isDestroyed() {
+        return this.s.state === common_1.STATE_CLOSED;
+      }
+      lastHello() {
+        const serverDescriptions = Array.from(this.description.servers.values());
+        if (serverDescriptions.length === 0)
+          return {};
+        const sd = serverDescriptions.filter((sd2) => sd2.type !== common_1.ServerType.Unknown)[0];
+        const result = sd || { maxWireVersion: this.description.commonWireVersion };
+        return result;
+      }
+      get commonWireVersion() {
+        return this.description.commonWireVersion;
+      }
+      get logicalSessionTimeoutMinutes() {
+        return this.description.logicalSessionTimeoutMinutes;
+      }
+      get clusterTime() {
+        return this.s.clusterTime;
+      }
+      set clusterTime(clusterTime) {
+        this.s.clusterTime = clusterTime;
+      }
+    };
+    Topology.SERVER_OPENING = constants_1.SERVER_OPENING;
+    Topology.SERVER_CLOSED = constants_1.SERVER_CLOSED;
+    Topology.SERVER_DESCRIPTION_CHANGED = constants_1.SERVER_DESCRIPTION_CHANGED;
+    Topology.TOPOLOGY_OPENING = constants_1.TOPOLOGY_OPENING;
+    Topology.TOPOLOGY_CLOSED = constants_1.TOPOLOGY_CLOSED;
+    Topology.TOPOLOGY_DESCRIPTION_CHANGED = constants_1.TOPOLOGY_DESCRIPTION_CHANGED;
+    Topology.ERROR = constants_1.ERROR;
+    Topology.OPEN = constants_1.OPEN;
+    Topology.CONNECT = constants_1.CONNECT;
+    Topology.CLOSE = constants_1.CLOSE;
+    Topology.TIMEOUT = constants_1.TIMEOUT;
+    exports.Topology = Topology;
+    function destroyServer(server, topology) {
+      for (const event of constants_1.LOCAL_SERVER_EVENTS) {
+        server.removeAllListeners(event);
+      }
+      server.destroy();
+      topology.emitAndLog(Topology.SERVER_CLOSED, new events_1.ServerClosedEvent(topology.s.id, server.description.address));
+      for (const event of constants_1.SERVER_RELAY_EVENTS) {
+        server.removeAllListeners(event);
+      }
+    }
+    function topologyTypeFromOptions(options) {
+      if (options?.directConnection) {
+        return common_1.TopologyType.Single;
+      }
+      if (options?.replicaSet) {
+        return common_1.TopologyType.ReplicaSetNoPrimary;
+      }
+      if (options?.loadBalanced) {
+        return common_1.TopologyType.LoadBalanced;
+      }
+      return common_1.TopologyType.Unknown;
+    }
+    function createAndConnectServer(topology, serverDescription) {
+      topology.emitAndLog(Topology.SERVER_OPENING, new events_1.ServerOpeningEvent(topology.s.id, serverDescription.address));
+      const server = new server_1.Server(topology, serverDescription, topology.s.options);
+      for (const event of constants_1.SERVER_RELAY_EVENTS) {
+        server.on(event, (e) => topology.emit(event, e));
+      }
+      server.on(server_1.Server.DESCRIPTION_RECEIVED, (description) => topology.serverUpdateHandler(description));
+      server.connect();
+      return server;
+    }
+    function updateServers(topology, incomingServerDescription) {
+      if (incomingServerDescription && topology.s.servers.has(incomingServerDescription.address)) {
+        const server = topology.s.servers.get(incomingServerDescription.address);
+        if (server) {
+          server.s.description = incomingServerDescription;
+          if (incomingServerDescription.error instanceof error_1.MongoError && incomingServerDescription.error.hasErrorLabel(error_1.MongoErrorLabel.ResetPool)) {
+            const interruptInUseConnections = incomingServerDescription.error.hasErrorLabel(error_1.MongoErrorLabel.InterruptInUseConnections);
+            server.pool.clear({ interruptInUseConnections });
+          } else if (incomingServerDescription.error == null) {
+            const newTopologyType = topology.s.description.type;
+            const shouldMarkPoolReady = incomingServerDescription.isDataBearing || incomingServerDescription.type !== common_1.ServerType.Unknown && newTopologyType === common_1.TopologyType.Single;
+            if (shouldMarkPoolReady) {
+              server.pool.ready();
+            }
+          }
+        }
+      }
+      for (const serverDescription of topology.description.servers.values()) {
+        if (!topology.s.servers.has(serverDescription.address)) {
+          const server = createAndConnectServer(topology, serverDescription);
+          topology.s.servers.set(serverDescription.address, server);
+        }
+      }
+      for (const entry of topology.s.servers) {
+        const serverAddress = entry[0];
+        if (topology.description.hasServer(serverAddress)) {
+          continue;
+        }
+        if (!topology.s.servers.has(serverAddress)) {
+          continue;
+        }
+        const server = topology.s.servers.get(serverAddress);
+        topology.s.servers.delete(serverAddress);
+        if (server) {
+          destroyServer(server, topology);
+        }
+      }
+    }
+    function drainWaitQueue(queue, drainError) {
+      while (queue.length) {
+        const waitQueueMember = queue.shift();
+        if (!waitQueueMember) {
+          continue;
+        }
+        waitQueueMember.timeout.clear();
+        if (!waitQueueMember[kCancelled]) {
+          if (waitQueueMember.mongoLogger?.willLog(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, mongo_logger_1.SeverityLevel.DEBUG)) {
+            waitQueueMember.mongoLogger?.debug(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, new server_selection_events_1.ServerSelectionFailedEvent(waitQueueMember.serverSelector, waitQueueMember.topologyDescription, drainError, waitQueueMember.operationName));
+          }
+          waitQueueMember.reject(drainError);
+        }
+      }
+    }
+    function processWaitQueue(topology) {
+      if (topology.s.state === common_1.STATE_CLOSED) {
+        drainWaitQueue(topology[kWaitQueue], new error_1.MongoTopologyClosedError());
+        return;
+      }
+      const isSharded = topology.description.type === common_1.TopologyType.Sharded;
+      const serverDescriptions = Array.from(topology.description.servers.values());
+      const membersToProcess = topology[kWaitQueue].length;
+      for (let i = 0; i < membersToProcess; ++i) {
+        const waitQueueMember = topology[kWaitQueue].shift();
+        if (!waitQueueMember) {
+          continue;
+        }
+        if (waitQueueMember[kCancelled]) {
+          continue;
+        }
+        let selectedDescriptions;
+        try {
+          const serverSelector = waitQueueMember.serverSelector;
+          const previousServer = waitQueueMember.previousServer;
+          selectedDescriptions = serverSelector ? serverSelector(topology.description, serverDescriptions, previousServer ? [previousServer] : []) : serverDescriptions;
+        } catch (selectorError) {
+          waitQueueMember.timeout.clear();
+          if (topology.client.mongoLogger?.willLog(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, mongo_logger_1.SeverityLevel.DEBUG)) {
+            topology.client.mongoLogger?.debug(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, new server_selection_events_1.ServerSelectionFailedEvent(waitQueueMember.serverSelector, topology.description, selectorError, waitQueueMember.operationName));
+          }
+          waitQueueMember.reject(selectorError);
+          continue;
+        }
+        let selectedServer;
+        if (selectedDescriptions.length === 0) {
+          if (!waitQueueMember.waitingLogged) {
+            if (topology.client.mongoLogger?.willLog(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, mongo_logger_1.SeverityLevel.INFORMATIONAL)) {
+              topology.client.mongoLogger?.info(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, new server_selection_events_1.WaitingForSuitableServerEvent(waitQueueMember.serverSelector, topology.description, topology.s.serverSelectionTimeoutMS !== 0 ? topology.s.serverSelectionTimeoutMS - ((0, utils_1.now)() - waitQueueMember.startTime) : -1, waitQueueMember.operationName));
+            }
+            waitQueueMember.waitingLogged = true;
+          }
+          topology[kWaitQueue].push(waitQueueMember);
+          continue;
+        } else if (selectedDescriptions.length === 1) {
+          selectedServer = topology.s.servers.get(selectedDescriptions[0].address);
+        } else {
+          const descriptions = (0, utils_1.shuffle)(selectedDescriptions, 2);
+          const server1 = topology.s.servers.get(descriptions[0].address);
+          const server2 = topology.s.servers.get(descriptions[1].address);
+          selectedServer = server1 && server2 && server1.s.operationCount < server2.s.operationCount ? server1 : server2;
+        }
+        if (!selectedServer) {
+          const serverSelectionError = new error_1.MongoServerSelectionError("server selection returned a server description but the server was not found in the topology", topology.description);
+          if (topology.client.mongoLogger?.willLog(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, mongo_logger_1.SeverityLevel.DEBUG)) {
+            topology.client.mongoLogger?.debug(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, new server_selection_events_1.ServerSelectionFailedEvent(waitQueueMember.serverSelector, topology.description, serverSelectionError, waitQueueMember.operationName));
+          }
+          waitQueueMember.reject(serverSelectionError);
+          return;
+        }
+        const transaction = waitQueueMember.transaction;
+        if (isSharded && transaction && transaction.isActive && selectedServer) {
+          transaction.pinServer(selectedServer);
+        }
+        waitQueueMember.timeout.clear();
+        if (topology.client.mongoLogger?.willLog(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, mongo_logger_1.SeverityLevel.DEBUG)) {
+          topology.client.mongoLogger?.debug(mongo_logger_1.MongoLoggableComponent.SERVER_SELECTION, new server_selection_events_1.ServerSelectionSucceededEvent(waitQueueMember.serverSelector, waitQueueMember.topologyDescription, selectedServer.pool.address, waitQueueMember.operationName));
+        }
+        waitQueueMember.resolve(selectedServer);
+      }
+      if (topology[kWaitQueue].length > 0) {
+        for (const [, server] of topology.s.servers) {
+          process.nextTick(function scheduleServerCheck() {
+            return server.requestCheck();
+          });
+        }
+      }
+    }
+    function isStaleServerDescription(topologyDescription, incomingServerDescription) {
+      const currentServerDescription = topologyDescription.servers.get(incomingServerDescription.address);
+      const currentTopologyVersion = currentServerDescription?.topologyVersion;
+      return (0, server_description_1.compareTopologyVersion)(currentTopologyVersion, incomingServerDescription.topologyVersion) > 0;
+    }
+    var ServerCapabilities = class {
+      constructor(hello) {
+        this.minWireVersion = hello.minWireVersion || 0;
+        this.maxWireVersion = hello.maxWireVersion || 0;
+      }
+      get hasAggregationCursor() {
+        return this.maxWireVersion >= 1;
+      }
+      get hasWriteCommands() {
+        return this.maxWireVersion >= 2;
+      }
+      get hasTextSearch() {
+        return this.minWireVersion >= 0;
+      }
+      get hasAuthCommands() {
+        return this.maxWireVersion >= 1;
+      }
+      get hasListCollectionsCommand() {
+        return this.maxWireVersion >= 3;
+      }
+      get hasListIndexesCommand() {
+        return this.maxWireVersion >= 3;
+      }
+      get supportsSnapshotReads() {
+        return this.maxWireVersion >= 13;
+      }
+      get commandsTakeWriteConcern() {
+        return this.maxWireVersion >= 5;
+      }
+      get commandsTakeCollation() {
+        return this.maxWireVersion >= 5;
+      }
+    };
+    exports.ServerCapabilities = ServerCapabilities;
+  }
+});
+
+// node_modules/mongodb/lib/mongo_client.js
+var require_mongo_client2 = __commonJS({
+  "node_modules/mongodb/lib/mongo_client.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MongoClient = exports.ServerApiVersion = void 0;
+    var fs_1 = require("fs");
+    var bson_1 = require_bson3();
+    var change_stream_1 = require_change_stream2();
+    var mongo_credentials_1 = require_mongo_credentials2();
+    var providers_1 = require_providers3();
+    var connection_string_1 = require_connection_string2();
+    var constants_1 = require_constants5();
+    var db_1 = require_db2();
+    var error_1 = require_error3();
+    var mongo_client_auth_providers_1 = require_mongo_client_auth_providers2();
+    var mongo_logger_1 = require_mongo_logger2();
+    var mongo_types_1 = require_mongo_types2();
+    var execute_operation_1 = require_execute_operation2();
+    var run_command_1 = require_run_command2();
+    var read_preference_1 = require_read_preference2();
+    var server_selection_1 = require_server_selection2();
+    var topology_1 = require_topology2();
+    var sessions_1 = require_sessions2();
+    var utils_1 = require_utils5();
+    exports.ServerApiVersion = Object.freeze({
+      v1: "1"
+    });
+    var kOptions = Symbol("options");
+    var MongoClient = class extends mongo_types_1.TypedEventEmitter {
+      constructor(url, options) {
+        super();
+        this[kOptions] = (0, connection_string_1.parseOptions)(url, this, options);
+        const shouldSetLogger = Object.values(this[kOptions].mongoLoggerOptions.componentSeverities).some((value) => value !== mongo_logger_1.SeverityLevel.OFF);
+        this.mongoLogger = shouldSetLogger ? new mongo_logger_1.MongoLogger(this[kOptions].mongoLoggerOptions) : void 0;
+        const client = this;
+        this.s = {
+          url,
+          bsonOptions: (0, bson_1.resolveBSONOptions)(this[kOptions]),
+          namespace: (0, utils_1.ns)("admin"),
+          hasBeenClosed: false,
+          sessionPool: new sessions_1.ServerSessionPool(this),
+          activeSessions: /* @__PURE__ */ new Set(),
+          authProviders: new mongo_client_auth_providers_1.MongoClientAuthProviders(),
+          get options() {
+            return client[kOptions];
+          },
+          get readConcern() {
+            return client[kOptions].readConcern;
+          },
+          get writeConcern() {
+            return client[kOptions].writeConcern;
+          },
+          get readPreference() {
+            return client[kOptions].readPreference;
+          },
+          get isMongoClient() {
+            return true;
+          }
+        };
+        this.checkForNonGenuineHosts();
+      }
+      checkForNonGenuineHosts() {
+        const documentDBHostnames = this[kOptions].hosts.filter((hostAddress) => (0, utils_1.isHostMatch)(utils_1.DOCUMENT_DB_CHECK, hostAddress.host));
+        const srvHostIsDocumentDB = (0, utils_1.isHostMatch)(utils_1.DOCUMENT_DB_CHECK, this[kOptions].srvHost);
+        const cosmosDBHostnames = this[kOptions].hosts.filter((hostAddress) => (0, utils_1.isHostMatch)(utils_1.COSMOS_DB_CHECK, hostAddress.host));
+        const srvHostIsCosmosDB = (0, utils_1.isHostMatch)(utils_1.COSMOS_DB_CHECK, this[kOptions].srvHost);
+        if (documentDBHostnames.length !== 0 || srvHostIsDocumentDB) {
+          this.mongoLogger?.info("client", utils_1.DOCUMENT_DB_MSG);
+        } else if (cosmosDBHostnames.length !== 0 || srvHostIsCosmosDB) {
+          this.mongoLogger?.info("client", utils_1.COSMOS_DB_MSG);
+        }
+      }
+      get options() {
+        return Object.freeze({ ...this[kOptions] });
+      }
+      get serverApi() {
+        return this[kOptions].serverApi && Object.freeze({ ...this[kOptions].serverApi });
+      }
+      get monitorCommands() {
+        return this[kOptions].monitorCommands;
+      }
+      set monitorCommands(value) {
+        this[kOptions].monitorCommands = value;
+      }
+      get autoEncrypter() {
+        return this[kOptions].autoEncrypter;
+      }
+      get readConcern() {
+        return this.s.readConcern;
+      }
+      get writeConcern() {
+        return this.s.writeConcern;
+      }
+      get readPreference() {
+        return this.s.readPreference;
+      }
+      get bsonOptions() {
+        return this.s.bsonOptions;
+      }
+      async connect() {
+        if (this.connectionLock) {
+          return await this.connectionLock;
+        }
+        try {
+          this.connectionLock = this._connect();
+          await this.connectionLock;
+        } finally {
+          this.connectionLock = void 0;
+        }
+        return this;
+      }
+      async _connect() {
+        if (this.topology && this.topology.isConnected()) {
+          return this;
+        }
+        const options = this[kOptions];
+        if (options.tls) {
+          if (typeof options.tlsCAFile === "string") {
+            options.ca ??= await fs_1.promises.readFile(options.tlsCAFile);
+          }
+          if (typeof options.tlsCRLFile === "string") {
+            options.crl ??= await fs_1.promises.readFile(options.tlsCRLFile);
+          }
+          if (typeof options.tlsCertificateKeyFile === "string") {
+            if (!options.key || !options.cert) {
+              const contents = await fs_1.promises.readFile(options.tlsCertificateKeyFile);
+              options.key ??= contents;
+              options.cert ??= contents;
+            }
+          }
+        }
+        if (typeof options.srvHost === "string") {
+          const hosts = await (0, connection_string_1.resolveSRVRecord)(options);
+          for (const [index, host] of hosts.entries()) {
+            options.hosts[index] = host;
+          }
+        }
+        if (options.credentials?.mechanism === providers_1.AuthMechanism.MONGODB_OIDC) {
+          const allowedHosts = options.credentials?.mechanismProperties?.ALLOWED_HOSTS || mongo_credentials_1.DEFAULT_ALLOWED_HOSTS;
+          const isServiceAuth = !!options.credentials?.mechanismProperties?.ENVIRONMENT;
+          if (!isServiceAuth) {
+            for (const host of options.hosts) {
+              if (!(0, utils_1.hostMatchesWildcards)(host.toHostPort().host, allowedHosts)) {
+                throw new error_1.MongoInvalidArgumentError(`Host '${host}' is not valid for OIDC authentication with ALLOWED_HOSTS of '${allowedHosts.join(",")}'`);
+              }
+            }
+          }
+        }
+        this.topology = new topology_1.Topology(this, options.hosts, options);
+        this.topology.once(topology_1.Topology.OPEN, () => this.emit("open", this));
+        for (const event of constants_1.MONGO_CLIENT_EVENTS) {
+          this.topology.on(event, (...args) => this.emit(event, ...args));
+        }
+        const topologyConnect = async () => {
+          try {
+            await this.topology?.connect(options);
+          } catch (error) {
+            this.topology?.close();
+            throw error;
+          }
+        };
+        if (this.autoEncrypter) {
+          await this.autoEncrypter?.init();
+          await topologyConnect();
+          await options.encrypter.connectInternalClient();
+        } else {
+          await topologyConnect();
+        }
+        return this;
+      }
+      async close(force = false) {
+        Object.defineProperty(this.s, "hasBeenClosed", {
+          value: true,
+          enumerable: true,
+          configurable: false,
+          writable: false
+        });
+        const activeSessionEnds = Array.from(this.s.activeSessions, (session) => session.endSession());
+        this.s.activeSessions.clear();
+        await Promise.all(activeSessionEnds);
+        if (this.topology == null) {
+          return;
+        }
+        const selector = (0, server_selection_1.readPreferenceServerSelector)(read_preference_1.ReadPreference.primaryPreferred);
+        const topologyDescription = this.topology.description;
+        const serverDescriptions = Array.from(topologyDescription.servers.values());
+        const servers = selector(topologyDescription, serverDescriptions);
+        if (servers.length !== 0) {
+          const endSessions = Array.from(this.s.sessionPool.sessions, ({ id }) => id);
+          if (endSessions.length !== 0) {
+            try {
+              await (0, execute_operation_1.executeOperation)(this, new run_command_1.RunAdminCommandOperation({ endSessions }, { readPreference: read_preference_1.ReadPreference.primaryPreferred, noResponse: true }));
+            } catch (error) {
+              (0, utils_1.squashError)(error);
+            }
+          }
+        }
+        const topology = this.topology;
+        this.topology = void 0;
+        topology.close();
+        const { encrypter } = this[kOptions];
+        if (encrypter) {
+          await encrypter.close(this, force);
+        }
+      }
+      db(dbName, options) {
+        options = options ?? {};
+        if (!dbName) {
+          dbName = this.options.dbName;
+        }
+        const finalOptions = Object.assign({}, this[kOptions], options);
+        const db = new db_1.Db(this, dbName, finalOptions);
+        return db;
+      }
+      static async connect(url, options) {
+        const client = new this(url, options);
+        return await client.connect();
+      }
+      startSession(options) {
+        const session = new sessions_1.ClientSession(this, this.s.sessionPool, { explicit: true, ...options }, this[kOptions]);
+        this.s.activeSessions.add(session);
+        session.once("ended", () => {
+          this.s.activeSessions.delete(session);
+        });
+        return session;
+      }
+      async withSession(optionsOrExecutor, executor) {
+        const options = {
+          owner: Symbol(),
+          ...typeof optionsOrExecutor === "object" ? optionsOrExecutor : {}
+        };
+        const withSessionCallback = typeof optionsOrExecutor === "function" ? optionsOrExecutor : executor;
+        if (withSessionCallback == null) {
+          throw new error_1.MongoInvalidArgumentError("Missing required callback parameter");
+        }
+        const session = this.startSession(options);
+        try {
+          return await withSessionCallback(session);
+        } finally {
+          try {
+            await session.endSession();
+          } catch (error) {
+            (0, utils_1.squashError)(error);
+          }
+        }
+      }
+      watch(pipeline = [], options = {}) {
+        if (!Array.isArray(pipeline)) {
+          options = pipeline;
+          pipeline = [];
+        }
+        return new change_stream_1.ChangeStream(this, pipeline, (0, utils_1.resolveOptions)(this, options));
+      }
+    };
+    exports.MongoClient = MongoClient;
+  }
+});
+
+// node_modules/mongodb/lib/change_stream.js
+var require_change_stream2 = __commonJS({
+  "node_modules/mongodb/lib/change_stream.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ChangeStream = void 0;
+    var collection_1 = require_collection6();
+    var constants_1 = require_constants5();
+    var change_stream_cursor_1 = require_change_stream_cursor2();
+    var db_1 = require_db2();
+    var error_1 = require_error3();
+    var mongo_client_1 = require_mongo_client2();
+    var mongo_types_1 = require_mongo_types2();
+    var utils_1 = require_utils5();
+    var kCursorStream = Symbol("cursorStream");
+    var kClosed = Symbol("closed");
+    var kMode = Symbol("mode");
+    var CHANGE_STREAM_OPTIONS = [
+      "resumeAfter",
+      "startAfter",
+      "startAtOperationTime",
+      "fullDocument",
+      "fullDocumentBeforeChange",
+      "showExpandedEvents"
+    ];
+    var CHANGE_DOMAIN_TYPES = {
+      COLLECTION: Symbol("Collection"),
+      DATABASE: Symbol("Database"),
+      CLUSTER: Symbol("Cluster")
+    };
+    var CHANGE_STREAM_EVENTS = [constants_1.RESUME_TOKEN_CHANGED, constants_1.END, constants_1.CLOSE];
+    var NO_RESUME_TOKEN_ERROR = "A change stream document has been received that lacks a resume token (_id).";
+    var CHANGESTREAM_CLOSED_ERROR = "ChangeStream is closed";
+    var ChangeStream = class extends mongo_types_1.TypedEventEmitter {
+      constructor(parent, pipeline = [], options = {}) {
+        super();
+        this.pipeline = pipeline;
+        this.options = { ...options };
+        delete this.options.writeConcern;
+        if (parent instanceof collection_1.Collection) {
+          this.type = CHANGE_DOMAIN_TYPES.COLLECTION;
+        } else if (parent instanceof db_1.Db) {
+          this.type = CHANGE_DOMAIN_TYPES.DATABASE;
+        } else if (parent instanceof mongo_client_1.MongoClient) {
+          this.type = CHANGE_DOMAIN_TYPES.CLUSTER;
+        } else {
+          throw new error_1.MongoChangeStreamError("Parent provided to ChangeStream constructor must be an instance of Collection, Db, or MongoClient");
+        }
+        this.parent = parent;
+        this.namespace = parent.s.namespace;
+        if (!this.options.readPreference && parent.readPreference) {
+          this.options.readPreference = parent.readPreference;
+        }
+        this.cursor = this._createChangeStreamCursor(options);
+        this[kClosed] = false;
+        this[kMode] = false;
+        this.on("newListener", (eventName) => {
+          if (eventName === "change" && this.cursor && this.listenerCount("change") === 0) {
+            this._streamEvents(this.cursor);
+          }
+        });
+        this.on("removeListener", (eventName) => {
+          if (eventName === "change" && this.listenerCount("change") === 0 && this.cursor) {
+            this[kCursorStream]?.removeAllListeners("data");
+          }
+        });
+      }
+      get cursorStream() {
+        return this[kCursorStream];
+      }
+      get resumeToken() {
+        return this.cursor?.resumeToken;
+      }
+      async hasNext() {
+        this._setIsIterator();
+        while (true) {
+          try {
+            const hasNext = await this.cursor.hasNext();
+            return hasNext;
+          } catch (error) {
+            try {
+              await this._processErrorIteratorMode(error);
+            } catch (error2) {
+              try {
+                await this.close();
+              } catch (error3) {
+                (0, utils_1.squashError)(error3);
+              }
+              throw error2;
+            }
+          }
+        }
+      }
+      async next() {
+        this._setIsIterator();
+        while (true) {
+          try {
+            const change = await this.cursor.next();
+            const processedChange = this._processChange(change ?? null);
+            return processedChange;
+          } catch (error) {
+            try {
+              await this._processErrorIteratorMode(error);
+            } catch (error2) {
+              try {
+                await this.close();
+              } catch (error3) {
+                (0, utils_1.squashError)(error3);
+              }
+              throw error2;
+            }
+          }
+        }
+      }
+      async tryNext() {
+        this._setIsIterator();
+        while (true) {
+          try {
+            const change = await this.cursor.tryNext();
+            return change ?? null;
+          } catch (error) {
+            try {
+              await this._processErrorIteratorMode(error);
+            } catch (error2) {
+              try {
+                await this.close();
+              } catch (error3) {
+                (0, utils_1.squashError)(error3);
+              }
+              throw error2;
+            }
+          }
+        }
+      }
+      async *[Symbol.asyncIterator]() {
+        if (this.closed) {
+          return;
+        }
+        try {
+          while (true) {
+            yield await this.next();
+          }
+        } finally {
+          try {
+            await this.close();
+          } catch (error) {
+            (0, utils_1.squashError)(error);
+          }
+        }
+      }
+      get closed() {
+        return this[kClosed] || this.cursor.closed;
+      }
+      async close() {
+        this[kClosed] = true;
+        const cursor = this.cursor;
+        try {
+          await cursor.close();
+        } finally {
+          this._endStream();
+        }
+      }
+      stream(options) {
+        if (this.closed) {
+          throw new error_1.MongoChangeStreamError(CHANGESTREAM_CLOSED_ERROR);
+        }
+        this.streamOptions = options;
+        return this.cursor.stream(options);
+      }
+      _setIsEmitter() {
+        if (this[kMode] === "iterator") {
+          throw new error_1.MongoAPIError("ChangeStream cannot be used as an EventEmitter after being used as an iterator");
+        }
+        this[kMode] = "emitter";
+      }
+      _setIsIterator() {
+        if (this[kMode] === "emitter") {
+          throw new error_1.MongoAPIError("ChangeStream cannot be used as an iterator after being used as an EventEmitter");
+        }
+        this[kMode] = "iterator";
+      }
+      _createChangeStreamCursor(options) {
+        const changeStreamStageOptions = (0, utils_1.filterOptions)(options, CHANGE_STREAM_OPTIONS);
+        if (this.type === CHANGE_DOMAIN_TYPES.CLUSTER) {
+          changeStreamStageOptions.allChangesForCluster = true;
+        }
+        const pipeline = [{ $changeStream: changeStreamStageOptions }, ...this.pipeline];
+        const client = this.type === CHANGE_DOMAIN_TYPES.CLUSTER ? this.parent : this.type === CHANGE_DOMAIN_TYPES.DATABASE ? this.parent.client : this.type === CHANGE_DOMAIN_TYPES.COLLECTION ? this.parent.client : null;
+        if (client == null) {
+          throw new error_1.MongoRuntimeError(`Changestream type should only be one of cluster, database, collection. Found ${this.type.toString()}`);
+        }
+        const changeStreamCursor = new change_stream_cursor_1.ChangeStreamCursor(client, this.namespace, pipeline, options);
+        for (const event of CHANGE_STREAM_EVENTS) {
+          changeStreamCursor.on(event, (e) => this.emit(event, e));
+        }
+        if (this.listenerCount(ChangeStream.CHANGE) > 0) {
+          this._streamEvents(changeStreamCursor);
+        }
+        return changeStreamCursor;
+      }
+      _closeEmitterModeWithError(error) {
+        this.emit(ChangeStream.ERROR, error);
+        this.close().then(void 0, utils_1.squashError);
+      }
+      _streamEvents(cursor) {
+        this._setIsEmitter();
+        const stream = this[kCursorStream] ?? cursor.stream();
+        this[kCursorStream] = stream;
+        stream.on("data", (change) => {
+          try {
+            const processedChange = this._processChange(change);
+            this.emit(ChangeStream.CHANGE, processedChange);
+          } catch (error) {
+            this.emit(ChangeStream.ERROR, error);
+          }
+        });
+        stream.on("error", (error) => this._processErrorStreamMode(error));
+      }
+      _endStream() {
+        const cursorStream = this[kCursorStream];
+        if (cursorStream) {
+          ["data", "close", "end", "error"].forEach((event) => cursorStream.removeAllListeners(event));
+          cursorStream.destroy();
+        }
+        this[kCursorStream] = void 0;
+      }
+      _processChange(change) {
+        if (this[kClosed]) {
+          throw new error_1.MongoAPIError(CHANGESTREAM_CLOSED_ERROR);
+        }
+        if (change == null) {
+          throw new error_1.MongoRuntimeError(CHANGESTREAM_CLOSED_ERROR);
+        }
+        if (change && !change._id) {
+          throw new error_1.MongoChangeStreamError(NO_RESUME_TOKEN_ERROR);
+        }
+        this.cursor.cacheResumeToken(change._id);
+        this.options.startAtOperationTime = void 0;
+        return change;
+      }
+      _processErrorStreamMode(changeStreamError) {
+        if (this[kClosed])
+          return;
+        if ((0, error_1.isResumableError)(changeStreamError, this.cursor.maxWireVersion)) {
+          this._endStream();
+          this.cursor.close().then(void 0, utils_1.squashError);
+          const topology = (0, utils_1.getTopology)(this.parent);
+          topology.selectServer(this.cursor.readPreference, {
+            operationName: "reconnect topology in change stream"
+          }).then(() => {
+            this.cursor = this._createChangeStreamCursor(this.cursor.resumeOptions);
+          }, () => this._closeEmitterModeWithError(changeStreamError));
+        } else {
+          this._closeEmitterModeWithError(changeStreamError);
+        }
+      }
+      async _processErrorIteratorMode(changeStreamError) {
+        if (this[kClosed]) {
+          throw new error_1.MongoAPIError(CHANGESTREAM_CLOSED_ERROR);
+        }
+        if (!(0, error_1.isResumableError)(changeStreamError, this.cursor.maxWireVersion)) {
+          try {
+            await this.close();
+          } catch (error) {
+            (0, utils_1.squashError)(error);
+          }
+          throw changeStreamError;
+        }
+        try {
+          await this.cursor.close();
+        } catch (error) {
+          (0, utils_1.squashError)(error);
+        }
+        const topology = (0, utils_1.getTopology)(this.parent);
+        try {
+          await topology.selectServer(this.cursor.readPreference, {
+            operationName: "reconnect topology in change stream"
+          });
+          this.cursor = this._createChangeStreamCursor(this.cursor.resumeOptions);
+        } catch {
+          await this.close();
+          throw changeStreamError;
+        }
+      }
+    };
+    ChangeStream.RESPONSE = constants_1.RESPONSE;
+    ChangeStream.MORE = constants_1.MORE;
+    ChangeStream.INIT = constants_1.INIT;
+    ChangeStream.CLOSE = constants_1.CLOSE;
+    ChangeStream.CHANGE = constants_1.CHANGE;
+    ChangeStream.END = constants_1.END;
+    ChangeStream.ERROR = constants_1.ERROR;
+    ChangeStream.RESUME_TOKEN_CHANGED = constants_1.RESUME_TOKEN_CHANGED;
+    exports.ChangeStream = ChangeStream;
+  }
+});
+
+// node_modules/mongodb/lib/gridfs/download.js
+var require_download2 = __commonJS({
+  "node_modules/mongodb/lib/gridfs/download.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.GridFSBucketReadStream = void 0;
+    var stream_1 = require("stream");
+    var error_1 = require_error3();
+    var GridFSBucketReadStream = class extends stream_1.Readable {
+      constructor(chunks, files, readPreference, filter, options) {
+        super({ emitClose: true });
+        this.s = {
+          bytesToTrim: 0,
+          bytesToSkip: 0,
+          bytesRead: 0,
+          chunks,
+          expected: 0,
+          files,
+          filter,
+          init: false,
+          expectedEnd: 0,
+          options: {
+            start: 0,
+            end: 0,
+            ...options
+          },
+          readPreference
+        };
+      }
+      _read() {
+        if (this.destroyed)
+          return;
+        waitForFile(this, () => doRead(this));
+      }
+      start(start = 0) {
+        throwIfInitialized(this);
+        this.s.options.start = start;
+        return this;
+      }
+      end(end = 0) {
+        throwIfInitialized(this);
+        this.s.options.end = end;
+        return this;
+      }
+      async abort() {
+        this.push(null);
+        this.destroy();
+        await this.s.cursor?.close();
+      }
+    };
+    GridFSBucketReadStream.FILE = "file";
+    exports.GridFSBucketReadStream = GridFSBucketReadStream;
+    function throwIfInitialized(stream) {
+      if (stream.s.init) {
+        throw new error_1.MongoGridFSStreamError("Options cannot be changed after the stream is initialized");
+      }
+    }
+    function doRead(stream) {
+      if (stream.destroyed)
+        return;
+      if (!stream.s.cursor)
+        return;
+      if (!stream.s.file)
+        return;
+      const handleReadResult = (doc) => {
+        if (stream.destroyed)
+          return;
+        if (!doc) {
+          stream.push(null);
+          stream.s.cursor?.close().then(void 0, (error) => stream.destroy(error));
+          return;
+        }
+        if (!stream.s.file)
+          return;
+        const bytesRemaining = stream.s.file.length - stream.s.bytesRead;
+        const expectedN = stream.s.expected++;
+        const expectedLength = Math.min(stream.s.file.chunkSize, bytesRemaining);
+        if (doc.n > expectedN) {
+          return stream.destroy(new error_1.MongoGridFSChunkError(`ChunkIsMissing: Got unexpected n: ${doc.n}, expected: ${expectedN}`));
+        }
+        if (doc.n < expectedN) {
+          return stream.destroy(new error_1.MongoGridFSChunkError(`ExtraChunk: Got unexpected n: ${doc.n}, expected: ${expectedN}`));
+        }
+        let buf = Buffer.isBuffer(doc.data) ? doc.data : doc.data.buffer;
+        if (buf.byteLength !== expectedLength) {
+          if (bytesRemaining <= 0) {
+            return stream.destroy(new error_1.MongoGridFSChunkError(`ExtraChunk: Got unexpected n: ${doc.n}, expected file length ${stream.s.file.length} bytes but already read ${stream.s.bytesRead} bytes`));
+          }
+          return stream.destroy(new error_1.MongoGridFSChunkError(`ChunkIsWrongSize: Got unexpected length: ${buf.byteLength}, expected: ${expectedLength}`));
+        }
+        stream.s.bytesRead += buf.byteLength;
+        if (buf.byteLength === 0) {
+          return stream.push(null);
+        }
+        let sliceStart = null;
+        let sliceEnd = null;
+        if (stream.s.bytesToSkip != null) {
+          sliceStart = stream.s.bytesToSkip;
+          stream.s.bytesToSkip = 0;
+        }
+        const atEndOfStream = expectedN === stream.s.expectedEnd - 1;
+        const bytesLeftToRead = stream.s.options.end - stream.s.bytesToSkip;
+        if (atEndOfStream && stream.s.bytesToTrim != null) {
+          sliceEnd = stream.s.file.chunkSize - stream.s.bytesToTrim;
+        } else if (stream.s.options.end && bytesLeftToRead < doc.data.byteLength) {
+          sliceEnd = bytesLeftToRead;
+        }
+        if (sliceStart != null || sliceEnd != null) {
+          buf = buf.slice(sliceStart || 0, sliceEnd || buf.byteLength);
+        }
+        stream.push(buf);
+        return;
+      };
+      stream.s.cursor.next().then(handleReadResult, (error) => {
+        if (stream.destroyed)
+          return;
+        stream.destroy(error);
+      });
+    }
+    function init(stream) {
+      const findOneOptions = {};
+      if (stream.s.readPreference) {
+        findOneOptions.readPreference = stream.s.readPreference;
+      }
+      if (stream.s.options && stream.s.options.sort) {
+        findOneOptions.sort = stream.s.options.sort;
+      }
+      if (stream.s.options && stream.s.options.skip) {
+        findOneOptions.skip = stream.s.options.skip;
+      }
+      const handleReadResult = (doc) => {
+        if (stream.destroyed)
+          return;
+        if (!doc) {
+          const identifier = stream.s.filter._id ? stream.s.filter._id.toString() : stream.s.filter.filename;
+          const errmsg = `FileNotFound: file ${identifier} was not found`;
+          const err = new error_1.MongoRuntimeError(errmsg);
+          err.code = "ENOENT";
+          return stream.destroy(err);
+        }
+        if (doc.length <= 0) {
+          stream.push(null);
+          return;
+        }
+        if (stream.destroyed) {
+          stream.destroy();
+          return;
+        }
+        try {
+          stream.s.bytesToSkip = handleStartOption(stream, doc, stream.s.options);
+        } catch (error) {
+          return stream.destroy(error);
+        }
+        const filter = { files_id: doc._id };
+        if (stream.s.options && stream.s.options.start != null) {
+          const skip = Math.floor(stream.s.options.start / doc.chunkSize);
+          if (skip > 0) {
+            filter["n"] = { $gte: skip };
+          }
+        }
+        stream.s.cursor = stream.s.chunks.find(filter).sort({ n: 1 });
+        if (stream.s.readPreference) {
+          stream.s.cursor.withReadPreference(stream.s.readPreference);
+        }
+        stream.s.expectedEnd = Math.ceil(doc.length / doc.chunkSize);
+        stream.s.file = doc;
+        try {
+          stream.s.bytesToTrim = handleEndOption(stream, doc, stream.s.cursor, stream.s.options);
+        } catch (error) {
+          return stream.destroy(error);
+        }
+        stream.emit(GridFSBucketReadStream.FILE, doc);
+        return;
+      };
+      stream.s.files.findOne(stream.s.filter, findOneOptions).then(handleReadResult, (error) => {
+        if (stream.destroyed)
+          return;
+        stream.destroy(error);
+      });
+    }
+    function waitForFile(stream, callback2) {
+      if (stream.s.file) {
+        return callback2();
+      }
+      if (!stream.s.init) {
+        init(stream);
+        stream.s.init = true;
+      }
+      stream.once("file", () => {
+        callback2();
+      });
+    }
+    function handleStartOption(stream, doc, options) {
+      if (options && options.start != null) {
+        if (options.start > doc.length) {
+          throw new error_1.MongoInvalidArgumentError(`Stream start (${options.start}) must not be more than the length of the file (${doc.length})`);
+        }
+        if (options.start < 0) {
+          throw new error_1.MongoInvalidArgumentError(`Stream start (${options.start}) must not be negative`);
+        }
+        if (options.end != null && options.end < options.start) {
+          throw new error_1.MongoInvalidArgumentError(`Stream start (${options.start}) must not be greater than stream end (${options.end})`);
+        }
+        stream.s.bytesRead = Math.floor(options.start / doc.chunkSize) * doc.chunkSize;
+        stream.s.expected = Math.floor(options.start / doc.chunkSize);
+        return options.start - stream.s.bytesRead;
+      }
+      throw new error_1.MongoInvalidArgumentError("Start option must be defined");
+    }
+    function handleEndOption(stream, doc, cursor, options) {
+      if (options && options.end != null) {
+        if (options.end > doc.length) {
+          throw new error_1.MongoInvalidArgumentError(`Stream end (${options.end}) must not be more than the length of the file (${doc.length})`);
+        }
+        if (options.start == null || options.start < 0) {
+          throw new error_1.MongoInvalidArgumentError(`Stream end (${options.end}) must not be negative`);
+        }
+        const start = options.start != null ? Math.floor(options.start / doc.chunkSize) : 0;
+        cursor.limit(Math.ceil(options.end / doc.chunkSize) - start);
+        stream.s.expectedEnd = Math.ceil(options.end / doc.chunkSize);
+        return Math.ceil(options.end / doc.chunkSize) * doc.chunkSize - options.end;
+      }
+      throw new error_1.MongoInvalidArgumentError("End option must be defined");
+    }
+  }
+});
+
+// node_modules/mongodb/lib/gridfs/upload.js
+var require_upload2 = __commonJS({
+  "node_modules/mongodb/lib/gridfs/upload.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.GridFSBucketWriteStream = void 0;
+    var stream_1 = require("stream");
+    var bson_1 = require_bson3();
+    var error_1 = require_error3();
+    var utils_1 = require_utils5();
+    var write_concern_1 = require_write_concern2();
+    var GridFSBucketWriteStream = class extends stream_1.Writable {
+      constructor(bucket, filename, options) {
+        super();
+        this.gridFSFile = null;
+        options = options ?? {};
+        this.bucket = bucket;
+        this.chunks = bucket.s._chunksCollection;
+        this.filename = filename;
+        this.files = bucket.s._filesCollection;
+        this.options = options;
+        this.writeConcern = write_concern_1.WriteConcern.fromOptions(options) || bucket.s.options.writeConcern;
+        this.done = false;
+        this.id = options.id ? options.id : new bson_1.ObjectId();
+        this.chunkSizeBytes = options.chunkSizeBytes || this.bucket.s.options.chunkSizeBytes;
+        this.bufToStore = Buffer.alloc(this.chunkSizeBytes);
+        this.length = 0;
+        this.n = 0;
+        this.pos = 0;
+        this.state = {
+          streamEnd: false,
+          outstandingRequests: 0,
+          errored: false,
+          aborted: false
+        };
+        if (!this.bucket.s.calledOpenUploadStream) {
+          this.bucket.s.calledOpenUploadStream = true;
+          checkIndexes(this).then(() => {
+            this.bucket.s.checkedIndexes = true;
+            this.bucket.emit("index");
+          }, utils_1.squashError);
+        }
+      }
+      _construct(callback2) {
+        if (this.bucket.s.checkedIndexes) {
+          return process.nextTick(callback2);
+        }
+        this.bucket.once("index", callback2);
+      }
+      _write(chunk, encoding, callback2) {
+        doWrite(this, chunk, encoding, callback2);
+      }
+      _final(callback2) {
+        if (this.state.streamEnd) {
+          return process.nextTick(callback2);
+        }
+        this.state.streamEnd = true;
+        writeRemnant(this, callback2);
+      }
+      async abort() {
+        if (this.state.streamEnd) {
+          throw new error_1.MongoAPIError("Cannot abort a stream that has already completed");
+        }
+        if (this.state.aborted) {
+          throw new error_1.MongoAPIError("Cannot call abort() on a stream twice");
+        }
+        this.state.aborted = true;
+        await this.chunks.deleteMany({ files_id: this.id });
+      }
+    };
+    exports.GridFSBucketWriteStream = GridFSBucketWriteStream;
+    function handleError(stream, error, callback2) {
+      if (stream.state.errored) {
+        process.nextTick(callback2);
+        return;
+      }
+      stream.state.errored = true;
+      process.nextTick(callback2, error);
+    }
+    function createChunkDoc(filesId, n, data) {
+      return {
+        _id: new bson_1.ObjectId(),
+        files_id: filesId,
+        n,
+        data
+      };
+    }
+    async function checkChunksIndex(stream) {
+      const index = { files_id: 1, n: 1 };
+      let indexes;
+      try {
+        indexes = await stream.chunks.listIndexes().toArray();
+      } catch (error) {
+        if (error instanceof error_1.MongoError && error.code === error_1.MONGODB_ERROR_CODES.NamespaceNotFound) {
+          indexes = [];
+        } else {
+          throw error;
+        }
+      }
+      const hasChunksIndex = !!indexes.find((index2) => {
+        const keys = Object.keys(index2.key);
+        if (keys.length === 2 && index2.key.files_id === 1 && index2.key.n === 1) {
+          return true;
+        }
+        return false;
+      });
+      if (!hasChunksIndex) {
+        await stream.chunks.createIndex(index, {
+          ...stream.writeConcern,
+          background: true,
+          unique: true
+        });
+      }
+    }
+    function checkDone(stream, callback2) {
+      if (stream.done) {
+        return process.nextTick(callback2);
+      }
+      if (stream.state.streamEnd && stream.state.outstandingRequests === 0 && !stream.state.errored) {
+        stream.done = true;
+        const gridFSFile = createFilesDoc(stream.id, stream.length, stream.chunkSizeBytes, stream.filename, stream.options.contentType, stream.options.aliases, stream.options.metadata);
+        if (isAborted2(stream, callback2)) {
+          return;
+        }
+        stream.files.insertOne(gridFSFile, { writeConcern: stream.writeConcern }).then(() => {
+          stream.gridFSFile = gridFSFile;
+          callback2();
+        }, (error) => handleError(stream, error, callback2));
+        return;
+      }
+      process.nextTick(callback2);
+    }
+    async function checkIndexes(stream) {
+      const doc = await stream.files.findOne({}, { projection: { _id: 1 } });
+      if (doc != null) {
+        return;
+      }
+      const index = { filename: 1, uploadDate: 1 };
+      let indexes;
+      try {
+        indexes = await stream.files.listIndexes().toArray();
+      } catch (error) {
+        if (error instanceof error_1.MongoError && error.code === error_1.MONGODB_ERROR_CODES.NamespaceNotFound) {
+          indexes = [];
+        } else {
+          throw error;
+        }
+      }
+      const hasFileIndex = !!indexes.find((index2) => {
+        const keys = Object.keys(index2.key);
+        if (keys.length === 2 && index2.key.filename === 1 && index2.key.uploadDate === 1) {
+          return true;
+        }
+        return false;
+      });
+      if (!hasFileIndex) {
+        await stream.files.createIndex(index, { background: false });
+      }
+      await checkChunksIndex(stream);
+    }
+    function createFilesDoc(_id, length, chunkSize, filename, contentType, aliases, metadata) {
+      const ret = {
+        _id,
+        length,
+        chunkSize,
+        uploadDate: new Date(),
+        filename
+      };
+      if (contentType) {
+        ret.contentType = contentType;
+      }
+      if (aliases) {
+        ret.aliases = aliases;
+      }
+      if (metadata) {
+        ret.metadata = metadata;
+      }
+      return ret;
+    }
+    function doWrite(stream, chunk, encoding, callback2) {
+      if (isAborted2(stream, callback2)) {
+        return;
+      }
+      const inputBuf = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk, encoding);
+      stream.length += inputBuf.length;
+      if (stream.pos + inputBuf.length < stream.chunkSizeBytes) {
+        inputBuf.copy(stream.bufToStore, stream.pos);
+        stream.pos += inputBuf.length;
+        process.nextTick(callback2);
+        return;
+      }
+      let inputBufRemaining = inputBuf.length;
+      let spaceRemaining = stream.chunkSizeBytes - stream.pos;
+      let numToCopy = Math.min(spaceRemaining, inputBuf.length);
+      let outstandingRequests = 0;
+      while (inputBufRemaining > 0) {
+        const inputBufPos = inputBuf.length - inputBufRemaining;
+        inputBuf.copy(stream.bufToStore, stream.pos, inputBufPos, inputBufPos + numToCopy);
+        stream.pos += numToCopy;
+        spaceRemaining -= numToCopy;
+        let doc;
+        if (spaceRemaining === 0) {
+          doc = createChunkDoc(stream.id, stream.n, Buffer.from(stream.bufToStore));
+          ++stream.state.outstandingRequests;
+          ++outstandingRequests;
+          if (isAborted2(stream, callback2)) {
+            return;
+          }
+          stream.chunks.insertOne(doc, { writeConcern: stream.writeConcern }).then(() => {
+            --stream.state.outstandingRequests;
+            --outstandingRequests;
+            if (!outstandingRequests) {
+              checkDone(stream, callback2);
+            }
+          }, (error) => handleError(stream, error, callback2));
+          spaceRemaining = stream.chunkSizeBytes;
+          stream.pos = 0;
+          ++stream.n;
+        }
+        inputBufRemaining -= numToCopy;
+        numToCopy = Math.min(spaceRemaining, inputBufRemaining);
+      }
+    }
+    function writeRemnant(stream, callback2) {
+      if (stream.pos === 0) {
+        return checkDone(stream, callback2);
+      }
+      ++stream.state.outstandingRequests;
+      const remnant = Buffer.alloc(stream.pos);
+      stream.bufToStore.copy(remnant, 0, 0, stream.pos);
+      const doc = createChunkDoc(stream.id, stream.n, remnant);
+      if (isAborted2(stream, callback2)) {
+        return;
+      }
+      stream.chunks.insertOne(doc, { writeConcern: stream.writeConcern }).then(() => {
+        --stream.state.outstandingRequests;
+        checkDone(stream, callback2);
+      }, (error) => handleError(stream, error, callback2));
+    }
+    function isAborted2(stream, callback2) {
+      if (stream.state.aborted) {
+        process.nextTick(callback2, new error_1.MongoAPIError("Stream has been aborted"));
+        return true;
+      }
+      return false;
+    }
+  }
+});
+
+// node_modules/mongodb/lib/gridfs/index.js
+var require_gridfs2 = __commonJS({
+  "node_modules/mongodb/lib/gridfs/index.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.GridFSBucket = void 0;
+    var error_1 = require_error3();
+    var mongo_types_1 = require_mongo_types2();
+    var write_concern_1 = require_write_concern2();
+    var download_1 = require_download2();
+    var upload_1 = require_upload2();
+    var DEFAULT_GRIDFS_BUCKET_OPTIONS = {
+      bucketName: "fs",
+      chunkSizeBytes: 255 * 1024
+    };
+    var GridFSBucket = class extends mongo_types_1.TypedEventEmitter {
+      constructor(db, options) {
+        super();
+        this.setMaxListeners(0);
+        const privateOptions = {
+          ...DEFAULT_GRIDFS_BUCKET_OPTIONS,
+          ...options,
+          writeConcern: write_concern_1.WriteConcern.fromOptions(options)
+        };
+        this.s = {
+          db,
+          options: privateOptions,
+          _chunksCollection: db.collection(privateOptions.bucketName + ".chunks"),
+          _filesCollection: db.collection(privateOptions.bucketName + ".files"),
+          checkedIndexes: false,
+          calledOpenUploadStream: false
+        };
+      }
+      openUploadStream(filename, options) {
+        return new upload_1.GridFSBucketWriteStream(this, filename, options);
+      }
+      openUploadStreamWithId(id, filename, options) {
+        return new upload_1.GridFSBucketWriteStream(this, filename, { ...options, id });
+      }
+      openDownloadStream(id, options) {
+        return new download_1.GridFSBucketReadStream(this.s._chunksCollection, this.s._filesCollection, this.s.options.readPreference, { _id: id }, options);
+      }
+      async delete(id) {
+        const { deletedCount } = await this.s._filesCollection.deleteOne({ _id: id });
+        await this.s._chunksCollection.deleteMany({ files_id: id });
+        if (deletedCount === 0) {
+          throw new error_1.MongoRuntimeError(`File not found for id ${id}`);
+        }
+      }
+      find(filter = {}, options = {}) {
+        return this.s._filesCollection.find(filter, options);
+      }
+      openDownloadStreamByName(filename, options) {
+        let sort = { uploadDate: -1 };
+        let skip = void 0;
+        if (options && options.revision != null) {
+          if (options.revision >= 0) {
+            sort = { uploadDate: 1 };
+            skip = options.revision;
+          } else {
+            skip = -options.revision - 1;
+          }
+        }
+        return new download_1.GridFSBucketReadStream(this.s._chunksCollection, this.s._filesCollection, this.s.options.readPreference, { filename }, { ...options, sort, skip });
+      }
+      async rename(id, filename) {
+        const filter = { _id: id };
+        const update = { $set: { filename } };
+        const { matchedCount } = await this.s._filesCollection.updateOne(filter, update);
+        if (matchedCount === 0) {
+          throw new error_1.MongoRuntimeError(`File with id ${id} not found`);
+        }
+      }
+      async drop() {
+        await this.s._filesCollection.drop();
+        await this.s._chunksCollection.drop();
+      }
+    };
+    GridFSBucket.INDEX = "index";
+    exports.GridFSBucket = GridFSBucket;
+  }
+});
+
+// node_modules/mongodb/lib/client-side-encryption/client_encryption.js
+var require_client_encryption2 = __commonJS({
+  "node_modules/mongodb/lib/client-side-encryption/client_encryption.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.ClientEncryption = void 0;
+    var bson_1 = require_bson3();
+    var deps_1 = require_deps2();
+    var utils_1 = require_utils5();
+    var cryptoCallbacks = require_crypto_callbacks2();
+    var errors_1 = require_errors3();
+    var index_1 = require_providers4();
+    var state_machine_1 = require_state_machine2();
+    var ClientEncryption = class {
+      static getMongoCrypt() {
+        const encryption = (0, deps_1.getMongoDBClientEncryption)();
+        if ("kModuleError" in encryption) {
+          throw encryption.kModuleError;
+        }
+        return encryption.MongoCrypt;
+      }
+      constructor(client, options) {
+        this._client = client;
+        this._proxyOptions = options.proxyOptions ?? {};
+        this._tlsOptions = options.tlsOptions ?? {};
+        this._kmsProviders = options.kmsProviders || {};
+        if (options.keyVaultNamespace == null) {
+          throw new errors_1.MongoCryptInvalidArgumentError("Missing required option `keyVaultNamespace`");
+        }
+        const mongoCryptOptions = {
+          ...options,
+          cryptoCallbacks,
+          kmsProviders: !Buffer.isBuffer(this._kmsProviders) ? (0, bson_1.serialize)(this._kmsProviders) : this._kmsProviders
+        };
+        this._keyVaultNamespace = options.keyVaultNamespace;
+        this._keyVaultClient = options.keyVaultClient || client;
+        const MongoCrypt = ClientEncryption.getMongoCrypt();
+        this._mongoCrypt = new MongoCrypt(mongoCryptOptions);
+      }
+      async createDataKey(provider, options = {}) {
+        if (options.keyAltNames && !Array.isArray(options.keyAltNames)) {
+          throw new errors_1.MongoCryptInvalidArgumentError(`Option "keyAltNames" must be an array of strings, but was of type ${typeof options.keyAltNames}.`);
+        }
+        let keyAltNames = void 0;
+        if (options.keyAltNames && options.keyAltNames.length > 0) {
+          keyAltNames = options.keyAltNames.map((keyAltName, i) => {
+            if (typeof keyAltName !== "string") {
+              throw new errors_1.MongoCryptInvalidArgumentError(`Option "keyAltNames" must be an array of strings, but item at index ${i} was of type ${typeof keyAltName}`);
+            }
+            return (0, bson_1.serialize)({ keyAltName });
+          });
+        }
+        let keyMaterial = void 0;
+        if (options.keyMaterial) {
+          keyMaterial = (0, bson_1.serialize)({ keyMaterial: options.keyMaterial });
+        }
+        const dataKeyBson = (0, bson_1.serialize)({
+          provider,
+          ...options.masterKey
+        });
+        const context = this._mongoCrypt.makeDataKeyContext(dataKeyBson, {
+          keyAltNames,
+          keyMaterial
+        });
+        const stateMachine = new state_machine_1.StateMachine({
+          proxyOptions: this._proxyOptions,
+          tlsOptions: this._tlsOptions
+        });
+        const dataKey = (0, bson_1.deserialize)(await stateMachine.execute(this, context));
+        const { db: dbName, collection: collectionName } = utils_1.MongoDBCollectionNamespace.fromString(this._keyVaultNamespace);
+        const { insertedId } = await this._keyVaultClient.db(dbName).collection(collectionName).insertOne(dataKey, { writeConcern: { w: "majority" } });
+        return insertedId;
+      }
+      async rewrapManyDataKey(filter, options) {
+        let keyEncryptionKeyBson = void 0;
+        if (options) {
+          const keyEncryptionKey = Object.assign({ provider: options.provider }, options.masterKey);
+          keyEncryptionKeyBson = (0, bson_1.serialize)(keyEncryptionKey);
+        }
+        const filterBson = (0, bson_1.serialize)(filter);
+        const context = this._mongoCrypt.makeRewrapManyDataKeyContext(filterBson, keyEncryptionKeyBson);
+        const stateMachine = new state_machine_1.StateMachine({
+          proxyOptions: this._proxyOptions,
+          tlsOptions: this._tlsOptions
+        });
+        const { v: dataKeys } = (0, bson_1.deserialize)(await stateMachine.execute(this, context));
+        if (dataKeys.length === 0) {
+          return {};
+        }
+        const { db: dbName, collection: collectionName } = utils_1.MongoDBCollectionNamespace.fromString(this._keyVaultNamespace);
+        const replacements = dataKeys.map((key) => ({
+          updateOne: {
+            filter: { _id: key._id },
+            update: {
+              $set: {
+                masterKey: key.masterKey,
+                keyMaterial: key.keyMaterial
+              },
+              $currentDate: {
+                updateDate: true
+              }
+            }
+          }
+        }));
+        const result = await this._keyVaultClient.db(dbName).collection(collectionName).bulkWrite(replacements, {
+          writeConcern: { w: "majority" }
+        });
+        return { bulkWriteResult: result };
+      }
+      async deleteKey(_id) {
+        const { db: dbName, collection: collectionName } = utils_1.MongoDBCollectionNamespace.fromString(this._keyVaultNamespace);
+        return await this._keyVaultClient.db(dbName).collection(collectionName).deleteOne({ _id }, { writeConcern: { w: "majority" } });
+      }
+      getKeys() {
+        const { db: dbName, collection: collectionName } = utils_1.MongoDBCollectionNamespace.fromString(this._keyVaultNamespace);
+        return this._keyVaultClient.db(dbName).collection(collectionName).find({}, { readConcern: { level: "majority" } });
+      }
+      async getKey(_id) {
+        const { db: dbName, collection: collectionName } = utils_1.MongoDBCollectionNamespace.fromString(this._keyVaultNamespace);
+        return await this._keyVaultClient.db(dbName).collection(collectionName).findOne({ _id }, { readConcern: { level: "majority" } });
+      }
+      async getKeyByAltName(keyAltName) {
+        const { db: dbName, collection: collectionName } = utils_1.MongoDBCollectionNamespace.fromString(this._keyVaultNamespace);
+        return await this._keyVaultClient.db(dbName).collection(collectionName).findOne({ keyAltNames: keyAltName }, { readConcern: { level: "majority" } });
+      }
+      async addKeyAltName(_id, keyAltName) {
+        const { db: dbName, collection: collectionName } = utils_1.MongoDBCollectionNamespace.fromString(this._keyVaultNamespace);
+        const value = await this._keyVaultClient.db(dbName).collection(collectionName).findOneAndUpdate({ _id }, { $addToSet: { keyAltNames: keyAltName } }, { writeConcern: { w: "majority" }, returnDocument: "before" });
+        return value;
+      }
+      async removeKeyAltName(_id, keyAltName) {
+        const { db: dbName, collection: collectionName } = utils_1.MongoDBCollectionNamespace.fromString(this._keyVaultNamespace);
+        const pipeline = [
+          {
+            $set: {
+              keyAltNames: {
+                $cond: [
+                  {
+                    $eq: ["$keyAltNames", [keyAltName]]
+                  },
+                  "$$REMOVE",
+                  {
+                    $filter: {
+                      input: "$keyAltNames",
+                      cond: {
+                        $ne: ["$$this", keyAltName]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ];
+        const value = await this._keyVaultClient.db(dbName).collection(collectionName).findOneAndUpdate({ _id }, pipeline, {
+          writeConcern: { w: "majority" },
+          returnDocument: "before"
+        });
+        return value;
+      }
+      async createEncryptedCollection(db, name, options) {
+        const { provider, masterKey, createCollectionOptions: { encryptedFields: { ...encryptedFields }, ...createCollectionOptions } } = options;
+        if (Array.isArray(encryptedFields.fields)) {
+          const createDataKeyPromises = encryptedFields.fields.map(async (field) => field == null || typeof field !== "object" || field.keyId != null ? field : {
+            ...field,
+            keyId: await this.createDataKey(provider, { masterKey })
+          });
+          const createDataKeyResolutions = await Promise.allSettled(createDataKeyPromises);
+          encryptedFields.fields = createDataKeyResolutions.map((resolution, index) => resolution.status === "fulfilled" ? resolution.value : encryptedFields.fields[index]);
+          const rejection = createDataKeyResolutions.find((result) => result.status === "rejected");
+          if (rejection != null) {
+            throw new errors_1.MongoCryptCreateDataKeyError(encryptedFields, { cause: rejection.reason });
+          }
+        }
+        try {
+          const collection = await db.createCollection(name, {
+            ...createCollectionOptions,
+            encryptedFields
+          });
+          return { collection, encryptedFields };
+        } catch (cause) {
+          throw new errors_1.MongoCryptCreateEncryptedCollectionError(encryptedFields, { cause });
+        }
+      }
+      async encrypt(value, options) {
+        return await this._encrypt(value, false, options);
+      }
+      async encryptExpression(expression, options) {
+        return await this._encrypt(expression, true, options);
+      }
+      async decrypt(value) {
+        const valueBuffer = (0, bson_1.serialize)({ v: value });
+        const context = this._mongoCrypt.makeExplicitDecryptionContext(valueBuffer);
+        const stateMachine = new state_machine_1.StateMachine({
+          proxyOptions: this._proxyOptions,
+          tlsOptions: this._tlsOptions
+        });
+        const { v } = (0, bson_1.deserialize)(await stateMachine.execute(this, context));
+        return v;
+      }
+      async askForKMSCredentials() {
+        return await (0, index_1.refreshKMSCredentials)(this._kmsProviders);
+      }
+      static get libmongocryptVersion() {
+        return ClientEncryption.getMongoCrypt().libmongocryptVersion;
+      }
+      async _encrypt(value, expressionMode, options) {
+        const { algorithm, keyId, keyAltName, contentionFactor, queryType, rangeOptions } = options;
+        const contextOptions = {
+          expressionMode,
+          algorithm
+        };
+        if (keyId) {
+          contextOptions.keyId = keyId.buffer;
+        }
+        if (keyAltName) {
+          if (keyId) {
+            throw new errors_1.MongoCryptInvalidArgumentError(`"options" cannot contain both "keyId" and "keyAltName"`);
+          }
+          if (typeof keyAltName !== "string") {
+            throw new errors_1.MongoCryptInvalidArgumentError(`"options.keyAltName" must be of type string, but was of type ${typeof keyAltName}`);
+          }
+          contextOptions.keyAltName = (0, bson_1.serialize)({ keyAltName });
+        }
+        if (typeof contentionFactor === "number" || typeof contentionFactor === "bigint") {
+          contextOptions.contentionFactor = contentionFactor;
+        }
+        if (typeof queryType === "string") {
+          contextOptions.queryType = queryType;
+        }
+        if (typeof rangeOptions === "object") {
+          contextOptions.rangeOptions = (0, bson_1.serialize)(rangeOptions);
+        }
+        const valueBuffer = (0, bson_1.serialize)({ v: value });
+        const stateMachine = new state_machine_1.StateMachine({
+          proxyOptions: this._proxyOptions,
+          tlsOptions: this._tlsOptions
+        });
+        const context = this._mongoCrypt.makeExplicitEncryptionContext(valueBuffer, contextOptions);
+        const { v } = (0, bson_1.deserialize)(await stateMachine.execute(this, context));
+        return v;
+      }
+    };
+    exports.ClientEncryption = ClientEncryption;
+  }
+});
+
+// node_modules/mongodb/lib/index.js
+var require_lib7 = __commonJS({
+  "node_modules/mongodb/lib/index.js"(exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.MongoTopologyClosedError = exports.MongoTailableCursorError = exports.MongoSystemError = exports.MongoServerSelectionError = exports.MongoServerError = exports.MongoServerClosedError = exports.MongoRuntimeError = exports.MongoParseError = exports.MongoOIDCError = exports.MongoNotConnectedError = exports.MongoNetworkTimeoutError = exports.MongoNetworkError = exports.MongoMissingDependencyError = exports.MongoMissingCredentialsError = exports.MongoKerberosError = exports.MongoInvalidArgumentError = exports.MongoGridFSStreamError = exports.MongoGridFSChunkError = exports.MongoGCPError = exports.MongoExpiredSessionError = exports.MongoError = exports.MongoDriverError = exports.MongoDecompressionError = exports.MongoCursorInUseError = exports.MongoCursorExhaustedError = exports.MongoCompatibilityError = exports.MongoChangeStreamError = exports.MongoBatchReExecutionError = exports.MongoAzureError = exports.MongoAWSError = exports.MongoAPIError = exports.ChangeStreamCursor = exports.ClientEncryption = exports.MongoBulkWriteError = exports.UUID = exports.Timestamp = exports.ObjectId = exports.MinKey = exports.MaxKey = exports.Long = exports.Int32 = exports.Double = exports.Decimal128 = exports.DBRef = exports.Code = exports.BSONType = exports.BSONSymbol = exports.BSONRegExp = exports.Binary = exports.BSON = void 0;
+    exports.ConnectionPoolCreatedEvent = exports.ConnectionPoolClosedEvent = exports.ConnectionPoolClearedEvent = exports.ConnectionCreatedEvent = exports.ConnectionClosedEvent = exports.ConnectionCheckOutStartedEvent = exports.ConnectionCheckOutFailedEvent = exports.ConnectionCheckedOutEvent = exports.ConnectionCheckedInEvent = exports.CommandSucceededEvent = exports.CommandStartedEvent = exports.CommandFailedEvent = exports.WriteConcern = exports.ReadPreference = exports.ReadConcern = exports.TopologyType = exports.ServerType = exports.ReadPreferenceMode = exports.ReadConcernLevel = exports.ProfilingLevel = exports.ReturnDocument = exports.ServerApiVersion = exports.ExplainVerbosity = exports.MongoErrorLabel = exports.CURSOR_FLAGS = exports.Compressor = exports.AuthMechanism = exports.GSSAPICanonicalizationValue = exports.AutoEncryptionLoggerLevel = exports.BatchType = exports.UnorderedBulkOperation = exports.OrderedBulkOperation = exports.MongoClient = exports.ListIndexesCursor = exports.ListCollectionsCursor = exports.GridFSBucketWriteStream = exports.GridFSBucketReadStream = exports.GridFSBucket = exports.FindCursor = exports.Db = exports.Collection = exports.ClientSession = exports.ChangeStream = exports.CancellationToken = exports.AggregationCursor = exports.Admin = exports.AbstractCursor = exports.MongoWriteConcernError = exports.MongoUnexpectedServerResponseError = exports.MongoTransactionError = void 0;
+    exports.MongoClientAuthProviders = exports.MongoCryptKMSRequestNetworkTimeoutError = exports.MongoCryptInvalidArgumentError = exports.MongoCryptError = exports.MongoCryptCreateEncryptedCollectionError = exports.MongoCryptCreateDataKeyError = exports.MongoCryptAzureKMSRequestError = exports.SrvPollingEvent = exports.WaitingForSuitableServerEvent = exports.ServerSelectionSucceededEvent = exports.ServerSelectionStartedEvent = exports.ServerSelectionFailedEvent = exports.ServerSelectionEvent = exports.TopologyOpeningEvent = exports.TopologyDescriptionChangedEvent = exports.TopologyClosedEvent = exports.ServerOpeningEvent = exports.ServerHeartbeatSucceededEvent = exports.ServerHeartbeatStartedEvent = exports.ServerHeartbeatFailedEvent = exports.ServerDescriptionChangedEvent = exports.ServerClosedEvent = exports.ConnectionReadyEvent = exports.ConnectionPoolReadyEvent = exports.ConnectionPoolMonitoringEvent = void 0;
+    var admin_1 = require_admin2();
+    Object.defineProperty(exports, "Admin", { enumerable: true, get: function() {
+      return admin_1.Admin;
+    } });
+    var ordered_1 = require_ordered2();
+    Object.defineProperty(exports, "OrderedBulkOperation", { enumerable: true, get: function() {
+      return ordered_1.OrderedBulkOperation;
+    } });
+    var unordered_1 = require_unordered2();
+    Object.defineProperty(exports, "UnorderedBulkOperation", { enumerable: true, get: function() {
+      return unordered_1.UnorderedBulkOperation;
+    } });
+    var change_stream_1 = require_change_stream2();
+    Object.defineProperty(exports, "ChangeStream", { enumerable: true, get: function() {
+      return change_stream_1.ChangeStream;
+    } });
+    var collection_1 = require_collection6();
+    Object.defineProperty(exports, "Collection", { enumerable: true, get: function() {
+      return collection_1.Collection;
+    } });
+    var abstract_cursor_1 = require_abstract_cursor2();
+    Object.defineProperty(exports, "AbstractCursor", { enumerable: true, get: function() {
+      return abstract_cursor_1.AbstractCursor;
+    } });
+    var aggregation_cursor_1 = require_aggregation_cursor2();
+    Object.defineProperty(exports, "AggregationCursor", { enumerable: true, get: function() {
+      return aggregation_cursor_1.AggregationCursor;
+    } });
+    var find_cursor_1 = require_find_cursor2();
+    Object.defineProperty(exports, "FindCursor", { enumerable: true, get: function() {
+      return find_cursor_1.FindCursor;
+    } });
+    var list_collections_cursor_1 = require_list_collections_cursor2();
+    Object.defineProperty(exports, "ListCollectionsCursor", { enumerable: true, get: function() {
+      return list_collections_cursor_1.ListCollectionsCursor;
+    } });
+    var list_indexes_cursor_1 = require_list_indexes_cursor2();
+    Object.defineProperty(exports, "ListIndexesCursor", { enumerable: true, get: function() {
+      return list_indexes_cursor_1.ListIndexesCursor;
+    } });
+    var db_1 = require_db2();
+    Object.defineProperty(exports, "Db", { enumerable: true, get: function() {
+      return db_1.Db;
+    } });
+    var gridfs_1 = require_gridfs2();
+    Object.defineProperty(exports, "GridFSBucket", { enumerable: true, get: function() {
+      return gridfs_1.GridFSBucket;
+    } });
+    var download_1 = require_download2();
+    Object.defineProperty(exports, "GridFSBucketReadStream", { enumerable: true, get: function() {
+      return download_1.GridFSBucketReadStream;
+    } });
+    var upload_1 = require_upload2();
+    Object.defineProperty(exports, "GridFSBucketWriteStream", { enumerable: true, get: function() {
+      return upload_1.GridFSBucketWriteStream;
+    } });
+    var mongo_client_1 = require_mongo_client2();
+    Object.defineProperty(exports, "MongoClient", { enumerable: true, get: function() {
+      return mongo_client_1.MongoClient;
+    } });
+    var mongo_types_1 = require_mongo_types2();
+    Object.defineProperty(exports, "CancellationToken", { enumerable: true, get: function() {
+      return mongo_types_1.CancellationToken;
+    } });
+    var sessions_1 = require_sessions2();
+    Object.defineProperty(exports, "ClientSession", { enumerable: true, get: function() {
+      return sessions_1.ClientSession;
+    } });
+    var bson_1 = require_bson3();
+    Object.defineProperty(exports, "BSON", { enumerable: true, get: function() {
+      return bson_1.BSON;
+    } });
+    var bson_2 = require_bson3();
+    Object.defineProperty(exports, "Binary", { enumerable: true, get: function() {
+      return bson_2.Binary;
+    } });
+    Object.defineProperty(exports, "BSONRegExp", { enumerable: true, get: function() {
+      return bson_2.BSONRegExp;
+    } });
+    Object.defineProperty(exports, "BSONSymbol", { enumerable: true, get: function() {
+      return bson_2.BSONSymbol;
+    } });
+    Object.defineProperty(exports, "BSONType", { enumerable: true, get: function() {
+      return bson_2.BSONType;
+    } });
+    Object.defineProperty(exports, "Code", { enumerable: true, get: function() {
+      return bson_2.Code;
+    } });
+    Object.defineProperty(exports, "DBRef", { enumerable: true, get: function() {
+      return bson_2.DBRef;
+    } });
+    Object.defineProperty(exports, "Decimal128", { enumerable: true, get: function() {
+      return bson_2.Decimal128;
+    } });
+    Object.defineProperty(exports, "Double", { enumerable: true, get: function() {
+      return bson_2.Double;
+    } });
+    Object.defineProperty(exports, "Int32", { enumerable: true, get: function() {
+      return bson_2.Int32;
+    } });
+    Object.defineProperty(exports, "Long", { enumerable: true, get: function() {
+      return bson_2.Long;
+    } });
+    Object.defineProperty(exports, "MaxKey", { enumerable: true, get: function() {
+      return bson_2.MaxKey;
+    } });
+    Object.defineProperty(exports, "MinKey", { enumerable: true, get: function() {
+      return bson_2.MinKey;
+    } });
+    Object.defineProperty(exports, "ObjectId", { enumerable: true, get: function() {
+      return bson_2.ObjectId;
+    } });
+    Object.defineProperty(exports, "Timestamp", { enumerable: true, get: function() {
+      return bson_2.Timestamp;
+    } });
+    Object.defineProperty(exports, "UUID", { enumerable: true, get: function() {
+      return bson_2.UUID;
+    } });
+    var common_1 = require_common6();
+    Object.defineProperty(exports, "MongoBulkWriteError", { enumerable: true, get: function() {
+      return common_1.MongoBulkWriteError;
+    } });
+    var client_encryption_1 = require_client_encryption2();
+    Object.defineProperty(exports, "ClientEncryption", { enumerable: true, get: function() {
+      return client_encryption_1.ClientEncryption;
+    } });
+    var change_stream_cursor_1 = require_change_stream_cursor2();
+    Object.defineProperty(exports, "ChangeStreamCursor", { enumerable: true, get: function() {
+      return change_stream_cursor_1.ChangeStreamCursor;
+    } });
+    var error_1 = require_error3();
+    Object.defineProperty(exports, "MongoAPIError", { enumerable: true, get: function() {
+      return error_1.MongoAPIError;
+    } });
+    Object.defineProperty(exports, "MongoAWSError", { enumerable: true, get: function() {
+      return error_1.MongoAWSError;
+    } });
+    Object.defineProperty(exports, "MongoAzureError", { enumerable: true, get: function() {
+      return error_1.MongoAzureError;
+    } });
+    Object.defineProperty(exports, "MongoBatchReExecutionError", { enumerable: true, get: function() {
+      return error_1.MongoBatchReExecutionError;
+    } });
+    Object.defineProperty(exports, "MongoChangeStreamError", { enumerable: true, get: function() {
+      return error_1.MongoChangeStreamError;
+    } });
+    Object.defineProperty(exports, "MongoCompatibilityError", { enumerable: true, get: function() {
+      return error_1.MongoCompatibilityError;
+    } });
+    Object.defineProperty(exports, "MongoCursorExhaustedError", { enumerable: true, get: function() {
+      return error_1.MongoCursorExhaustedError;
+    } });
+    Object.defineProperty(exports, "MongoCursorInUseError", { enumerable: true, get: function() {
+      return error_1.MongoCursorInUseError;
+    } });
+    Object.defineProperty(exports, "MongoDecompressionError", { enumerable: true, get: function() {
+      return error_1.MongoDecompressionError;
+    } });
+    Object.defineProperty(exports, "MongoDriverError", { enumerable: true, get: function() {
+      return error_1.MongoDriverError;
+    } });
+    Object.defineProperty(exports, "MongoError", { enumerable: true, get: function() {
+      return error_1.MongoError;
+    } });
+    Object.defineProperty(exports, "MongoExpiredSessionError", { enumerable: true, get: function() {
+      return error_1.MongoExpiredSessionError;
+    } });
+    Object.defineProperty(exports, "MongoGCPError", { enumerable: true, get: function() {
+      return error_1.MongoGCPError;
+    } });
+    Object.defineProperty(exports, "MongoGridFSChunkError", { enumerable: true, get: function() {
+      return error_1.MongoGridFSChunkError;
+    } });
+    Object.defineProperty(exports, "MongoGridFSStreamError", { enumerable: true, get: function() {
+      return error_1.MongoGridFSStreamError;
+    } });
+    Object.defineProperty(exports, "MongoInvalidArgumentError", { enumerable: true, get: function() {
+      return error_1.MongoInvalidArgumentError;
+    } });
+    Object.defineProperty(exports, "MongoKerberosError", { enumerable: true, get: function() {
+      return error_1.MongoKerberosError;
+    } });
+    Object.defineProperty(exports, "MongoMissingCredentialsError", { enumerable: true, get: function() {
+      return error_1.MongoMissingCredentialsError;
+    } });
+    Object.defineProperty(exports, "MongoMissingDependencyError", { enumerable: true, get: function() {
+      return error_1.MongoMissingDependencyError;
+    } });
+    Object.defineProperty(exports, "MongoNetworkError", { enumerable: true, get: function() {
+      return error_1.MongoNetworkError;
+    } });
+    Object.defineProperty(exports, "MongoNetworkTimeoutError", { enumerable: true, get: function() {
+      return error_1.MongoNetworkTimeoutError;
+    } });
+    Object.defineProperty(exports, "MongoNotConnectedError", { enumerable: true, get: function() {
+      return error_1.MongoNotConnectedError;
+    } });
+    Object.defineProperty(exports, "MongoOIDCError", { enumerable: true, get: function() {
+      return error_1.MongoOIDCError;
+    } });
+    Object.defineProperty(exports, "MongoParseError", { enumerable: true, get: function() {
+      return error_1.MongoParseError;
+    } });
+    Object.defineProperty(exports, "MongoRuntimeError", { enumerable: true, get: function() {
+      return error_1.MongoRuntimeError;
+    } });
+    Object.defineProperty(exports, "MongoServerClosedError", { enumerable: true, get: function() {
+      return error_1.MongoServerClosedError;
+    } });
+    Object.defineProperty(exports, "MongoServerError", { enumerable: true, get: function() {
+      return error_1.MongoServerError;
+    } });
+    Object.defineProperty(exports, "MongoServerSelectionError", { enumerable: true, get: function() {
+      return error_1.MongoServerSelectionError;
+    } });
+    Object.defineProperty(exports, "MongoSystemError", { enumerable: true, get: function() {
+      return error_1.MongoSystemError;
+    } });
+    Object.defineProperty(exports, "MongoTailableCursorError", { enumerable: true, get: function() {
+      return error_1.MongoTailableCursorError;
+    } });
+    Object.defineProperty(exports, "MongoTopologyClosedError", { enumerable: true, get: function() {
+      return error_1.MongoTopologyClosedError;
+    } });
+    Object.defineProperty(exports, "MongoTransactionError", { enumerable: true, get: function() {
+      return error_1.MongoTransactionError;
+    } });
+    Object.defineProperty(exports, "MongoUnexpectedServerResponseError", { enumerable: true, get: function() {
+      return error_1.MongoUnexpectedServerResponseError;
+    } });
+    Object.defineProperty(exports, "MongoWriteConcernError", { enumerable: true, get: function() {
+      return error_1.MongoWriteConcernError;
+    } });
+    var common_2 = require_common6();
+    Object.defineProperty(exports, "BatchType", { enumerable: true, get: function() {
+      return common_2.BatchType;
+    } });
+    var auto_encrypter_1 = require_auto_encrypter2();
+    Object.defineProperty(exports, "AutoEncryptionLoggerLevel", { enumerable: true, get: function() {
+      return auto_encrypter_1.AutoEncryptionLoggerLevel;
+    } });
+    var gssapi_1 = require_gssapi2();
+    Object.defineProperty(exports, "GSSAPICanonicalizationValue", { enumerable: true, get: function() {
+      return gssapi_1.GSSAPICanonicalizationValue;
+    } });
+    var providers_1 = require_providers3();
+    Object.defineProperty(exports, "AuthMechanism", { enumerable: true, get: function() {
+      return providers_1.AuthMechanism;
+    } });
+    var compression_1 = require_compression2();
+    Object.defineProperty(exports, "Compressor", { enumerable: true, get: function() {
+      return compression_1.Compressor;
+    } });
+    var abstract_cursor_2 = require_abstract_cursor2();
+    Object.defineProperty(exports, "CURSOR_FLAGS", { enumerable: true, get: function() {
+      return abstract_cursor_2.CURSOR_FLAGS;
+    } });
+    var error_2 = require_error3();
+    Object.defineProperty(exports, "MongoErrorLabel", { enumerable: true, get: function() {
+      return error_2.MongoErrorLabel;
+    } });
+    var explain_1 = require_explain2();
+    Object.defineProperty(exports, "ExplainVerbosity", { enumerable: true, get: function() {
+      return explain_1.ExplainVerbosity;
+    } });
+    var mongo_client_2 = require_mongo_client2();
+    Object.defineProperty(exports, "ServerApiVersion", { enumerable: true, get: function() {
+      return mongo_client_2.ServerApiVersion;
+    } });
+    var find_and_modify_1 = require_find_and_modify2();
+    Object.defineProperty(exports, "ReturnDocument", { enumerable: true, get: function() {
+      return find_and_modify_1.ReturnDocument;
+    } });
+    var set_profiling_level_1 = require_set_profiling_level2();
+    Object.defineProperty(exports, "ProfilingLevel", { enumerable: true, get: function() {
+      return set_profiling_level_1.ProfilingLevel;
+    } });
+    var read_concern_1 = require_read_concern2();
+    Object.defineProperty(exports, "ReadConcernLevel", { enumerable: true, get: function() {
+      return read_concern_1.ReadConcernLevel;
+    } });
+    var read_preference_1 = require_read_preference2();
+    Object.defineProperty(exports, "ReadPreferenceMode", { enumerable: true, get: function() {
+      return read_preference_1.ReadPreferenceMode;
+    } });
+    var common_3 = require_common5();
+    Object.defineProperty(exports, "ServerType", { enumerable: true, get: function() {
+      return common_3.ServerType;
+    } });
+    Object.defineProperty(exports, "TopologyType", { enumerable: true, get: function() {
+      return common_3.TopologyType;
+    } });
+    var read_concern_2 = require_read_concern2();
+    Object.defineProperty(exports, "ReadConcern", { enumerable: true, get: function() {
+      return read_concern_2.ReadConcern;
+    } });
+    var read_preference_2 = require_read_preference2();
+    Object.defineProperty(exports, "ReadPreference", { enumerable: true, get: function() {
+      return read_preference_2.ReadPreference;
+    } });
+    var write_concern_1 = require_write_concern2();
+    Object.defineProperty(exports, "WriteConcern", { enumerable: true, get: function() {
+      return write_concern_1.WriteConcern;
+    } });
+    var command_monitoring_events_1 = require_command_monitoring_events2();
+    Object.defineProperty(exports, "CommandFailedEvent", { enumerable: true, get: function() {
+      return command_monitoring_events_1.CommandFailedEvent;
+    } });
+    Object.defineProperty(exports, "CommandStartedEvent", { enumerable: true, get: function() {
+      return command_monitoring_events_1.CommandStartedEvent;
+    } });
+    Object.defineProperty(exports, "CommandSucceededEvent", { enumerable: true, get: function() {
+      return command_monitoring_events_1.CommandSucceededEvent;
+    } });
+    var connection_pool_events_1 = require_connection_pool_events2();
+    Object.defineProperty(exports, "ConnectionCheckedInEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionCheckedInEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionCheckedOutEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionCheckedOutEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionCheckOutFailedEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionCheckOutFailedEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionCheckOutStartedEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionCheckOutStartedEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionClosedEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionClosedEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionCreatedEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionCreatedEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionPoolClearedEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionPoolClearedEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionPoolClosedEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionPoolClosedEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionPoolCreatedEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionPoolCreatedEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionPoolMonitoringEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionPoolMonitoringEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionPoolReadyEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionPoolReadyEvent;
+    } });
+    Object.defineProperty(exports, "ConnectionReadyEvent", { enumerable: true, get: function() {
+      return connection_pool_events_1.ConnectionReadyEvent;
+    } });
+    var events_1 = require_events2();
+    Object.defineProperty(exports, "ServerClosedEvent", { enumerable: true, get: function() {
+      return events_1.ServerClosedEvent;
+    } });
+    Object.defineProperty(exports, "ServerDescriptionChangedEvent", { enumerable: true, get: function() {
+      return events_1.ServerDescriptionChangedEvent;
+    } });
+    Object.defineProperty(exports, "ServerHeartbeatFailedEvent", { enumerable: true, get: function() {
+      return events_1.ServerHeartbeatFailedEvent;
+    } });
+    Object.defineProperty(exports, "ServerHeartbeatStartedEvent", { enumerable: true, get: function() {
+      return events_1.ServerHeartbeatStartedEvent;
+    } });
+    Object.defineProperty(exports, "ServerHeartbeatSucceededEvent", { enumerable: true, get: function() {
+      return events_1.ServerHeartbeatSucceededEvent;
+    } });
+    Object.defineProperty(exports, "ServerOpeningEvent", { enumerable: true, get: function() {
+      return events_1.ServerOpeningEvent;
+    } });
+    Object.defineProperty(exports, "TopologyClosedEvent", { enumerable: true, get: function() {
+      return events_1.TopologyClosedEvent;
+    } });
+    Object.defineProperty(exports, "TopologyDescriptionChangedEvent", { enumerable: true, get: function() {
+      return events_1.TopologyDescriptionChangedEvent;
+    } });
+    Object.defineProperty(exports, "TopologyOpeningEvent", { enumerable: true, get: function() {
+      return events_1.TopologyOpeningEvent;
+    } });
+    var server_selection_events_1 = require_server_selection_events2();
+    Object.defineProperty(exports, "ServerSelectionEvent", { enumerable: true, get: function() {
+      return server_selection_events_1.ServerSelectionEvent;
+    } });
+    Object.defineProperty(exports, "ServerSelectionFailedEvent", { enumerable: true, get: function() {
+      return server_selection_events_1.ServerSelectionFailedEvent;
+    } });
+    Object.defineProperty(exports, "ServerSelectionStartedEvent", { enumerable: true, get: function() {
+      return server_selection_events_1.ServerSelectionStartedEvent;
+    } });
+    Object.defineProperty(exports, "ServerSelectionSucceededEvent", { enumerable: true, get: function() {
+      return server_selection_events_1.ServerSelectionSucceededEvent;
+    } });
+    Object.defineProperty(exports, "WaitingForSuitableServerEvent", { enumerable: true, get: function() {
+      return server_selection_events_1.WaitingForSuitableServerEvent;
+    } });
+    var srv_polling_1 = require_srv_polling2();
+    Object.defineProperty(exports, "SrvPollingEvent", { enumerable: true, get: function() {
+      return srv_polling_1.SrvPollingEvent;
+    } });
+    var errors_1 = require_errors3();
+    Object.defineProperty(exports, "MongoCryptAzureKMSRequestError", { enumerable: true, get: function() {
+      return errors_1.MongoCryptAzureKMSRequestError;
+    } });
+    Object.defineProperty(exports, "MongoCryptCreateDataKeyError", { enumerable: true, get: function() {
+      return errors_1.MongoCryptCreateDataKeyError;
+    } });
+    Object.defineProperty(exports, "MongoCryptCreateEncryptedCollectionError", { enumerable: true, get: function() {
+      return errors_1.MongoCryptCreateEncryptedCollectionError;
+    } });
+    Object.defineProperty(exports, "MongoCryptError", { enumerable: true, get: function() {
+      return errors_1.MongoCryptError;
+    } });
+    Object.defineProperty(exports, "MongoCryptInvalidArgumentError", { enumerable: true, get: function() {
+      return errors_1.MongoCryptInvalidArgumentError;
+    } });
+    Object.defineProperty(exports, "MongoCryptKMSRequestNetworkTimeoutError", { enumerable: true, get: function() {
+      return errors_1.MongoCryptKMSRequestNetworkTimeoutError;
+    } });
+    var mongo_client_auth_providers_1 = require_mongo_client_auth_providers2();
+    Object.defineProperty(exports, "MongoClientAuthProviders", { enumerable: true, get: function() {
+      return mongo_client_auth_providers_1.MongoClientAuthProviders;
+    } });
   }
 });
 
@@ -61440,18 +79864,21 @@ var ProductService = class extends BaseService {
     super(...arguments);
     this.getProductById = async (id) => {
       await this.ensureInitialized();
-      return await Product.finfById(id);
+      return await Product.findById(id);
     };
   }
 };
 
 // src/functions/get-product/handler.ts
+var import_mongodb = __toESM(require_lib7());
 var main = async (event) => {
-  const id = event?.queryStringParameters?.id;
-  if (!id) {
+  const id = event?.pathParameters?.id;
+  if (!id || !import_mongodb.ObjectId.isValid(id)) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ message: "Missing id" })
+      body: JSON.stringify({
+        message: `Product Id is ${!id ? "required" : "not valid"}`
+      })
     };
   }
   try {
