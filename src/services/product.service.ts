@@ -5,4 +5,11 @@ export class ProductService extends BaseService {
         await this.ensureInitialized();
         return await Product.findById((id));
     }
+
+
+    getProducts = async (): Promise<IProduct[]> => {
+        await this.ensureInitialized();
+        return await Product.find();
+    }
+
 }
