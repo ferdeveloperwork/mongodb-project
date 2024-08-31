@@ -24,9 +24,7 @@ export const main = async (event: APIGatewayProxyEvent) => {
         name,
         description,
         price,
-        count,
-        created_At: new Date(),
-        updated_At: new Date(),
+        count
     };
 
     try {

@@ -2,7 +2,13 @@
 node_modules
 package-lock.json
 .esbuild
+.esbuild/
 .esbuild/.build/src/functions/create-product/handler.js
 .esbuild/.build/src/functions/create-product/handler.js
+.esbuild/.build/src/functions/get-product/handler.js
+.esbuild/.build/src/functions/get-product/handler.js.map
+.esbuild/.build/src/functions/create-product/handler.js
+.esbuild/.build/src/functions/create-product/handler.js
+.esbuild/.build/src/functions/create-product/handler.js.map
 .esbuild/.build/src/functions/get-product/handler.js
 .esbuild/.build/src/functions/get-product/handler.js.map

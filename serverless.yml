@@ -61,19 +61,19 @@ functions:
               - Accept
               - X-Amz-Date
 
-  # deleteProduct:
-  #   handler: src/functions/delete-product/handler.main
-  #   timeout: 10
-  #   events:
-  #     - http:
-  #         method: post
-  #         path: delete-product/{id}
-  #         cors:
-  #           origin: "*"
-  #           headers:
-  #             - Content-Type
-  #             - Accept
-  #             - X-Amz-Date
+  deleteProduct:
+    handler: src/functions/delete-product/handler.main
+    timeout: 10
+    events:
+      - http:
+          method: post
+          path: delete-product
+          cors:
+            origin: "*"
+            headers:
+              - Content-Type
+              - Accept
+              - X-Amz-Date
 
 package:
   individually: true
