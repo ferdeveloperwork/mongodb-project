@@ -5,8 +5,9 @@ type ProductType = {
     description: string;
     price: number;
     count: number;
-    created_At: Date;
-    updated_At: Date;
+    deleted?: boolean;
+    created_At?: Date;
+    updated_At?: Date;
 };
 
 interface IProduct extends Document, ProductType { }
@@ -14,8 +15,9 @@ interface IProduct extends Document, ProductType { }
 const ProductSchema = new Schema<IProduct>({
     name: { type: String, required: true },
     description: { type: String, required: true },
-    price: { type: Number, required: true },
-    count: { type: Number, required: true },
+    price: { type: Number },
+    count: { type: Number },
+    deleted: { type: Boolean, default: false },
     created_At: { type: Date, default: Date.now },
     updated_At: { type: Date, default: Date.now },
 });

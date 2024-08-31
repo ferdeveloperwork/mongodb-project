@@ -46,11 +46,11 @@ functions:
               - Content-Type
               - Accept
               - X-Amz-Date
-  
-    getProducts:
-      handler: src/functions/get-products/handler.main
-      timeout: 10
-      events:
+
+  getProducts:
+    handler: src/functions/get-products/handler.main
+    timeout: 10
+    events:
       - http:
           method: get
           path: getProducts
@@ -61,13 +61,13 @@ functions:
               - Accept
               - X-Amz-Date
 
-    deleteProduct:
-      handler: src/functions/delete-product/handler.main
-      timeout: 10
-      events:
+  deleteProduct:
+    handler: src/functions/delete-product/handler.main
+    timeout: 10
+    events:
       - http:
           method: post
-          path: delete-product/{id}
+          path: delete-product
           cors:
             origin: "*"
             headers:
