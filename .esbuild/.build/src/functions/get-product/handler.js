@@ -75977,8 +75977,8 @@ var import_mongoose = __toESM(require_mongoose2());
 var ProductSchema = new import_mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
-  price: { type: Number, required: true },
-  count: { type: Number, required: true },
+  price: { type: Number },
+  count: { type: Number },
   created_At: { type: Date, default: Date.now },
   updated_At: { type: Date, default: Date.now }
 });
@@ -79865,6 +79865,14 @@ var ProductService = class extends BaseService {
     this.getProductById = async (id) => {
       await this.ensureInitialized();
       return await Product.findById(id);
+    };
+    this.getProducts = async () => {
+      await this.ensureInitialized();
+      return await Product.find();
+    };
+    this.createProduct = async (product) => {
+      await this.ensureInitialized();
+      return await Product.create(product);
     };
   }
 };
