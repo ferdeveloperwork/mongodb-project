@@ -1,4 +1,4 @@
-import { IProduct, Product } from "@models/product.model";
+import { IProduct, Product, ProductType } from "@models/product.model";
 import { BaseService } from "./base.service";
 export class ProductService extends BaseService {
     getProductById = async (id: string): Promise<IProduct | null> => {
@@ -12,4 +12,8 @@ export class ProductService extends BaseService {
         return await Product.find();
     }
 
+    createProduct = async (product: ProductType): Promise<IProduct> => {
+        await this.ensureInitialized();
+        return await Product.create(product);
+    }
 }

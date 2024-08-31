@@ -14,8 +14,8 @@ interface IProduct extends Document, ProductType { }
 const ProductSchema = new Schema<IProduct>({
     name: { type: String, required: true },
     description: { type: String, required: true },
-    price: { type: Number, required: true },
-    count: { type: Number, required: true },
+    price: { type: Number },
+    count: { type: Number },
     created_At: { type: Date, default: Date.now },
     updated_At: { type: Date, default: Date.now },
 });
